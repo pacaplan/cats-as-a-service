@@ -54,15 +54,6 @@ Before starting a non-trivial task, create a plan document in `docs/plans/`:
 - `02-ui-prototype-cart-checkout-faq.md`
 - `03-ui-prototype-catbot.md`
 
-### Adding a New Bounded Context
-
-1. Create a new Rails engine in `engines/`
-2. Follow the Rampart structure: `domain/`, `application/`, `infrastructure/`
-3. Create architecture blueprint JSON in `architecture/`
-4. Mount the engine in `apps/api/config/routes.rb`
-5. Update `apps/api/Gemfile` to include the engine
-6. Add documentation in `docs/cat_app/`
-
 ### Development Server Startup
 
 ```bash
@@ -76,36 +67,3 @@ scripts/start_dev.sh
 cd apps/api && rails server      # API on :8000
 cd apps/web && npm run dev       # Web on :3000
 ```
-
----
-
-## Architecture Guidelines
-
-### Bounded Context Structure
-
-Each engine should follow Rampart patterns:
-
-```
-engine_name/
-├── app/
-│   ├── domain/              # Pure Ruby domain logic
-│   │   ├── aggregates/      # Aggregate roots
-│   │   ├── entities/        # Entities
-│   │   ├── value_objects/   # Value objects
-│   │   └── ports/           # Secondary ports
-│   ├── application/         # Use cases
-│   │   ├── commands/        # Write DTOs
-│   │   ├── queries/         # Read DTOs
-│   │   └── services/        # Application services
-│   └── infrastructure/       # Rails adapters
-│       ├── persistence/      # Repositories, mappers
-│       └── http/             # Serializers
-└── spec/
-    └── architecture/         # Architecture tests
-```
-
-### Testing
-
-- Domain and application layers: Pure Ruby tests, no Rails dependencies
-- Infrastructure layer: Rails tests with database
-- Architecture tests: Use `Rampart::Testing::ArchitectureMatchers`

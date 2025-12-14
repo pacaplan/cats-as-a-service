@@ -6,7 +6,7 @@ gem "rails", "~> 8.1.1"
 gem "pg", "~> 1.1"
 
 # Rampart framework and bounded context engines
-gem "rampart", path: "../../rampart"
+gem "rampart", path: "../../../rampart"
 gem "cat_content", path: "../../engines/cat_content"
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
