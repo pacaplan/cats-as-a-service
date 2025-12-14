@@ -1,0 +1,4 @@
+# Domain entities with independent identity go here
+# Note: CatProfile was converted to a ValueObject since it doesn't have independent identity
+
+

@@ -1,0 +1,53 @@
+{
+  "$schema": "rampart/schema/system_v1.json",
+  "schema_version": "1.0",
+  "system": {
+    "id": "cat_alog",
+    "name": "Cat-alog",
+    "description": "AI-powered custom cat generation and premade cat catalog"
+  },
+  "rails_app": {
+    "root": "apps/web"
+  },
+  "engines": {
+    "base_dir": "engines",
+    "items": [
+      {
+        "id": "cat_content",
+        "engine_name": "cat_content",
+        "path": "engines/cat_content",
+        "architecture_file": "architecture/cat_content.json",
+        "enabled": true
+      }
+    ]
+  },
+  "profiles": {
+    "default": "rampart_hexddd_v1",
+    "overrides": []
+  },
+  "discovery": {
+    "architecture_filename": "cat_content.json",
+    "strict_engine_list": true,
+    "ignore": [
+      "vendor/**",
+      "tmp/**",
+      "node_modules/**",
+      ".git/**",
+      "worktrees/**"
+    ]
+  },
+  "system_constraints": {
+    "integration": [],
+    "shared_kernel": [],
+    "global_rules": [
+      {
+        "id": "no_cross_engine_domain_imports",
+        "statement": "Engines must not import each other's Domain layer; integrate via ports or events."
+      }
+    ]
+  },
+  "diagram_defaults": {
+    "levels": ["L1_context", "L2_layers", "L3_components"],
+    "include_optional": false
+  }
+}

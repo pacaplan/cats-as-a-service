@@ -1,0 +1,92 @@
+#!/bin/bash
+# Setup the cat_content_test database for running specs
+#
+# Usage: bin/setup_test_db
+#
+# Prerequisites: Local Supabase must be running (npx supabase start)
+
+set -e
+
+PGHOST=127.0.0.1
+PGPORT=54322
+PGUSER=postgres
+PGPASSWORD=postgres
+TEST_DB=cat_content_test
+
+# Use docker exec to run psql in the Supabase container
+PSQL="docker exec -i supabase_db_rampart psql -U $PGUSER"
+
+echo "Setting up test database: $TEST_DB"
+
+# Create test database if it doesn't exist
+$PSQL -tc "SELECT 1 FROM pg_database WHERE datname = '$TEST_DB'" | grep -q 1 || \
+  $PSQL -c "CREATE DATABASE $TEST_DB"
+
+echo "Created database $TEST_DB (or already exists)"
+
+# Apply schema and table migrations
+$PSQL -d $TEST_DB <<EOF
+-- Create the cat_content schema for the Cat & Content bounded context
+CREATE SCHEMA IF NOT EXISTS cat_content;
+
+-- Grant permissions to postgres user
+GRANT USAGE ON SCHEMA cat_content TO postgres;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA cat_content TO postgres;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA cat_content TO postgres;
+GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA cat_content TO postgres;
+
+-- Set default privileges for future objects
+ALTER DEFAULT PRIVILEGES IN SCHEMA cat_content 
+  GRANT ALL ON TABLES TO postgres;
+  
+ALTER DEFAULT PRIVILEGES IN SCHEMA cat_content 
+  GRANT ALL ON SEQUENCES TO postgres;
+  
+ALTER DEFAULT PRIVILEGES IN SCHEMA cat_content 
+  GRANT ALL ON FUNCTIONS TO postgres;
+
+-- Enable UUID extension if not already enabled
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+-- Create cat_listings table in cat_content schema
+CREATE TABLE IF NOT EXISTS cat_content.cat_listings (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name VARCHAR(100) NOT NULL,
+  slug VARCHAR(100) NOT NULL UNIQUE,
+  description TEXT NOT NULL,
+  price_cents INTEGER NOT NULL,
+  currency VARCHAR(3) DEFAULT 'USD',
+  visibility VARCHAR(20) NOT NULL DEFAULT 'private',
+  image_url TEXT,
+  image_alt TEXT,
+  tags TEXT[] DEFAULT '{}',
+  age_months INTEGER,
+  temperament TEXT,
+  traits TEXT[] DEFAULT '{}',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create indexes
+CREATE INDEX IF NOT EXISTS idx_cat_listings_visibility ON cat_content.cat_listings(visibility);
+CREATE INDEX IF NOT EXISTS idx_cat_listings_slug ON cat_content.cat_listings(slug);
+CREATE INDEX IF NOT EXISTS idx_cat_listings_tags ON cat_content.cat_listings USING GIN(tags);
+
+-- Add updated_at trigger
+CREATE OR REPLACE FUNCTION cat_content.update_updated_at_column()
+RETURNS TRIGGER AS \$\$
+BEGIN
+  NEW.updated_at = CURRENT_TIMESTAMP;
+  RETURN NEW;
+END;
+\$\$ language 'plpgsql';
+
+DROP TRIGGER IF EXISTS update_cat_listings_updated_at ON cat_content.cat_listings;
+CREATE TRIGGER update_cat_listings_updated_at BEFORE UPDATE ON cat_content.cat_listings
+FOR EACH ROW EXECUTE FUNCTION cat_content.update_updated_at_column();
+EOF
+
+echo "✅ Test database setup complete!"
+echo ""
+echo "Run specs with: bundle exec rspec"
+

@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Shantell+Sans:wght@300..800&display=swap&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Geist:wght@100..900&family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Michroma&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Roboto+Slab:wght@100..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Shantell+Sans:ital,wght@0,300..800;1,300..800&family=Space+Grotesk:wght@300..700&display=swap"
+        rel="stylesheet"
+      />
+      <style>
+        * {
+          font-family: var(--font-family-body);
+        }
+      </style>
+      <style>
+        :root {
+          --background: #fbf8ff;
+          --foreground: #1f1b24;
+          --border: #00000000;
+          --input: #ffffff;
+          --primary: #ff8c42;
+          --primary-foreground: #ffffff;
+          --secondary: #c8b7ff;
+          --secondary-foreground: #2b1b47;
+          --muted: #f2edf7;
+          --muted-foreground: #6b6173;
+          --success: #7de0a8;
+          --success-foreground: #07321a;
+          --accent: #ffd9b5;
+          --accent-foreground: #4b2a00;
+          --destructive: #ff6b6b;
+          --destructive-foreground: #ffffff;
+          --warning: #ffd166;
+          --warning-foreground: #332200;
+          --card: #ffffff;
+          --card-foreground: #1f1b24;
+          --sidebar: #f7f5fb;
+          --sidebar-foreground: #453b4a;
+          --sidebar-primary: #fff0e6;
+          --sidebar-primary-foreground: #663a12;
+          --radius-sm: 4px;
+          --radius-md: 6px;
+          --radius-lg: 8px;
+          --radius-xl: 12px;
+          --font-family-body: "Inter", "Inter Fallback";
+        }
+      </style>
+      <style>
+        * {
+          box-sizing: border-box;
+        }
+        .page {
+          background: var(--background);
+          color: var(--foreground);
+          min-height: 644px;
+          display: flex;
+          flex-direction: column;
+        }
+        .page-inner {
+          max-width: 1120px;
+          margin: 0 auto;
+          padding: 24px 32px 40px 32px;
+          display: flex;
+          flex-direction: column;
+          gap: 24px;
+        }
+        .header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 16px;
+        }
+        .header-left {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 18px;
+          font-weight: 600;
+        }
+        .logo-mark {
+          width: 28px;
+          height: 28px;
+          border-radius: var(--radius-lg);
+          background: var(--secondary);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 18px;
+        }
+        .header-center {
+          display: flex;
+          gap: 16px;
+          font-size: 14px;
+          font-weight: 500;
+        }
+        .nav-link {
+          padding: 8px 12px;
+          border-radius: var(--radius-md);
+          color: var(--muted-foreground);
+          cursor: pointer;
+        }
+        .nav-link[data-active="true"] {
+          background: var(--secondary);
+          color: var(--secondary-foreground);
+        }
+        .header-right {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          font-size: 14px;
+        }
+        .auth-link {
+          color: var(--foreground);
+          font-weight: 500;
+          cursor: pointer;
+        }
+        .cart-wrapper {
+          position: relative;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        .cart-button {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 6px 10px;
+          border-radius: var(--radius-md);
+          background: var(--secondary);
+          color: var(--secondary-foreground);
+          cursor: pointer;
+        }
+        .cart-icon-box {
+          width: 20px;
+          height: 20px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .cart-count {
+          min-width: 18px;
+          height: 18px;
+          border-radius: 999px;
+          background: var(--accent);
+          color: var(--accent-foreground);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 11px;
+          padding: 0 4px;
+        }
+        .mini-cart {
+          position: absolute;
+          right: 0;
+          top: 36px;
+          width: 260px;
+          background: var(--card);
+          color: var(--card-foreground);
+          border-radius: var(--radius-lg);
+          padding: 12px 12px 12px 12px;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          box-shadow: 0 10px 30px rgba(15, 23, 42, 0.18);
+          z-index: 10;
+        }
+        .mini-cart-header {
+          font-size: 13px;
+          font-weight: 600;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        .mini-cart-items {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+        .mini-cart-item {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 12px;
+        }
+        .mini-cart-thumb {
+          width: 32px;
+          height: 32px;
+          border-radius: var(--radius-md);
+          background: var(--secondary);
+          overflow: hidden;
+          flex-shrink: 0;
+        }
+        .mini-cart-thumb img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+        .mini-cart-info {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+        }
+        .mini-cart-name {
+          font-weight: 500;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .mini-cart-meta {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-size: 11px;
+          color: var(--muted-foreground);
+        }
+        .mini-cart-subtotal {
+          margin-top: 4px;
+          padding-top: 6px;
+          border-top: 1px solid var(--border);
+          display: flex;
+          justify-content: space-between;
+          font-size: 13px;
+          font-weight: 500;
+        }
+        .mini-cart-actions {
+          display: flex;
+          gap: 8px;
+          margin-top: 4px;
+        }
+        .btn {
+          border-radius: var(--radius-md);
+          padding: 8px 10px;
+          font-size: 13px;
+          font-weight: 500;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+        }
+        .btn-primary {
+          background: var(--primary);
+          color: var(--primary-foreground);
+        }
+        .btn-secondary {
+          background: var(--secondary);
+          color: var(--secondary-foreground);
+        }
+        .btn-ghost {
+          background: transparent;
+          color: var(--foreground);
+        }
+        .badge-note {
+          margin-top: 2px;
+          font-size: 11px;
+          color: var(--muted-foreground);
+        }
+        .hero {
+          margin-top: 8px;
+          padding: 20px 20px 18px 20px;
+          border-radius: var(--radius-lg);
+          background: var(--secondary);
+          color: var(--secondary-foreground);
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+        .hero-top {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+        .hero-title {
+          font-size: 32px;
+          font-weight: 700;
+        }
+        .hero-subtitle {
+          font-size: 14px;
+          max-width: 520px;
+        }
+        .hero-ctas {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+          margin-top: 4px;
+        }
+        .hero-cta-secondary-disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+        .hero-cta-note {
+          font-size: 11px;
+          color: var(--muted-foreground);
+        }
+        .hero-banner {
+          margin-top: 4px;
+          font-size: 11px;
+          color: var(--muted-foreground);
+        }
+        .content {
+          display: flex;
+          gap: 20px;
+          align-items: flex-start;
+        }
+        .content-main {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+        .content-header-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-size: 13px;
+        }
+        .content-header-row span:nth-child(1) {
+          font-weight: 600;
+        }
+        .filter-pills {
+          display: flex;
+          gap: 6px;
+        }
+        .pill {
+          padding: 4px 8px;
+          border-radius: 999px;
+          background: var(--muted);
+          color: var(--muted-foreground);
+          font-size: 11px;
+        }
+        .grid-and-empty {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+        .cat-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 12px;
+        }
+        .cat-card {
+          background: var(--card);
+          color: var(--card-foreground);
+          border-radius: var(--radius-lg);
+          padding: 10px;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+        }
+        .cat-image {
+          width: 100%;
+          padding-top: 70%;
+          border-radius: var(--radius-md);
+          background: var(--secondary);
+          position: relative;
+          overflow: hidden;
+        }
+        .cat-image img {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+        .cat-name {
+          font-size: 15px;
+          font-weight: 600;
+        }
+        .cat-desc {
+          font-size: 13px;
+          color: var(--muted-foreground);
+          line-height: 1.4;
+          max-height: 36px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .cat-meta-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-top: 4px;
+        }
+        .cat-price {
+          font-size: 14px;
+          font-weight: 600;
+        }
+        .cat-actions {
+          display: flex;
+          gap: 6px;
+          margin-top: 6px;
+        }
+        .cat-view-link {
+          font-size: 12px;
+          color: var(--accent-foreground);
+          background: var(--accent);
+          border-radius: var(--radius-md);
+          padding: 6px 8px;
+          font-weight: 500;
+          flex: 0 0 auto;
+          cursor: pointer;
+        }
+        .cat-add-btn {
+          flex: 1;
+        }
+        .empty-state {
+          padding: 10px 12px;
+          border-radius: var(--radius-md);
+          background: var(--muted);
+          color: var(--muted-foreground);
+          font-size: 12px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        .empty-state span {
+          max-width: 420px;
+        }
+        .empty-state-cta {
+          font-size: 12px;
+          font-weight: 500;
+          color: var(--foreground);
+          cursor: pointer;
+        }
+        .side-panel {
+          width: 260px;
+          border-radius: var(--radius-lg);
+          background: var(--card);
+          color: var(--card-foreground);
+          padding: 12px;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+        .side-section {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+        .side-label {
+          font-size: 12px;
+          font-weight: 600;
+        }
+        .side-text {
+          font-size: 12px;
+          color: var(--muted-foreground);
+        }
+        .side-quiz-card {
+          border-radius: var(--radius-md);
+          background: var(--secondary);
+          color: var(--secondary-foreground);
+          padding: 10px;
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+        .side-quiz-title {
+          font-size: 13px;
+          font-weight: 600;
+        }
+        .side-quiz-text {
+          font-size: 12px;
+        }
+        .side-footer-note {
+          font-size: 11px;
+          color: var(--muted-foreground);
+        }
+        .footer {
+          margin-top: 20px;
+          padding-top: 16px;
+          border-top: 1px solid var(--border);
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-size: 12px;
+          gap: 16px;
+        }
+        .footer-links {
+          display: flex;
+          gap: 12px;
+          flex-wrap: wrap;
+        }
+        .footer-link {
+          color: var(--muted-foreground);
+          cursor: pointer;
+        }
+        .footer-note {
+          color: var(--muted-foreground);
+        }
+      </style>
+    </head>
+    <body>
+      <div style="width: 1440px; position: relative">
+        <div class="page">
+        <div class="page-inner">
+          <header class="header">
+            <div class="header-left">
+              <div class="logo-mark" data-media-type="banani-button">🐾</div>
+              <div>Custom Cat Co.</div>
+            </div>
+            <nav class="header-center">
+              <div
+                class="nav-link"
+                data-active="true"
+                data-media-type="banani-button"
+              >
+                Cat‑alog
+              </div>
+              <div class="nav-link" data-media-type="banani-button">CatBot</div>
+              <div class="nav-link" data-media-type="banani-button">FAQ</div>
+            </nav>
+            <div class="header-right">
+              <div class="auth-link" data-media-type="banani-button">
+                Log in / Sign up
+              </div>
+              <div class="cart-wrapper">
+                <div class="cart-button" data-media-type="banani-button">
+                  <div class="cart-icon-box">
+                    <iconify-icon
+                      icon="lucide:shopping-cart"
+                      style="
+                        font-size: 18px;
+                        color: var(--secondary-foreground);
+                      "
+                    ></iconify-icon>
+                  </div>
+                  <div class="cart-count">2</div>
+                </div>
+                <div class="mini-cart">
+                  <div class="mini-cart-header">
+                    <span>Mini cart</span><span>2 unique cats</span>
+                  </div>
+                  <div class="mini-cart-items">
+                    <div class="mini-cart-item">
+                      <div class="mini-cart-thumb">
+                        <img
+                          data-query="cartoon galaxy cat"
+                          alt="Nebula cat"
+                          src="https://images.unsplash.com/photo-1612177037142-cd92f4e754e0?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3w2MjYyMDB8MHwxfHNlYXJjaHwxfHxjYXJ0b29uJTIwZ2FsYXh5JTIwY2F0fGVufDB8fHx8MTc2NDEyMzAzMHww&amp;ixlib=rb-4.1.0&amp;q=80&amp;w=1080"
+                        />
+                      </div>
+                      <div class="mini-cart-info">
+                        <div class="mini-cart-name">Nebula Neko</div>
+                        <div class="mini-cart-meta">
+                          <span>1 of 1</span><span>48.00 ¢</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="mini-cart-item">
+                      <div class="mini-cart-thumb">
+                        <img
+                          data-query="cyberpunk cat illustration"
+                          alt="Cyber cat"
+                          src="https://images.unsplash.com/photo-1615639164213-aab04da93c7c?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3w2MjYyMDB8MHwxfHNlYXJjaHwxfHxjeWJlcnB1bmslMjBjYXQlMjBpbGx1c3RyYXRpb258ZW58MHx8fHwxNzY0MTIzMDMxfDA&amp;ixlib=rb-4.1.0&amp;q=80&amp;w=1080"
+                        />
+                      </div>
+                      <div class="mini-cart-info">
+                        <div class="mini-cart-name">Laser Pointer Prodigy</div>
+                        <div class="mini-cart-meta">
+                          <span>1 of 1</span><span>39.00 ¢</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mini-cart-subtotal">
+                    <span>Subtotal</span><span>87.00 ¢</span>
+                  </div>
+                  <div class="mini-cart-actions">
+                    <div
+                      class="btn btn-secondary"
+                      data-media-type="banani-button"
+                    >
+                      View cart
+                    </div>
+                    <div
+                      class="btn btn-primary"
+                      data-media-type="banani-button"
+                    >
+                      Checkout
+                    </div>
+                  </div>
+                  <div class="badge-note">
+                    Quantities are always 1 — every cat is one‑of‑a‑kind.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </header>
+          <section class="hero">
+            <div class="hero-top">
+              <div class="hero-title">Cat‑alog</div>
+              <div class="hero-subtitle">
+                Browse a completely fictional collection of pre‑made,
+                AI‑imagined cats. Window‑shop, daydream, and discover the CatBot
+                that helps you design your perfect (still imaginary) companion.
+              </div>
+            </div>
+            <div class="hero-ctas">
+              <div class="btn btn-primary" data-media-type="banani-button">
+                Browse Pre‑Made Cats
+              </div>
+              <div
+                class="btn btn-secondary hero-cta-secondary-disabled"
+                data-media-type="banani-button"
+              >
+                Build Your Own with CatBot
+              </div>
+            </div>
+            <div class="hero-cta-note">
+              Building custom cats requires an account. Guests can preview the
+              CatBot flow from the CatBot tab.
+            </div>
+            <div class="hero-banner">
+              This is not a real store. No actual cats are sold, shipped,
+              cloned, or turned into quantum particles here.
+            </div>
+          </section>
+          <main class="content">
+            <div class="content-main">
+              <div class="content-header-row">
+                <span>Featured pre‑made cats</span
+                ><span>Showing 6 whimsical prototypes</span>
+              </div>
+              <div class="filter-pills">
+                <div class="pill" data-media-type="banani-button">
+                  All vibes
+                </div>
+                <div class="pill" data-media-type="banani-button">Cozy</div>
+                <div class="pill" data-media-type="banani-button">Chaotic</div>
+                <div class="pill" data-media-type="banani-button">
+                  Space‑themed
+                </div>
+              </div>
+              <div class="grid-and-empty">
+                <div class="cat-grid">
+                  <article class="cat-card">
+                    <div class="cat-image">
+                      <img
+                        data-query="space galaxy cat illustration"
+                        alt="Nebula Neko"
+                        src="https://images.unsplash.com/photo-1581840130788-0c20b3d547c0?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3w2MjYyMDB8MHwxfHNlYXJjaHwxfHxzcGFjZSUyMGdhbGF4eSUyMGNhdCUyMGlsbHVzdHJhdGlvbnxlbnwwfHx8fDE3NjQxMjMwMzV8MA&amp;ixlib=rb-4.1.0&amp;q=80&amp;w=1080"
+                      />
+                    </div>
+                    <div class="cat-name">Nebula Neko</div>
+                    <div class="cat-desc">
+                      Softly glows in the dark and purrs in minor keys whenever
+                      a comet passes within 3 light‑years…
+                    </div>
+                    <div class="cat-meta-row">
+                      <div class="cat-price">48.00 ¢</div>
+                      <div
+                        style="font-size: 11px; color: var(--muted-foreground)"
+                      >
+                        1 of 1 • Cozy cosmic
+                      </div>
+                    </div>
+                    <div class="cat-actions">
+                      <div
+                        class="btn btn-primary cat-add-btn"
+                        data-media-type="banani-button"
+                      >
+                        Add to cart
+                      </div>
+                      <div
+                        class="cat-view-link"
+                        data-media-type="banani-button"
+                      >
+                        View details
+                      </div>
+                    </div>
+                  </article>
+                  <article class="cat-card">
+                    <div class="cat-image">
+                      <img
+                        data-query="cyberpunk neon cat"
+                        alt="Laser Pointer Prodigy"
+                        src="https://images.unsplash.com/photo-1635803823842-1b68832f4f32?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3w2MjYyMDB8MHwxfHNlYXJjaHwxfHxjeWJlcnB1bmslMjBuZW9uJTIwY2F0fGVufDB8fHx8MTc2NDEyMzAzNnww&amp;ixlib=rb-4.1.0&amp;q=80&amp;w=1080"
+                      />
+                    </div>
+                    <div class="cat-name">Laser Pointer Prodigy</div>
+                    <div class="cat-desc">
+                      Predicts the path of any red dot with 99.9% accuracy and
+                      issues tiny smug head tilts on success.
+                    </div>
+                    <div class="cat-meta-row">
+                      <div class="cat-price">39.00 ¢</div>
+                      <div
+                        style="font-size: 11px; color: var(--muted-foreground)"
+                      >
+                        1 of 1 • Chaotic smart
+                      </div>
+                    </div>
+                    <div class="cat-actions">
+                      <div
+                        class="btn btn-primary cat-add-btn"
+                        data-media-type="banani-button"
+                      >
+                        Add to cart
+                      </div>
+                      <div
+                        class="cat-view-link"
+                        data-media-type="banani-button"
+                      >
+                        View details
+                      </div>
+                    </div>
+                  </article>
+                  <article class="cat-card">
+                    <div class="cat-image">
+                      <img
+                        data-query="steampunk cat illustration"
+                        alt="Clockwork Catnapper"
+                        src="https://images.unsplash.com/photo-1736184722229-1d44ff764062?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3w2MjYyMDB8MHwxfHNlYXJjaHwxfHxzdGVhbXB1bmslMjBjYXQlMjBpbGx1c3RyYXRpb258ZW58MHx8fHwxNzY0MTIzMDM3fDA&amp;ixlib=rb-4.1.0&amp;q=80&amp;w=1080"
+                      />
+                    </div>
+                    <div class="cat-name">Clockwork Catnapper</div>
+                    <div class="cat-desc">
+                      Takes precisely 23 naps per day and gently ticks like a
+                      happy pocket watch when content.
+                    </div>
+                    <div class="cat-meta-row">
+                      <div class="cat-price">42.00 ¢</div>
+                      <div
+                        style="font-size: 11px; color: var(--muted-foreground)"
+                      >
+                        1 of 1 • Cozy vintage
+                      </div>
+                    </div>
+                    <div class="cat-actions">
+                      <div
+                        class="btn btn-primary cat-add-btn"
+                        data-media-type="banani-button"
+                      >
+                        Add to cart
+                      </div>
+                      <div
+                        class="cat-view-link"
+                        data-media-type="banani-button"
+                      >
+                        View details
+                      </div>
+                    </div>
+                  </article>
+                  <article class="cat-card">
+                    <div class="cat-image">
+                      <img
+                        data-query="wizard cat illustration"
+                        alt="Whisker Wizard"
+                        src="https://images.unsplash.com/photo-1555870361-44440958e34d?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3w2MjYyMDB8MHwxfHNlYXJjaHwxfHx3aXphcmQlMjBjYXQlMjBpbGx1c3RyYXRpb258ZW58MHx8fHwxNzY0MTIzMDM4fDA&amp;ixlib=rb-4.1.0&amp;q=80&amp;w=1080"
+                      />
+                    </div>
+                    <div class="cat-name">Whisker Wizard</div>
+                    <div class="cat-desc">
+                      Occasionally rearranges your bookshelf into spell
+                      components and curls up inside plot twists.
+                    </div>
+                    <div class="cat-meta-row">
+                      <div class="cat-price">51.00 ¢</div>
+                      <div
+                        style="font-size: 11px; color: var(--muted-foreground)"
+                      >
+                        1 of 1 • Arcane
+                      </div>
+                    </div>
+                    <div class="cat-actions">
+                      <div
+                        class="btn btn-primary cat-add-btn"
+                        data-media-type="banani-button"
+                      >
+                        Add to cart
+                      </div>
+                      <div
+                        class="cat-view-link"
+                        data-media-type="banani-button"
+                      >
+                        View details
+                      </div>
+                    </div>
+                  </article>
+                  <article class="cat-card">
+                    <div class="cat-image">
+                      <img
+                        data-query="loaf cat illustration cute"
+                        alt="Loaf Mode Deluxe"
+                        src="https://images.unsplash.com/photo-1708696415689-6bfae2ad4e2d?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3w2MjYyMDB8MHwxfHNlYXJjaHwxfHxsb2FmJTIwY2F0JTIwaWxsdXN0cmF0aW9uJTIwY3V0ZXxlbnwwfHx8fDE3NjQxMjMwNDB8MA&amp;ixlib=rb-4.1.0&amp;q=80&amp;w=1080"
+                      />
+                    </div>
+                    <div class="cat-name">Loaf Mode Deluxe</div>
+                    <div class="cat-desc">
+                      100% loaf, 0% chaos. Activates maximum comfort fields when
+                      placed near laptops or fresh laundry.
+                    </div>
+                    <div class="cat-meta-row">
+                      <div class="cat-price">29.00 ¢</div>
+                      <div
+                        style="font-size: 11px; color: var(--muted-foreground)"
+                      >
+                        1 of 1 • Ultra cozy
+                      </div>
+                    </div>
+                    <div class="cat-actions">
+                      <div
+                        class="btn btn-primary cat-add-btn"
+                        data-media-type="banani-button"
+                      >
+                        Add to cart
+                      </div>
+                      <div
+                        class="cat-view-link"
+                        data-media-type="banani-button"
+                      >
+                        View details
+                      </div>
+                    </div>
+                  </article>
+                  <article class="cat-card">
+                    <div class="cat-image">
+                      <img
+                        data-query="glitch pixel art cat"
+                        alt="Glitch in the Catrix"
+                        src="https://images.unsplash.com/photo-1702751749015-21c5ab5ba7ae?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3w2MjYyMDB8MHwxfHNlYXJjaHwxfHxnbGl0Y2glMjBwaXhlbCUyMGFydCUyMGNhdHxlbnwwfHx8fDE3NjQxMjMwNDF8MA&amp;ixlib=rb-4.1.0&amp;q=80&amp;w=1080"
+                      />
+                    </div>
+                    <div class="cat-name">Glitch in the Catrix</div>
+                    <div class="cat-desc">
+                      Sometimes flickers between dimensions and briefly becomes
+                      8‑bit whenever you open a new tab.
+                    </div>
+                    <div class="cat-meta-row">
+                      <div class="cat-price">37.00 ¢</div>
+                      <div
+                        style="font-size: 11px; color: var(--muted-foreground)"
+                      >
+                        1 of 1 • Digital chaos
+                      </div>
+                    </div>
+                    <div class="cat-actions">
+                      <div
+                        class="btn btn-primary cat-add-btn"
+                        data-media-type="banani-button"
+                      >
+                        Add to cart
+                      </div>
+                      <div
+                        class="cat-view-link"
+                        data-media-type="banani-button"
+                      >
+                        View details
+                      </div>
+                    </div>
+                  </article>
+                </div>
+                <div class="empty-state">
+                  <span
+                    >If you don’t see your dream cat here, it just means it
+                    hasn’t been imagined yet. That’s what CatBot is for.</span
+                  >
+                  <div class="empty-state-cta" data-media-type="banani-button">
+                    Take the Cat Personality Quiz →
+                  </div>
+                </div>
+              </div>
+            </div>
+            <aside class="side-panel">
+              <div class="side-section">
+                <div class="side-label">Not sure where to start?</div>
+                <div class="side-quiz-card">
+                  <div class="side-quiz-title">Help me find my ideal cat</div>
+                  <div class="side-quiz-text">
+                    Answer a few delightfully unnecessary questions and we’ll
+                    have CatBot sketch out a custom (fictional) feline just for
+                    you.
+                  </div>
+                  <div
+                    class="btn btn-secondary"
+                    style="margin-top: 4px"
+                    data-media-type="banani-button"
+                  >
+                    Start Cat Personality Quiz
+                  </div>
+                </div>
+              </div>
+              <div class="side-section">
+                <div class="side-label">Guests vs registered humans</div>
+                <div class="side-text">
+                  Guests can browse, daydream, and fill a pretend cart.
+                  Registered users can also save favorites and unlock the full
+                  CatBot builder to craft bespoke imaginary cats.
+                </div>
+                <div class="side-footer-note">
+                  No emails to real shelters, no surprise deliveries — only
+                  vibes and pixels.
+                </div>
+              </div>
+            </aside>
+          </main>
+          <footer class="footer">
+            <div class="footer-links">
+              <div class="footer-link" data-media-type="banani-button">FAQ</div>
+              <div class="footer-link" data-media-type="banani-button">
+                Is this real?
+              </div>
+              <div class="footer-link" data-media-type="banani-button">
+                View on GitHub
+              </div>
+              <div class="footer-link" data-media-type="banani-button">
+                Adoption resources
+              </div>
+            </div>
+            <div class="footer-note">
+              For actual cats, please visit local shelters and rescues. This
+              Cat‑alog is 100% imaginary and 0% transactional.
+            </div>
+          </footer>
+        </div>
+      </div>
+      </div>
+      <script src="https://code.iconify.design/iconify-icon/3.0.0/iconify-icon.min.js"></script>
+    </body>
+  </html>

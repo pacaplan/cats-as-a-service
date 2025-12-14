@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Shantell+Sans:wght@300..800&display=swap&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Geist:wght@100..900&family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Michroma&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Roboto+Slab:wght@100..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Shantell+Sans:ital,wght@0,300..800;1,300..800&family=Space+Grotesk:wght@300..700&display=swap"
+        rel="stylesheet"
+      />
+      <style>
+        * {
+          font-family: var(--font-family-body);
+        }
+      </style>
+      <style>
+        :root {
+          --background: #fbf8ff;
+          --foreground: #1f1b24;
+          --border: #00000000;
+          --input: #ffffff;
+          --primary: #ff8c42;
+          --primary-foreground: #ffffff;
+          --secondary: #c8b7ff;
+          --secondary-foreground: #2b1b47;
+          --muted: #f2edf7;
+          --muted-foreground: #6b6173;
+          --success: #7de0a8;
+          --success-foreground: #07321a;
+          --accent: #ffd9b5;
+          --accent-foreground: #4b2a00;
+          --destructive: #ff6b6b;
+          --destructive-foreground: #ffffff;
+          --warning: #ffd166;
+          --warning-foreground: #332200;
+          --card: #ffffff;
+          --card-foreground: #1f1b24;
+          --sidebar: #f7f5fb;
+          --sidebar-foreground: #453b4a;
+          --sidebar-primary: #fff0e6;
+          --sidebar-primary-foreground: #663a12;
+          --radius-sm: 4px;
+          --radius-md: 6px;
+          --radius-lg: 8px;
+          --radius-xl: 12px;
+          --font-family-body: "Inter", "Inter Fallback";
+        }
+      </style>
+      <style>
+        * {
+          box-sizing: border-box;
+        }
+        .page {
+          background: var(--background);
+          color: var(--foreground);
+          min-height: 644px;
+          display: flex;
+          flex-direction: column;
+        }
+        .page-inner {
+          max-width: 1120px;
+          margin: 0 auto;
+          padding: 24px 32px 40px 32px;
+          display: flex;
+          flex-direction: column;
+          gap: 24px;
+        }
+        .header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 16px;
+        }
+        .header-left {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          font-size: 18px;
+          font-weight: 600;
+        }
+        .logo-combined {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          cursor: pointer;
+          position: relative;
+        }
+        .logo-icon {
+          position: relative;
+          width: 32px;
+          height: 28px;
+          border-radius: 16px 16px 18px 18px;
+          background: var(--secondary);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 18px;
+          color: var(--secondary-foreground);
+        }
+        .logo-icon::before,
+        .logo-icon::after {
+          content: "";
+          position: absolute;
+          top: -10px;
+          width: 12px;
+          height: 14px;
+          background: var(--secondary);
+          border-radius: 4px 4px 0 0;
+          transform-origin: bottom center;
+        }
+        .logo-icon::before {
+          left: 6px;
+          transform: rotate(-18deg);
+        }
+        .logo-icon::after {
+          right: 6px;
+          transform: rotate(18deg);
+        }
+        .logo-text {
+          font-size: 18px;
+          font-weight: 600;
+        }
+        .header-center {
+          display: flex;
+          gap: 16px;
+          font-size: 14px;
+          font-weight: 500;
+        }
+        .nav-link {
+          padding: 8px 12px;
+          border-radius: var(--radius-md);
+          color: var(--muted-foreground);
+          cursor: pointer;
+        }
+        .nav-link[data-active="true"] {
+          background: var(--secondary);
+          color: var(--secondary-foreground);
+        }
+        .header-right {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          font-size: 14px;
+        }
+        .auth-link {
+          color: var(--foreground);
+          font-weight: 500;
+          cursor: pointer;
+        }
+        .cart-wrapper {
+          position: relative;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        .cart-button {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 6px 10px;
+          border-radius: var(--radius-md);
+          background: var(--secondary);
+          color: var(--secondary-foreground);
+          cursor: pointer;
+        }
+        .cart-icon-box {
+          width: 20px;
+          height: 20px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .cart-count {
+          min-width: 18px;
+          height: 18px;
+          border-radius: 999px;
+          background: var(--accent);
+          color: var(--accent-foreground);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 11px;
+          padding: 0 4px;
+        }
+        .btn {
+          border-radius: var(--radius-md);
+          padding: 8px 10px;
+          font-size: 13px;
+          font-weight: 500;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+        }
+        .btn-primary {
+          background: var(--primary);
+          color: var(--primary-foreground);
+        }
+        .btn-secondary {
+          background: var(--secondary);
+          color: var(--secondary-foreground);
+        }
+        .btn-ghost {
+          background: transparent;
+          color: var(--foreground);
+        }
+        .hero {
+          margin-top: 4px;
+          padding: 18px 20px;
+          border-radius: var(--radius-lg);
+          background: var(--secondary);
+          color: var(--secondary-foreground);
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+        .hero-title-row {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+        .hero-title {
+          font-size: 26px;
+          font-weight: 700;
+        }
+        .hero-subtitle {
+          font-size: 13px;
+          max-width: 640px;
+        }
+        .hero-meta {
+          font-size: 11px;
+          color: var(--muted-foreground);
+        }
+        .cart-layout {
+          display: flex;
+          gap: 20px;
+          align-items: flex-start;
+        }
+        .cart-main {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+        .cart-section-label {
+          font-size: 13px;
+          font-weight: 600;
+        }
+        .cart-list {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+        .cart-item {
+          border-radius: var(--radius-lg);
+          background: var(--card);
+          color: var(--card-foreground);
+          padding: 10px 12px;
+          display: flex;
+          gap: 10px;
+          align-items: flex-start;
+        }
+        .cart-thumb {
+          width: 64px;
+          height: 64px;
+          border-radius: var(--radius-md);
+          background: var(--secondary);
+          overflow: hidden;
+          flex-shrink: 0;
+        }
+        .cart-thumb img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+        .cart-item-main {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+        .cart-item-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          gap: 8px;
+        }
+        .cart-item-title {
+          font-size: 14px;
+          font-weight: 600;
+        }
+        .cart-item-price {
+          font-size: 14px;
+          font-weight: 600;
+        }
+        .cart-item-meta {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+          font-size: 12px;
+          color: var(--muted-foreground);
+        }
+        .cart-pill {
+          padding: 2px 6px;
+          border-radius: 999px;
+          background: var(--muted);
+          color: var(--muted-foreground);
+          font-size: 11px;
+        }
+        .cart-item-footer {
+          margin-top: 4px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 8px;
+          font-size: 12px;
+        }
+        .cart-qty-note {
+          font-size: 11px;
+          color: var(--muted-foreground);
+        }
+        .cart-actions-row {
+          display: flex;
+          gap: 8px;
+        }
+        .cart-summary {
+          width: 320px;
+          border-radius: var(--radius-lg);
+          background: var(--card);
+          color: var(--card-foreground);
+          padding: 12px;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+        .summary-title {
+          font-size: 14px;
+          font-weight: 600;
+        }
+        .summary-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-size: 13px;
+        }
+        .summary-row-muted {
+          color: var(--muted-foreground);
+        }
+        .summary-divider {
+          margin: 4px 0;
+          height: 1px;
+          background: var(--border);
+        }
+        .summary-total {
+          font-size: 14px;
+          font-weight: 600;
+        }
+        .summary-note {
+          font-size: 11px;
+          color: var(--muted-foreground);
+        }
+        .summary-cta {
+          margin-top: 4px;
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+        .summary-secondary-actions {
+          margin-top: 2px;
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+          font-size: 12px;
+        }
+        .summary-linkish {
+          font-size: 12px;
+          font-weight: 500;
+          color: var(--accent-foreground);
+          background: var(--accent);
+          border-radius: var(--radius-md);
+          padding: 6px 8px;
+          cursor: pointer;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .summary-mini-text {
+          font-size: 11px;
+          color: var(--muted-foreground);
+        }
+        .footer {
+          margin-top: 20px;
+          padding-top: 16px;
+          border-top: 1px solid var(--border);
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-size: 12px;
+          gap: 16px;
+        }
+        .footer-links {
+          display: flex;
+          gap: 12px;
+          flex-wrap: wrap;
+        }
+        .footer-link {
+          color: var(--muted-foreground);
+          cursor: pointer;
+        }
+        .footer-note {
+          color: var(--muted-foreground);
+        }
+      </style>
+    </head>
+    <body>
+      <div style="width: 1440px; position: relative">
+        <div class="page">
+        <div class="page-inner">
+          <header class="header">
+            <div class="header-left">
+              <div class="logo-combined" data-media-type="banani-button">
+                <div class="logo-icon">🐾</div>
+                <div class="logo-text">CustomCatCo</div>
+              </div>
+            </div>
+            <nav class="header-center">
+              <div
+                class="nav-link"
+                data-active="true"
+                data-media-type="banani-button"
+              >
+                Cat‑alog
+              </div>
+              <div class="nav-link" data-media-type="banani-button">CatBot</div>
+              <div class="nav-link" data-media-type="banani-button">FAQ</div>
+            </nav>
+            <div class="header-right">
+              <div class="auth-link" data-media-type="banani-button">
+                Log in / Sign up
+              </div>
+              <div class="cart-wrapper">
+                <div class="cart-button" data-media-type="banani-button">
+                  <div class="cart-icon-box">
+                    <iconify-icon
+                      icon="lucide:shopping-cart"
+                      style="
+                        font-size: 18px;
+                        color: var(--secondary-foreground);
+                      "
+                    ></iconify-icon>
+                  </div>
+                  <div class="cart-count">2</div>
+                </div>
+              </div>
+            </div>
+          </header>
+          <section class="hero">
+            <div class="hero-title-row">
+              <div class="hero-title">Your Cat‑alog cart</div>
+              <div class="hero-subtitle">
+                A tidy summary of your current imaginary companions. No real
+                payments, but 100% real bragging rights about your taste in
+                fictional felines.
+              </div>
+            </div>
+            <div class="hero-meta">
+              Quantities are always 1 — every cat is uniquely generated.
+              Removing a cat simply releases it back into the quantum meow‑trix.
+            </div>
+          </section>
+          <main class="cart-layout">
+            <section class="cart-main">
+              <div class="cart-section-label">2 unique cats in your cart</div>
+              <div class="cart-list">
+                <article class="cart-item">
+                  <div class="cart-thumb">
+                    <img
+                      data-query="cartoon galaxy cat"
+                      alt="Nebula cat"
+                      src="https://images.unsplash.com/photo-1612177037142-cd92f4e754e0?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3w2MjYyMDB8MHwxfHNlYXJjaHwxfHxjYXJ0b29uJTIwZ2FsYXh5JTIwY2F0fGVufDB8fHx8MTc2NDEyMzAzMHww&amp;ixlib=rb-4.1.0&amp;q=80&amp;w=1080"
+                    />
+                  </div>
+                  <div class="cart-item-main">
+                    <div class="cart-item-header">
+                      <div class="cart-item-title">Nebula Neko</div>
+                      <div class="cart-item-price">48.00 ¢</div>
+                    </div>
+                    <div class="cart-item-meta">
+                      <span>Rarity: 1 of 1</span
+                      ><span
+                        >Vibe: Cosmic, contemplative, secretly dramatic</span
+                      >
+                      <div class="cart-pill">Generated by CatBot</div>
+                    </div>
+                    <div class="cart-item-footer">
+                      <div class="cart-qty-note">
+                        Quantity is locked to 1 — this little stargazer is
+                        non‑duplicable.
+                      </div>
+                      <div class="cart-actions-row">
+                        <div
+                          class="btn btn-ghost"
+                          data-media-type="banani-button"
+                        >
+                          Remove
+                        </div>
+                        <div
+                          class="btn btn-secondary"
+                          data-media-type="banani-button"
+                        >
+                          Move to wishlist
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+                <article class="cart-item">
+                  <div class="cart-thumb">
+                    <img
+                      data-query="cyberpunk cat illustration"
+                      alt="Cyber cat"
+                      src="https://images.unsplash.com/photo-1615639164213-aab04da93c7c?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3w2MjYyMDB8MHwxfHNlYXJjaHwxfHxjeWJlcnB1bmslMjBjYXQlMjBpbGx1c3RyYXRpb258ZW58MHx8fHwxNzY0MTIzMDMxfDA&amp;ixlib=rb-4.1.0&amp;q=80&amp;w=1080"
+                    />
+                  </div>
+                  <div class="cart-item-main">
+                    <div class="cart-item-header">
+                      <div class="cart-item-title">Laser Pointer Prodigy</div>
+                      <div class="cart-item-price">39.00 ¢</div>
+                    </div>
+                    <div class="cart-item-meta">
+                      <span>Rarity: 1 of 1</span
+                      ><span
+                        >Vibe: Hyper‑focused, mildly chaotic, neon‑tinted</span
+                      >
+                      <div class="cart-pill">Pre‑made Cat‑alog pick</div>
+                    </div>
+                    <div class="cart-item-footer">
+                      <div class="cart-qty-note">
+                        Quantity is also 1 — any clones would immediately chase
+                        each other.
+                      </div>
+                      <div class="cart-actions-row">
+                        <div
+                          class="btn btn-ghost"
+                          data-media-type="banani-button"
+                        >
+                          Remove
+                        </div>
+                        <div
+                          class="btn btn-secondary"
+                          data-media-type="banani-button"
+                        >
+                          Move to wishlist
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              </div>
+            </section>
+            <aside class="cart-summary">
+              <div class="summary-title">Order summary</div>
+              <div class="summary-row summary-row-muted">
+                <span>Items</span><span>2 unique cats</span>
+              </div>
+              <div class="summary-row summary-row-muted">
+                <span>Imaginary subtotal</span><span>87.00 ¢</span>
+              </div>
+              <div class="summary-row summary-row-muted">
+                <span>Shipping</span><span>0.00 ¢ (teleported)</span>
+              </div>
+              <div class="summary-divider"></div>
+              <div class="summary-row summary-total">
+                <span>Total due now</span><span>0.00 ¢</span>
+              </div>
+              <div class="summary-note">
+                This is a portfolio experience. No actual payments, billing, or
+                real‑world cats are involved — just UI wiring and product
+                thinking.
+              </div>
+              <div class="summary-cta">
+                <div class="btn btn-primary" data-media-type="banani-button">
+                  Continue to pretend checkout
+                </div>
+                <div class="btn btn-secondary" data-media-type="banani-button">
+                  Keep browsing cats
+                </div>
+              </div>
+              <div class="summary-secondary-actions">
+                <div class="summary-linkish" data-media-type="banani-button">
+                  Clear cart (release all cats)
+                </div>
+                <div class="summary-mini-text">
+                  Need a real cat? Visit adoption resources in the footer
+                  instead of expecting this page to spawn one.
+                </div>
+              </div>
+            </aside>
+          </main>
+          <footer class="footer">
+            <div class="footer-links">
+              <div class="footer-link" data-media-type="banani-button">FAQ</div>
+              <div class="footer-link" data-media-type="banani-button">
+                Is this real?
+              </div>
+              <div class="footer-link" data-media-type="banani-button">
+                View on GitHub
+              </div>
+              <div class="footer-link" data-media-type="banani-button">
+                Adoption resources
+              </div>
+            </div>
+            <div class="footer-note">
+              For actual cats, please visit local shelters and rescues. This
+              entire experience is 100% imaginary, 0% transactional, and
+              extremely pro‑adoption.
+            </div>
+          </footer>
+        </div>
+      </div>
+      </div>
+      <script src="https://code.iconify.design/iconify-icon/3.0.0/iconify-icon.min.js"></script>
+    </body>
+  </html>

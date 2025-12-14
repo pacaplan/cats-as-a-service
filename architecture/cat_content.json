@@ -1,0 +1,186 @@
+{
+  "$schema": "rampart/schema/bounded_context_v1.json",
+  "name": "Cat & Content",
+  "profile": "rampart_hexddd_v1",
+  "description": "Premade cat catalog (Cat-alog), user-generated custom cats (AI), and AI-generated copy & media",
+
+  "scope": {
+    "in": [
+      "Premade cat catalog (Cat-alog)",
+      "View premade cats",
+      "View user-specific custom cats",
+      "Delete/archive custom cats",π
+      "AI-authored descriptions & prompt templates"
+    ],
+    "out": [
+      "Orders, payments, carts, pricing",
+      "Order update emails & unsubscribe flows",
+      "Authentication & user accounts"
+    ]
+  },
+
+  "layers": {
+    "domain": {
+      "aggregates": [
+        {
+          "name": "CatListing",
+          "description": "Premade, curated, globally visible cat in the Cat-alog; root for catalog browsing",
+          "entity": "CatProfile"
+        },
+        {
+          "name": "CustomCat",
+          "description": "User-specific, AI-generated cat record; root for user's created cats"
+        }
+      ],
+      "events": [
+        {
+          "name": "CatListingPublished",
+          "description": "Emitted when a premade cat becomes publicly visible"
+        },
+        {
+          "name": "CatListingArchived",
+          "description": "Emitted when a premade cat is removed from public view"
+        },
+        {
+          "name": "CustomCatCreated",
+          "description": "Emitted when a user's custom cat is successfully generated"
+        },
+        {
+          "name": "CustomCatArchived",
+          "description": "Emitted when a user archives their custom cat"
+        },
+        {
+          "name": "CatDescriptionRegenerated",
+          "description": "Emitted when AI regenerates a cat's description"
+        }
+      ],
+      "ports": {
+        "repositories": [
+          "CatListingRepository",
+          "CustomCatRepository"
+        ],
+        "external": [
+          {
+            "name": "LanguageModelPort",
+            "description": "Interface for LLM text generation"
+          },
+          {
+            "name": "ClockPort",
+            "description": "Interface for current time (testability)"
+          },
+          {
+            "name": "IdGeneratorPort",
+            "description": "Interface for unique ID generation"
+          },
+          {
+            "name": "TransactionPort",
+            "description": "Interface for database transaction management"
+          }
+        ]
+      }
+    },
+
+    "application": {
+      "services": [
+        {
+          "name": "CatListingService",
+          "orchestrates": "CatListing",
+          "uses_ports": ["CatListingRepository", "ClockPort", "IdGeneratorPort", "TransactionPort"],
+          "publishes": ["CatListingPublished", "CatListingArchived"],
+          "operations": {
+            "consumer": ["list", "get"],
+            "admin": ["create", "update", "publish", "archive"]
+          }
+        },
+        {
+          "name": "CustomCatService",
+          "orchestrates": "CustomCat",
+          "uses_ports": ["CustomCatRepository", "LanguageModelPort", "ClockPort", "IdGeneratorPort", "TransactionPort"],
+          "publishes": ["CustomCatCreated", "CustomCatArchived", "CatDescriptionRegenerated"],
+          "operations": {
+            "consumer": ["list", "get", "generate", "regenerateDescription", "archive"],
+            "admin": ["listAll"]
+          }
+        }
+      ]
+    },
+
+    "infrastructure": {
+      "constraint": "Rails only",
+      "adapters": {
+        "persistence": [
+          {
+            "name": "SqlCatListingRepository",
+            "implements": "CatListingRepository",
+            "technology": "ActiveRecord/PostgreSQL"
+          },
+          {
+            "name": "SqlCustomCatRepository",
+            "implements": "CustomCatRepository",
+            "technology": "ActiveRecord/PostgreSQL"
+          }
+        ],
+        "external": [
+          {
+            "name": "OpenAIApiLanguageModelAdapter",
+            "implements": "LanguageModelPort",
+            "technology": "OpenAI GPT-4 API"
+          },
+          {
+            "name": "ClaudeApiLanguageModelAdapter",
+            "implements": "LanguageModelPort",
+            "technology": "Anthropic Claude API",
+            "optional": true
+          },
+          {
+            "name": "SystemClockAdapter",
+            "implements": "ClockPort"
+          },
+          {
+            "name": "UuidIdGeneratorAdapter",
+            "implements": "IdGeneratorPort"
+          },
+          {
+            "name": "DatabaseTransactionAdapter",
+            "implements": "TransactionPort",
+            "technology": "ActiveRecord"
+          }
+        ]
+      },
+      "entrypoints": {
+        "http": [
+          {
+            "name": "CatListingsController",
+            "routes": "/catalog",
+            "invokes": "CatListingService"
+          },
+          {
+            "name": "CustomCatsController",
+            "routes": "/custom-cats",
+            "invokes": "CustomCatService"
+          }
+        ]
+      },
+      "wiring": "Dry::Container"
+    }
+  },
+
+  "external_systems": [
+    {
+      "name": "Language Models",
+      "type": "external_api",
+      "providers": ["OpenAI", "Claude"],
+      "purpose": "AI text generation for cat names, stories, descriptions"
+    },
+    {
+      "name": "Event Bus",
+      "type": "host_app",
+      "purpose": "Domain event publishing to other bounded contexts"
+    },
+    {
+      "name": "PostgreSQL",
+      "type": "database",
+      "purpose": "Persistence for aggregates"
+    }
+  ]
+}

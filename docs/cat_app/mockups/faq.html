@@ -1,0 +1,786 @@
+<div style="width: 1440px; position: relative">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Shantell+Sans:wght@300..800&display=swap&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Geist:wght@100..900&family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Michroma&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Roboto+Slab:wght@100..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Shantell+Sans:ital,wght@0,300..800;1,300..800&family=Space+Grotesk:wght@300..700&display=swap"
+    rel="stylesheet"
+  /><style>
+    * {
+      font-family: var(--font-family-body);
+    }
+  </style>
+  <style>
+    :root {
+      --background: #fbf8ff;
+      --foreground: #1f1b24;
+      --border: #00000000;
+      --input: #ffffff;
+      --primary: #ff8c42;
+      --primary-foreground: #ffffff;
+      --secondary: #c8b7ff;
+      --secondary-foreground: #2b1b47;
+      --muted: #f2edf7;
+      --muted-foreground: #6b6173;
+      --success: #7de0a8;
+      --success-foreground: #07321a;
+      --accent: #ffd9b5;
+      --accent-foreground: #4b2a00;
+      --destructive: #ff6b6b;
+      --destructive-foreground: #ffffff;
+      --warning: #ffd166;
+      --warning-foreground: #332200;
+      --card: #ffffff;
+      --card-foreground: #1f1b24;
+      --sidebar: #f7f5fb;
+      --sidebar-foreground: #453b4a;
+      --sidebar-primary: #fff0e6;
+      --sidebar-primary-foreground: #663a12;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+      --radius-lg: 8px;
+      --radius-xl: 12px;
+      --font-family-body: "Inter", "Inter Fallback";
+    }
+  </style>
+  <html>
+    <head>
+      <style>
+        * {
+          box-sizing: border-box;
+        }
+        .page {
+          background: var(--background);
+          color: var(--foreground);
+          min-height: 644px;
+          display: flex;
+          flex-direction: column;
+        }
+        .page-inner {
+          max-width: 1120px;
+          margin: 0 auto;
+          padding: 24px 32px 40px 32px;
+          display: flex;
+          flex-direction: column;
+          gap: 24px;
+        }
+        .header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 16px;
+        }
+        .header-left {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          font-size: 18px;
+          font-weight: 600;
+        }
+        .logo-combined {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          cursor: pointer;
+          position: relative;
+        }
+        .logo-icon {
+          position: relative;
+          width: 32px;
+          height: 28px;
+          border-radius: 16px 16px 18px 18px;
+          background: var(--secondary);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 18px;
+          color: var(--secondary-foreground);
+        }
+        .logo-icon::before,
+        .logo-icon::after {
+          content: "";
+          position: absolute;
+          top: -10px;
+          width: 12px;
+          height: 14px;
+          background: var(--secondary);
+          border-radius: 4px 4px 0 0;
+          transform-origin: bottom center;
+        }
+        .logo-icon::before {
+          left: 6px;
+          transform: rotate(-18deg);
+        }
+        .logo-icon::after {
+          right: 6px;
+          transform: rotate(18deg);
+        }
+        .logo-text {
+          font-size: 18px;
+          font-weight: 600;
+        }
+        .header-center {
+          display: flex;
+          gap: 16px;
+          font-size: 14px;
+          font-weight: 500;
+        }
+        .nav-link {
+          padding: 8px 12px;
+          border-radius: var(--radius-md);
+          color: var(--muted-foreground);
+          cursor: pointer;
+        }
+        .nav-link[data-active="true"] {
+          background: var(--secondary);
+          color: var(--secondary-foreground);
+        }
+        .header-right {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          font-size: 14px;
+        }
+        .auth-link {
+          color: var(--foreground);
+          font-weight: 500;
+          cursor: pointer;
+        }
+        .cart-wrapper {
+          position: relative;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        .cart-button {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 6px 10px;
+          border-radius: var(--radius-md);
+          background: var(--secondary);
+          color: var(--secondary-foreground);
+          cursor: pointer;
+        }
+        .cart-icon-box {
+          width: 20px;
+          height: 20px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .cart-count {
+          min-width: 18px;
+          height: 18px;
+          border-radius: 999px;
+          background: var(--accent);
+          color: var(--accent-foreground);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 11px;
+          padding: 0 4px;
+        }
+        .mini-cart {
+          position: absolute;
+          right: 0;
+          top: 36px;
+          width: 260px;
+          background: var(--card);
+          color: var(--card-foreground);
+          border-radius: var(--radius-lg);
+          padding: 12px 12px 12px 12px;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          box-shadow: 0 10px 30px rgba(15, 23, 42, 0.18);
+          z-index: 10;
+        }
+        .mini-cart-header {
+          font-size: 13px;
+          font-weight: 600;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        .mini-cart-items {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+        .mini-cart-item {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 12px;
+        }
+        .mini-cart-thumb {
+          width: 32px;
+          height: 32px;
+          border-radius: var(--radius-md);
+          background: var(--secondary);
+          overflow: hidden;
+          flex-shrink: 0;
+        }
+        .mini-cart-thumb img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+        .mini-cart-info {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+        }
+        .mini-cart-name {
+          font-weight: 500;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .mini-cart-meta {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-size: 11px;
+          color: var(--muted-foreground);
+        }
+        .mini-cart-subtotal {
+          margin-top: 4px;
+          padding-top: 6px;
+          border-top: 1px solid var(--border);
+          display: flex;
+          justify-content: space-between;
+          font-size: 13px;
+          font-weight: 500;
+        }
+        .mini-cart-actions {
+          display: flex;
+          gap: 8px;
+          margin-top: 4px;
+        }
+        .btn {
+          border-radius: var(--radius-md);
+          padding: 8px 10px;
+          font-size: 13px;
+          font-weight: 500;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+        }
+        .btn-primary {
+          background: var(--primary);
+          color: var(--primary-foreground);
+        }
+        .btn-secondary {
+          background: var(--secondary);
+          color: var(--secondary-foreground);
+        }
+        .btn-ghost {
+          background: transparent;
+          color: var(--foreground);
+        }
+        .badge-note {
+          margin-top: 2px;
+          font-size: 11px;
+          color: var(--muted-foreground);
+        }
+        .hero {
+          margin-top: 4px;
+          padding: 18px 20px;
+          border-radius: var(--radius-lg);
+          background: var(--secondary);
+          color: var(--secondary-foreground);
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+        .hero-title-row {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+        .hero-title {
+          font-size: 26px;
+          font-weight: 700;
+        }
+        .hero-subtitle {
+          font-size: 13px;
+          max-width: 640px;
+        }
+        .hero-meta {
+          font-size: 11px;
+          color: var(--muted-foreground);
+        }
+        .faq-layout {
+          display: flex;
+          gap: 20px;
+          align-items: flex-start;
+        }
+        .faq-main {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+        .faq-section-label {
+          font-size: 13px;
+          font-weight: 600;
+        }
+        .faq-list {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+        .faq-item {
+          border-radius: var(--radius-lg);
+          background: var(--card);
+          color: var(--card-foreground);
+          padding: 10px 12px;
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+        .faq-question-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          gap: 8px;
+        }
+        .faq-q {
+          font-size: 14px;
+          font-weight: 600;
+        }
+        .faq-tag {
+          font-size: 11px;
+          padding: 2px 6px;
+          border-radius: 999px;
+          background: var(--muted);
+          color: var(--muted-foreground);
+        }
+        .faq-a {
+          font-size: 13px;
+          color: var(--foreground);
+          line-height: 1.5;
+        }
+        .faq-note {
+          font-size: 11px;
+          color: var(--muted-foreground);
+          margin-top: 2px;
+        }
+        .faq-linkish {
+          color: var(--accent-foreground);
+          background: var(--accent);
+          border-radius: var(--radius-md);
+          padding: 2px 6px;
+          font-size: 11px;
+          font-weight: 500;
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+        }
+        .faq-aside {
+          width: 320px;
+          border-radius: var(--radius-lg);
+          background: var(--card);
+          color: var(--card-foreground);
+          padding: 12px;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+        .aside-section {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+        .aside-label {
+          font-size: 12px;
+          font-weight: 600;
+        }
+        .aside-text {
+          font-size: 12px;
+          color: var(--muted-foreground);
+          line-height: 1.5;
+        }
+        .aside-pill-row {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 6px;
+          margin-top: 4px;
+        }
+        .aside-pill {
+          padding: 4px 8px;
+          border-radius: 999px;
+          background: var(--muted);
+          color: var(--muted-foreground);
+          font-size: 11px;
+        }
+        .aside-cta {
+          margin-top: 6px;
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+          font-size: 12px;
+        }
+        .aside-cta-link {
+          font-size: 12px;
+          font-weight: 500;
+          color: var(--accent-foreground);
+          background: var(--accent);
+          border-radius: var(--radius-md);
+          padding: 6px 8px;
+          cursor: pointer;
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+        }
+        .aside-meta {
+          font-size: 11px;
+          color: var(--muted-foreground);
+          margin-top: 4px;
+        }
+        .footer {
+          margin-top: 20px;
+          padding-top: 16px;
+          border-top: 1px solid var(--border);
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-size: 12px;
+          gap: 16px;
+        }
+        .footer-links {
+          display: flex;
+          gap: 12px;
+          flex-wrap: wrap;
+        }
+        .footer-link {
+          color: var(--muted-foreground);
+          cursor: pointer;
+        }
+        .footer-note {
+          color: var(--muted-foreground);
+        }
+      </style>
+    </head>
+    <body>
+      <div class="page">
+        <div class="page-inner">
+          <header class="header">
+            <div class="header-left">
+              <div class="logo-combined" data-media-type="banani-button">
+                <div class="logo-icon">🐾</div>
+                <div class="logo-text">CustomCatCo</div>
+              </div>
+            </div>
+            <nav class="header-center">
+              <div class="nav-link" data-media-type="banani-button">
+                Cat‑alog
+              </div>
+              <div class="nav-link" data-media-type="banani-button">CatBot</div>
+              <div
+                class="nav-link"
+                data-active="true"
+                data-media-type="banani-button"
+              >
+                FAQ
+              </div>
+            </nav>
+            <div class="header-right">
+              <div class="auth-link" data-media-type="banani-button">
+                Log in / Sign up
+              </div>
+              <div class="cart-wrapper">
+                <div class="cart-button" data-media-type="banani-button">
+                  <div class="cart-icon-box">
+                    <iconify-icon
+                      icon="lucide:shopping-cart"
+                      style="
+                        font-size: 18px;
+                        color: var(--secondary-foreground);
+                      "
+                    ></iconify-icon>
+                  </div>
+                  <div class="cart-count">2</div>
+                </div>
+                <div class="mini-cart">
+                  <div class="mini-cart-header">
+                    <span>Mini cart</span><span>2 unique cats</span>
+                  </div>
+                  <div class="mini-cart-items">
+                    <div class="mini-cart-item">
+                      <div class="mini-cart-thumb">
+                        <img
+                          data-query="cartoon galaxy cat"
+                          alt="Nebula cat"
+                          src="https://images.unsplash.com/photo-1612177037142-cd92f4e754e0?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3w2MjYyMDB8MHwxfHNlYXJjaHwxfHxjYXJ0b29uJTIwZ2FsYXh5JTIwY2F0fGVufDB8fHx8MTc2NDEyMzAzMHww&amp;ixlib=rb-4.1.0&amp;q=80&amp;w=1080"
+                        />
+                      </div>
+                      <div class="mini-cart-info">
+                        <div class="mini-cart-name">Nebula Neko</div>
+                        <div class="mini-cart-meta">
+                          <span>1 of 1</span><span>48.00 ¢</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="mini-cart-item">
+                      <div class="mini-cart-thumb">
+                        <img
+                          data-query="cyberpunk cat illustration"
+                          alt="Cyber cat"
+                          src="https://images.unsplash.com/photo-1615639164213-aab04da93c7c?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3w2MjYyMDB8MHwxfHNlYXJjaHwxfHxjeWJlcnB1bmslMjBjYXQlMjBpbGx1c3RyYXRpb258ZW58MHx8fHwxNzY0MTIzMDMxfDA&amp;ixlib=rb-4.1.0&amp;q=80&amp;w=1080"
+                        />
+                      </div>
+                      <div class="mini-cart-info">
+                        <div class="mini-cart-name">Laser Pointer Prodigy</div>
+                        <div class="mini-cart-meta">
+                          <span>1 of 1</span><span>39.00 ¢</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mini-cart-subtotal">
+                    <span>Subtotal</span><span>87.00 ¢</span>
+                  </div>
+                  <div class="mini-cart-actions">
+                    <div
+                      class="btn btn-secondary"
+                      data-media-type="banani-button"
+                    >
+                      View cart
+                    </div>
+                    <div
+                      class="btn btn-primary"
+                      data-media-type="banani-button"
+                    >
+                      Checkout
+                    </div>
+                  </div>
+                  <div class="badge-note">
+                    Quantities are always 1 — every cat is one‑of‑a‑kind.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </header>
+          <section class="hero">
+            <div class="hero-title-row">
+              <div class="hero-title">FAQ &amp; About This Cat‑periment</div>
+              <div class="hero-subtitle">
+                Publicly visible answers for curious humans, recruiters, and
+                anyone wondering if they’ve accidentally stumbled into a real
+                cat store (you have not).
+              </div>
+            </div>
+            <div class="hero-meta">
+              Spoiler: everything here is imaginary, but the code and the human
+              who wrote it are very real.
+            </div>
+          </section>
+          <main class="faq-layout">
+            <section class="faq-main">
+              <div class="faq-section-label">
+                Core questions humans keep asking
+              </div>
+              <div class="faq-list">
+                <article class="faq-item">
+                  <div class="faq-question-row">
+                    <div class="faq-q">Is this real?</div>
+                    <div class="faq-tag">Foundational concern</div>
+                  </div>
+                  <div class="faq-a">
+                    Sure... in the same way a Schrödinger cat meme is real. This
+                    is a lovingly over‑built demo shop for entirely fictional,
+                    AI‑imagined cats. You can browse, "buy," and customize to
+                    your heart’s content — but no actual felines, payments, or
+                    deliveries exist behind the curtain.
+                  </div>
+                </article>
+                <article class="faq-item">
+                  <div class="faq-question-row">
+                    <div class="faq-q">Like — really?</div>
+                    <div class="faq-tag">Double‑checking</div>
+                  </div>
+                  <div class="faq-a">
+                    Of course not, silly! The cart doesn’t charge anything, the
+                    cats aren’t sentient (yet), and no one is secretly mailing
+                    you a box of quantum meows. This is a safe space for
+                    whimsical UI, fake prices expressed in ¢, and maximum cat
+                    puns.
+                  </div>
+                </article>
+                <article class="faq-item">
+                  <div class="faq-question-row">
+                    <div class="faq-q">Then why does this exist?</div>
+                    <div class="faq-tag">Developer disclosure</div>
+                  </div>
+                  <div class="faq-a">
+                    This is my
+                    purr‑tfolio — a playground to show product thinking, UX
+                    decisions, and front‑end implementation. You can
+                    inspect the code and architecture here:
+                    <span class="faq-linkish" data-media-type="banani-button"
+                      >github.com/pacaplan/rampart</span
+                    >
+                  </div>
+                  <div class="faq-note">
+                    Yes, that link is manually typed on purpose so you can see
+                    it clearly in screenshots and screen recordings.
+                  </div>
+                </article>
+                <article class="faq-item">
+                  <div class="faq-question-row">
+                    <div class="faq-q">But I need a cat!</div>
+                    <div class="faq-tag">Important priority</div>
+                  </div>
+                  <div class="faq-a">
+                    There are many excellent models available for adoption —
+                    fully trained, frequently chaotic, and absolutely real. You
+                    can start your search here:
+                    <span class="faq-linkish" data-media-type="banani-button"
+                      >aspca.org/adopt-pet/find-shelter</span
+                    >. Please adopt, don’t shop, and definitely don’t try to
+                    order a cat from a portfolio project.
+                  </div>
+                </article>
+                <article class="faq-item">
+                  <div class="faq-question-row">
+                    <div class="faq-q">What is CatBot actually doing?</div>
+                    <div class="faq-tag">Product behavior</div>
+                  </div>
+                  <div class="faq-a">
+                    From a user’s perspective, CatBot takes your free‑text
+                    description, invents a name, personality, and a fictional
+                    glamour shot, then lets you tweak the vibe before saving it
+                    as a pretend product. From an engineering perspective, it’s
+                    a structured prompt and response flow with light
+                    post‑processing to keep the UX feeling coherent and playful.
+                  </div>
+                </article>
+                <article class="faq-item">
+                  <div class="faq-question-row">
+                    <div class="faq-q">Can I really "buy" these cats?</div>
+                    <div class="faq-tag">Commerce disclaimer</div>
+                  </div>
+                  <div class="faq-a">
+                    You can add as many cats as you like to your cart, proceed
+                    to a fake checkout, and admire your impeccable taste in
+                    imaginary companions. But there are no real payments, no
+                    Stripe keys, and no shipping — just a carefully staged
+                    illusion of e‑commerce for demonstration purposes.
+                  </div>
+                </article>
+                <article class="faq-item">
+                  <div class="faq-question-row">
+                    <div class="faq-q">
+                      What skills is this project meant to show?
+                    </div>
+                    <div class="faq-tag">For recruiters</div>
+                  </div>
+                  <div class="faq-a">
+                    This Cat‑alog is designed to demonstrate product thinking
+                    (clear flows, guest vs. registered behavior), front‑end
+                    implementation (layout, stateful components like mini‑cart,
+                    builder panels), and general attention to UX copy and edge
+                    cases. Think of it as a miniature product instead of a
+                    single coding exercise.
+                  </div>
+                </article>
+                <article class="faq-item">
+                  <div class="faq-question-row">
+                    <div class="faq-q">Can I reuse any of this?</div>
+                    <div class="faq-tag">Practical matters</div>
+                  </div>
+                  <div class="faq-a">
+                    Absolutely. If you find patterns you like — layout ideas,
+                    copy, or flows for playful AI tools — feel free to adapt
+                    them. If you’re evaluating me as a candidate, you’re warmly
+                    invited to clone the repo, run it locally, and poke at the
+                    internals.
+                  </div>
+                </article>
+              </div>
+            </section>
+            <aside class="faq-aside">
+              <div class="aside-section">
+                <div class="aside-label">About the human behind the cats</div>
+                <div class="aside-text">
+                  Hi, I’m the person who thought, "What if my portfolio
+                  pretended to be a whimsical cat store?" I build products that
+                  balance polish, clarity, and a slightly alarming number of
+                  puns.
+                </div>
+                <div class="aside-pill-row">
+                  <div class="aside-pill">Full‑stack / product‑minded</div>
+                  <div class="aside-pill">Loves thoughtful UX</div>
+                  <div class="aside-pill">Comfortable with AI tooling</div>
+                  <div class="aside-pill">Enjoys silly side projects</div>
+                </div>
+              </div>
+              <div class="aside-section">
+                <div class="aside-label">
+                  If you’re a recruiter or hiring manager
+                </div>
+                <div class="aside-text">
+                  You’re very much in the target audience of this page. The
+                  Cat‑alog, CatBot flow, and mini‑cart are here to give you a
+                  quick read on how I think about systems, not just one‑off
+                  components.
+                </div>
+                <div class="aside-cta">
+                  <div class="aside-cta-link" data-media-type="banani-button">
+                    View the code on github.com/pacaplan/rampart
+                  </div>
+                  <div class="aside-meta">
+                    Want to talk? You can open an issue, reach out via the
+                    contact info in the repo, or just mention the "imaginary cat
+                    store" in your message so I know how you found me.
+                  </div>
+                </div>
+              </div>
+              <div class="aside-section">
+                <div class="aside-label">So what should I click next?</div>
+                <div class="aside-text">
+                  If you’re a casual visitor, head back to the Cat‑alog to
+                  browse pre‑made cats. If you’re evaluating this as a
+                  portfolio, explore the CatBot tab to see the custom builder
+                  flow in action.
+                </div>
+                <div class="aside-cta">
+                  <div class="aside-cta-link" data-media-type="banani-button">
+                    Return to Cat‑alog
+                  </div>
+                  <div class="aside-cta-link" data-media-type="banani-button">
+                    Jump to CatBot flow
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </main>
+          <footer class="footer">
+            <div class="footer-links">
+              <div class="footer-link" data-media-type="banani-button">FAQ</div>
+              <div class="footer-link" data-media-type="banani-button">
+                Is this real?
+              </div>
+              <div class="footer-link" data-media-type="banani-button">
+                View on GitHub
+              </div>
+              <div class="footer-link" data-media-type="banani-button">
+                Adoption resources
+              </div>
+            </div>
+            <div class="footer-note">
+              For actual cats, please visit local shelters and rescues. This
+              entire experience is 100% imaginary, 0% transactional, and
+              extremely pro‑adoption.
+            </div>
+          </footer>
+        </div>
+      </div>
+    </body>
+  </html>
+  <script src="https://code.iconify.design/iconify-icon/3.0.0/iconify-icon.min.js"></script>
+</div>

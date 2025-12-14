@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+
+# Rails
+apps/api/log/
+apps/api/tmp/
+apps/api/storage/
+apps/api/.env.development
+apps/api/.env.local
+
+# Next.js
+apps/web/.next/
+apps/web/out/
+apps/web/.env.local
+
+# Supabase
+.branches/
+.temp/
+
+# OS
+.DS_Store
+*.swp
+*.swo
+
+# IDE
+.idea/
+.vscode/
+.cursor/
+
+# Test coverage
+coverage/

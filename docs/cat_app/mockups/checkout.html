@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Shantell+Sans:wght@300..800&display=swap&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Geist:wght@100..900&family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Michroma&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Roboto+Slab:wght@100..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Shantell+Sans:ital,wght@0,300..800;1,300..800&family=Space+Grotesk:wght@300..700&display=swap"
+        rel="stylesheet"
+      />
+      <style>
+        * {
+          font-family: var(--font-family-body);
+        }
+      </style>
+      <style>
+        :root {
+          --background: #fbf8ff;
+          --foreground: #1f1b24;
+          --border: #00000000;
+          --input: #ffffff;
+          --primary: #ff8c42;
+          --primary-foreground: #ffffff;
+          --secondary: #c8b7ff;
+          --secondary-foreground: #2b1b47;
+          --muted: #f2edf7;
+          --muted-foreground: #6b6173;
+          --success: #7de0a8;
+          --success-foreground: #07321a;
+          --accent: #ffd9b5;
+          --accent-foreground: #4b2a00;
+          --destructive: #ff6b6b;
+          --destructive-foreground: #ffffff;
+          --warning: #ffd166;
+          --warning-foreground: #332200;
+          --card: #ffffff;
+          --card-foreground: #1f1b24;
+          --sidebar: #f7f5fb;
+          --sidebar-foreground: #453b4a;
+          --sidebar-primary: #fff0e6;
+          --sidebar-primary-foreground: #663a12;
+          --radius-sm: 4px;
+          --radius-md: 6px;
+          --radius-lg: 8px;
+          --radius-xl: 12px;
+          --font-family-body: "Inter", "Inter Fallback";
+        }
+      </style>
+      <style>
+        * {
+          box-sizing: border-box;
+        }
+        .page {
+          background: var(--background);
+          color: var(--foreground);
+          min-height: 644px;
+          display: flex;
+          flex-direction: column;
+        }
+        .page-inner {
+          max-width: 1120px;
+          margin: 0 auto;
+          padding: 24px 32px 40px 32px;
+          display: flex;
+          flex-direction: column;
+          gap: 24px;
+        }
+        .header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 16px;
+        }
+        .header-left {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          font-size: 18px;
+          font-weight: 600;
+        }
+        .logo-combined {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          cursor: pointer;
+          position: relative;
+        }
+        .logo-icon {
+          position: relative;
+          width: 32px;
+          height: 28px;
+          border-radius: 16px 16px 18px 18px;
+          background: var(--secondary);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 18px;
+          color: var(--secondary-foreground);
+        }
+        .logo-icon::before,
+        .logo-icon::after {
+          content: "";
+          position: absolute;
+          top: -10px;
+          width: 12px;
+          height: 14px;
+          background: var(--secondary);
+          border-radius: 4px 4px 0 0;
+          transform-origin: bottom center;
+        }
+        .logo-icon::before {
+          left: 6px;
+          transform: rotate(-18deg);
+        }
+        .logo-icon::after {
+          right: 6px;
+          transform: rotate(18deg);
+        }
+        .logo-text {
+          font-size: 18px;
+          font-weight: 600;
+        }
+        .header-center {
+          display: flex;
+          gap: 16px;
+          font-size: 14px;
+          font-weight: 500;
+        }
+        .nav-link {
+          padding: 8px 12px;
+          border-radius: var(--radius-md);
+          color: var(--muted-foreground);
+          cursor: pointer;
+        }
+        .nav-link[data-active="true"] {
+          background: var(--secondary);
+          color: var(--secondary-foreground);
+        }
+        .header-right {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          font-size: 14px;
+        }
+        .auth-link {
+          color: var(--foreground);
+          font-weight: 500;
+          cursor: pointer;
+        }
+        .cart-wrapper {
+          position: relative;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        .cart-button {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 6px 10px;
+          border-radius: var(--radius-md);
+          background: var(--secondary);
+          color: var(--secondary-foreground);
+          cursor: pointer;
+        }
+        .cart-icon-box {
+          width: 20px;
+          height: 20px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .cart-count {
+          min-width: 18px;
+          height: 18px;
+          border-radius: 999px;
+          background: var(--accent);
+          color: var(--accent-foreground);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 11px;
+          padding: 0 4px;
+        }
+        .btn {
+          border-radius: var(--radius-md);
+          padding: 8px 10px;
+          font-size: 13px;
+          font-weight: 500;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+        }
+        .btn-primary {
+          background: var(--primary);
+          color: var(--primary-foreground);
+        }
+        .btn-secondary {
+          background: var(--secondary);
+          color: var(--secondary-foreground);
+        }
+        .btn-ghost {
+          background: transparent;
+          color: var(--foreground);
+        }
+        .hero {
+          margin-top: 4px;
+          padding: 18px 20px;
+          border-radius: var(--radius-lg);
+          background: var(--secondary);
+          color: var(--secondary-foreground);
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+        .hero-title-row {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+        .hero-title {
+          font-size: 26px;
+          font-weight: 700;
+        }
+        .hero-subtitle {
+          font-size: 13px;
+          max-width: 640px;
+        }
+        .hero-meta {
+          font-size: 11px;
+          color: var(--muted-foreground);
+        }
+        .hero-steps {
+          display: flex;
+          gap: 8px;
+          font-size: 11px;
+          margin-top: 2px;
+          flex-wrap: wrap;
+        }
+        .step-pill {
+          padding: 4px 8px;
+          border-radius: 999px;
+          background: var(--card);
+          color: var(--card-foreground);
+        }
+        .step-pill[data-active="true"] {
+          background: var(--primary);
+          color: var(--primary-foreground);
+        }
+        .checkout-layout {
+          display: flex;
+          gap: 20px;
+          align-items: flex-start;
+        }
+        .checkout-main {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+        }
+        .section-card {
+          border-radius: var(--radius-lg);
+          background: var(--card);
+          color: var(--card-foreground);
+          padding: 14px 14px 12px 14px;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+        .section-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 8px;
+        }
+        .section-title {
+          font-size: 14px;
+          font-weight: 600;
+        }
+        .section-subtitle {
+          font-size: 12px;
+          color: var(--muted-foreground);
+        }
+        .field-group {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+        .field-row {
+          display: flex;
+          gap: 8px;
+        }
+        .field {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+          font-size: 12px;
+        }
+        .field-label {
+          font-weight: 500;
+        }
+        .field-optional {
+          font-size: 11px;
+          color: var(--muted-foreground);
+        }
+        .field-input {
+          border-radius: var(--radius-md);
+          background: var(--input);
+          border: 1px solid var(--border);
+          padding: 7px 8px;
+          font-size: 13px;
+          color: var(--foreground);
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 8px;
+        }
+        .field-placeholder {
+          color: var(--muted-foreground);
+        }
+        .field-tag-row {
+          margin-top: 2px;
+          display: flex;
+          gap: 6px;
+          flex-wrap: wrap;
+          font-size: 11px;
+        }
+        .field-tag {
+          padding: 2px 6px;
+          border-radius: 999px;
+          background: var(--muted);
+          color: var(--muted-foreground);
+        }
+        .radio-group {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+          font-size: 12px;
+        }
+        .radio-option {
+          display: flex;
+          align-items: flex-start;
+          gap: 8px;
+          padding: 6px 8px;
+          border-radius: var(--radius-md);
+          background: var(--input);
+        }
+        .radio-dot {
+          width: 12px;
+          height: 12px;
+          border-radius: 999px;
+          border: 2px solid var(--border);
+          margin-top: 2px;
+        }
+        .radio-option[data-selected="true"] .radio-dot {
+          border-color: var(--primary);
+          background: var(--primary);
+        }
+        .radio-content {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+        }
+        .radio-label {
+          font-weight: 500;
+        }
+        .radio-description {
+          font-size: 11px;
+          color: var(--muted-foreground);
+        }
+        .inline-note {
+          font-size: 11px;
+          color: var(--muted-foreground);
+        }
+        .summary-note-strong {
+          font-weight: 500;
+        }
+        .checkout-footer-actions {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-top: 4px;
+          gap: 12px;
+        }
+        .checkout-footer-left {
+          font-size: 12px;
+          color: var(--muted-foreground);
+          display: flex;
+          gap: 8px;
+          align-items: center;
+        }
+        .linkish-text {
+          font-size: 12px;
+          font-weight: 500;
+          color: var(--accent-foreground);
+          background: var(--accent);
+          border-radius: var(--radius-md);
+          padding: 4px 8px;
+          cursor: pointer;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .cart-summary {
+          width: 320px;
+          border-radius: var(--radius-lg);
+          background: var(--card);
+          color: var(--card-foreground);
+          padding: 12px;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+        .summary-title {
+          font-size: 14px;
+          font-weight: 600;
+        }
+        .summary-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-size: 13px;
+        }
+        .summary-row-muted {
+          color: var(--muted-foreground);
+        }
+        .summary-divider {
+          margin: 4px 0;
+          height: 1px;
+          background: var(--border);
+        }
+        .summary-total {
+          font-size: 14px;
+          font-weight: 600;
+        }
+        .summary-note {
+          font-size: 11px;
+          color: var(--muted-foreground);
+        }
+        .summary-cta {
+          margin-top: 4px;
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+        .summary-secondary-actions {
+          margin-top: 2px;
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+          font-size: 12px;
+        }
+        .summary-linkish {
+          font-size: 12px;
+          font-weight: 500;
+          color: var(--accent-foreground);
+          background: var(--accent);
+          border-radius: var(--radius-md);
+          padding: 6px 8px;
+          cursor: pointer;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .summary-mini-text {
+          font-size: 11px;
+          color: var(--muted-foreground);
+        }
+        .promo-field {
+          margin-top: 4px;
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+          font-size: 12px;
+        }
+        .promo-row {
+          display: flex;
+          gap: 6px;
+        }
+        .promo-input {
+          flex: 1;
+          border-radius: var(--radius-md);
+          background: var(--input);
+          border: 1px solid var(--border);
+          padding: 7px 8px;
+          font-size: 13px;
+          color: var(--foreground);
+        }
+        .promo-placeholder {
+          color: var(--muted-foreground);
+        }
+        .footer {
+          margin-top: 20px;
+          padding-top: 16px;
+          border-top: 1px solid var(--border);
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-size: 12px;
+          gap: 16px;
+        }
+        .footer-links {
+          display: flex;
+          gap: 12px;
+          flex-wrap: wrap;
+        }
+        .footer-link {
+          color: var(--muted-foreground);
+          cursor: pointer;
+        }
+        .footer-note {
+          color: var(--muted-foreground);
+        }
+      </style>
+    </head>
+    <body>
+      <div style="width: 1440px; position: relative">
+        <div class="page">
+        <div class="page-inner">
+          <header class="header">
+            <div class="header-left">
+              <div class="logo-combined" data-media-type="banani-button">
+                <div class="logo-icon">🐾</div>
+                <div class="logo-text">CustomCatCo</div>
+              </div>
+            </div>
+            <nav class="header-center">
+              <div
+                class="nav-link"
+                data-active="true"
+                data-media-type="banani-button"
+              >
+                Cat‑alog
+              </div>
+              <div class="nav-link" data-media-type="banani-button">CatBot</div>
+              <div class="nav-link" data-media-type="banani-button">FAQ</div>
+            </nav>
+            <div class="header-right">
+              <div class="auth-link" data-media-type="banani-button">
+                Log in / Sign up
+              </div>
+              <div class="cart-wrapper">
+                <div class="cart-button" data-media-type="banani-button">
+                  <div class="cart-icon-box">
+                    <iconify-icon
+                      icon="lucide:shopping-cart"
+                      style="
+                        font-size: 18px;
+                        color: var(--secondary-foreground);
+                      "
+                    ></iconify-icon>
+                  </div>
+                  <div class="cart-count">2</div>
+                </div>
+              </div>
+            </div>
+          </header>
+          <section class="hero">
+            <div class="hero-title-row">
+              <div class="hero-title">Pretend checkout</div>
+              <div class="hero-subtitle">
+                Confirm where your fictional felines should be beamed, how we
+                should address you, and which alternate universe is picking up
+                the imaginary tab.
+              </div>
+            </div>
+            <div class="hero-meta">
+              No real payments are processed here. You’re just walking through a
+              standard checkout flow wrapped in cat puns and UX decisions.
+            </div>
+            <div class="hero-steps">
+              <div class="step-pill" data-active="true">1. Cart</div>
+              <div class="step-pill" data-active="true">2. Details</div>
+              <div class="step-pill">3. Review</div>
+            </div>
+          </section>
+          <main class="checkout-layout">
+            <section class="checkout-main">
+              <div class="section-card">
+                <div class="section-header">
+                  <div>
+                    <div class="section-title">Contact details</div>
+                    <div class="section-subtitle">
+                      We’ll send your generated cats and CatBot lore here.
+                    </div>
+                  </div>
+                </div>
+                <div class="field-group">
+                  <div class="field-row">
+                    <div class="field">
+                      <div class="field-label">Email for cat delivery</div>
+                      <div class="field-input">
+                        <div class="field-placeholder">you@example.com</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="field-row">
+                    <div class="field">
+                      <div class="field-label">Full name</div>
+                      <div class="field-input">
+                        <div class="field-placeholder">
+                          Luna “Chief Cat Herder” Vega
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="field-row">
+                    <div class="field">
+                      <div class="field-label">CatBot account</div>
+                      <div class="field-input">
+                        <div class="field-placeholder">
+                          Continue as guest or sign in
+                        </div>
+                      </div>
+                      <div class="field-tag-row">
+                        <div class="field-tag">Guest checkout</div>
+                        <div class="field-tag">Sign in for saved cats</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="section-card">
+                <div class="section-header">
+                  <div>
+                    <div class="section-title">Delivery universe</div>
+                    <div class="section-subtitle">
+                      Standard fields, whimsical answers. Pick where your cats
+                      should exist.
+                    </div>
+                  </div>
+                </div>
+                <div class="field-group">
+                  <div class="field-row">
+                    <div class="field">
+                      <div class="field-label">Reality setting</div>
+                      <div class="field-input">
+                        <div class="field-placeholder">
+                          Earth‑adjacent demo universe
+                        </div>
+                        <div
+                          style="
+                            font-size: 11px;
+                            color: var(--muted-foreground);
+                          "
+                        >
+                          ▼
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="field-row">
+                    <div class="field">
+                      <div class="field-label">City</div>
+                      <div class="field-input">
+                        <div class="field-placeholder">Starfall City</div>
+                      </div>
+                    </div>
+                    <div class="field">
+                      <div class="field-label">Region</div>
+                      <div class="field-input">
+                        <div class="field-placeholder">Nebula District</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="field-row">
+                    <div class="field">
+                      <div class="field-label">
+                        Preferred delivery mode
+                        <span class="field-optional">(imaginary)</span>
+                      </div>
+                      <div class="field-input">
+                        <div class="field-placeholder">
+                          Quantum doorstep drop‑off
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="field-row">
+                    <div class="field">
+                      <div class="field-label">
+                        Special instructions
+                        <span class="field-optional">(optional)</span>
+                      </div>
+                      <div class="field-input">
+                        <div class="field-placeholder">
+                          e.g. "Don’t ring the doorbell, the dog unionized"
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="section-card">
+                <div class="section-header">
+                  <div>
+                    <div class="section-title">Payment</div>
+                    <div class="section-subtitle">
+                      This is the “convince the user” step in a real store.
+                      Here, it’s just UI theatre.
+                    </div>
+                  </div>
+                </div>
+                <div class="radio-group">
+                  <div class="radio-option" data-selected="true">
+                    <div class="radio-dot"></div>
+                    <div class="radio-content">
+                      <div class="radio-label">Imagination only (0.00 ¢)</div>
+                      <div class="radio-description">
+                        No cards, no wallets, no risk. You’ll still see what a
+                        payment step would feel like.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="radio-option">
+                    <div class="radio-dot"></div>
+                    <div class="radio-content">
+                      <div class="radio-label">Mock credit card</div>
+                      <div class="radio-description">
+                        Placeholder for number, expiry, CVV fields — left out
+                        here to keep the UI focused.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="inline-note">
+                  <span class="summary-note-strong">Reminder:</span> This
+                  project never touches real payment data. It just mimics the
+                  flow.
+                </div>
+              </div>
+              <div class="checkout-footer-actions">
+                <div class="checkout-footer-left">
+                  <div class="btn btn-ghost" data-media-type="banani-button">
+                    ← Back to cart
+                  </div>
+                  <div class="inline-note">
+                    You can still remove or swap cats before "placing" your
+                    pretend order.
+                  </div>
+                </div>
+                <div style="display: flex; gap: 8px; align-items: center">
+                  <div
+                    class="btn btn-secondary"
+                    data-media-type="banani-button"
+                  >
+                    Save checkout state
+                  </div>
+                  <div class="btn btn-primary" data-media-type="banani-button">
+                    Review &amp; place pretend order
+                  </div>
+                </div>
+              </div>
+            </section>
+            <aside class="cart-summary">
+              <div class="summary-title">Order summary</div>
+              <div class="summary-row summary-row-muted">
+                <span>Items</span><span>2 unique cats</span>
+              </div>
+              <div class="summary-row summary-row-muted">
+                <span>Imaginary subtotal</span><span>87.00 ¢</span>
+              </div>
+              <div class="summary-row summary-row-muted">
+                <span>Shipping</span><span>0.00 ¢ (teleported)</span>
+              </div>
+              <div class="summary-row summary-row-muted">
+                <span>Universe fees</span><span>0.00 ¢</span>
+              </div>
+              <div class="summary-divider"></div>
+              <div class="summary-row summary-total">
+                <span>Total due now</span><span>0.00 ¢</span>
+              </div>
+              <div class="summary-note">
+                In a real shop, this card would be doing the trust‑building
+                heavy lifting: totals, fees, and final reassurance.
+              </div>
+              <div class="promo-field">
+                <div class="field-label">Promo / magic word</div>
+                <div class="promo-row">
+                  <div class="promo-input">
+                    <span class="promo-placeholder"
+                      >Try “MEOWGIC” or leave blank</span
+                    >
+                  </div>
+                  <div
+                    class="btn btn-secondary"
+                    data-media-type="banani-button"
+                  >
+                    Apply
+                  </div>
+                </div>
+              </div>
+              <div class="summary-cta">
+                <div class="btn btn-primary" data-media-type="banani-button">
+                  Skip ahead to order review
+                </div>
+                <div class="btn btn-secondary" data-media-type="banani-button">
+                  Keep browsing cats
+                </div>
+              </div>
+              <div class="summary-secondary-actions">
+                <div class="summary-linkish" data-media-type="banani-button">
+                  Clear cart (release all cats)
+                </div>
+                <div class="summary-mini-text">
+                  Nothing here is binding. Refresh the page, and the universe
+                  forgets this entire transaction.
+                </div>
+              </div>
+            </aside>
+          </main>
+          <footer class="footer">
+            <div class="footer-links">
+              <div class="footer-link" data-media-type="banani-button">FAQ</div>
+              <div class="footer-link" data-media-type="banani-button">
+                Is this real?
+              </div>
+              <div class="footer-link" data-media-type="banani-button">
+                View on GitHub
+              </div>
+              <div class="footer-link" data-media-type="banani-button">
+                Adoption resources
+              </div>
+            </div>
+            <div class="footer-note">
+              For actual cats, please visit local shelters and rescues. This
+              entire experience is 100% imaginary, 0% transactional, and
+              extremely pro‑adoption.
+            </div>
+          </footer>
+        </div>
+      </div>
+      </div>
+      <script src="https://code.iconify.design/iconify-icon/3.0.0/iconify-icon.min.js"></script>
+    </body>
+  </html>
