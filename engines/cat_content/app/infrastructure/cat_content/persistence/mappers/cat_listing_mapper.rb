@@ -29,12 +29,14 @@ module CatContent
               media: record.image_url ? ValueObjects::CatMedia.new(
                 url: record.image_url,
                 alt_text: record.image_alt
-              ) : nil
+              ) : nil,
+              created_at: record.created_at
             )
           end
 
           def to_record(aggregate)
-            ::CatListingRecord.find_or_initialize_by(id: aggregate.id.to_s).tap do |r|
+            CatContent::CatListingRecord.find_or_initialize_by(id: aggregate.id.to_s).tap do |r|
+              r.created_at = aggregate.created_at if aggregate.created_at
               r.name = aggregate.name.to_s
               r.description = aggregate.description.to_s
               r.price_cents = aggregate.price.amount_cents

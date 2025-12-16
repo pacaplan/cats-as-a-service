@@ -20,7 +20,9 @@ module CatContent
                 amount_cents: @cat.price.amount_cents,
                 currency: @cat.price.currency
               },
-              tags: @cat.tags.to_a
+              tags: @cat.tags.to_a,
+              visibility: @cat.visibility.to_sym.to_s,
+              created_at: @cat.created_at
             }
 
             result

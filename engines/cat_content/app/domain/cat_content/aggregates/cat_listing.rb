@@ -25,11 +25,12 @@ module CatContent
       attribute :tags, ValueObjects::TagList
       attribute :profile, ValueObjects::CatProfile.optional.default(nil)
       attribute :media, ValueObjects::CatMedia.optional.default(nil)
+      attribute :created_at, Types::Time.optional.default(nil)
 
       delegate :public?, :private?, :archived?, to: :visibility
 
       # Factory method for creating a new draft cat listing
-      def self.create(id:, name:, description:, price:, slug:, tags: nil, profile: nil, media: nil)
+      def self.create(id:, name:, description:, price:, slug:, tags: nil, profile: nil, media: nil, created_at: nil)
         new(
           id: id,
           name: name,
@@ -39,7 +40,8 @@ module CatContent
           visibility: ValueObjects::Visibility.new(value: :private),
           tags: tags || ValueObjects::TagList.new(values: []),
           profile: profile,
-          media: media
+          media: media,
+          created_at: created_at
         )
       end
 

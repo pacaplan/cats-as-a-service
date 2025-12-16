@@ -3,7 +3,7 @@
 module CatContent
   module Ports
     class CatListingRepository < Rampart::Ports::SecondaryPort
-      abstract_method :add, :find, :find_by_slug, :list_public, :update, :remove
+      abstract_method :add, :find, :find_by_slug, :list_public, :list_all, :update, :remove
     end
   end
 end

@@ -37,6 +37,39 @@ module CatContent
       end
     end
 
+    def create
+      # Unsafe permit! for prototype, should be explicit in production
+      command = Commands::CreateCatListingCommand.new(params.permit!.to_h.symbolize_keys)
+      cat = cat_listing_service.create(command: command)
+      render json: serializer(cat).as_json_full, status: :created
+    rescue => e
+      render json: { error: e.message }, status: :unprocessable_entity
+    end
+
+    def update
+      command = Commands::UpdateCatListingCommand.new(params.permit!.to_h.symbolize_keys)
+      cat = cat_listing_service.update(id: params[:id], command: command)
+      render json: serializer(cat).as_json_full
+    rescue CatContent::ResourceNotFound
+      render json: { error: "Not Found" }, status: :not_found
+    rescue => e
+      render json: { error: e.message }, status: :unprocessable_entity
+    end
+
+    def publish
+      cat = cat_listing_service.publish(id: params[:id])
+      render json: serializer(cat).as_json_full
+    rescue CatContent::ResourceNotFound
+      render json: { error: "Not Found" }, status: :not_found
+    end
+
+    def archive
+      cat = cat_listing_service.archive(id: params[:id])
+      render json: serializer(cat).as_json_full
+    rescue Rampart::Application::ResourceNotFound
+      render json: { error: "Not Found" }, status: :not_found
+    end
+
     private
 
     def cat_listing_service

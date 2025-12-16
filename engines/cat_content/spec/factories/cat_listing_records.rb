@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :cat_listing_record, class: "CatListingRecord" do
+  factory :cat_listing_record, class: "CatContent::CatListingRecord" do
     sequence(:id) { |n| SecureRandom.uuid }
     sequence(:name) { |n| "Cat #{n}" }
     sequence(:slug) { |n| "cat-#{n}" }

@@ -31,11 +31,16 @@ Dir[File.join(__dir__, "support", "**", "*.rb")].sort.each { |f| require f }
 
 # Checks for pending migrations and applies them before tests are run.
 # We use Supabase migrations, not Rails migrations, so we skip this check
-# begin
-#   ActiveRecord::Migration.maintain_test_schema!
-# rescue ActiveRecord::PendingMigrationError => e
-#   abort e.to_s.strip
-# end
+require 'active_record/tasks/database_tasks'
+
+begin
+  ActiveRecord::Tasks::DatabaseTasks.database_configuration = Rails.application.config.database_configuration
+  ActiveRecord::Tasks::DatabaseTasks.env = Rails.env
+  ActiveRecord::Tasks::DatabaseTasks.migrations_paths = [File.join(CatContent::Engine.root, "db/migrate")]
+  ActiveRecord::Tasks::DatabaseTasks.migrate
+rescue => e
+  puts "Migration failed: #{e.message}"
+end
 
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
