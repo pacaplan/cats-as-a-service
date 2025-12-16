@@ -57,32 +57,3 @@ engines/cat_content/
 2. **Repository Pattern**: Access persistence through repository interfaces
 3. **Service Objects**: Encapsulate use cases in application services
 4. **Events**: Use domain events for cross-context communication
-
-## Naming Conventions
-
-- **Ruby**: snake_case for methods/variables, PascalCase for classes
-
-## Adding a New Use Case
-
-1. Define domain entities/value objects if needed
-2. Create application service for the use case
-3. Implement repository in infrastructure layer
-4. Expose via controller endpoint
-5. Write tests at each layer
-
-## Creating a New Bounded Context
-
-1. Generate new Rails engine under `engines/`
-2. Set up domain/application/infrastructure directories
-3. Mount engine in `apps/api/config/routes.rb`
-4. Document context in `docs/cat_app/`
-
-## Health Check Endpoint
-
-Each engine should implement a health check endpoint for troubleshooting:
-
-**Location:** `app/controllers/health_controller.rb`
-
-**Route:** `GET /mount_path/health` (e.g., `/catalog/health` for cat_content)
-
-**Purpose:** Verify database connectivity to the engine's isolated schema
