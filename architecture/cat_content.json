@@ -130,7 +130,7 @@
             "name": "ClaudeApiLanguageModelAdapter",
             "implements": "LanguageModelPort",
             "technology": "Anthropic Claude API",
-            "optional": true
+            "pending": true
           },
           {
             "name": "SystemClockAdapter",

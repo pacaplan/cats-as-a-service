@@ -1,0 +1,4 @@
+enforce_dependencies: true
+enforce_privacy: true
+dependencies:
+  - "engines/cat_content/app/application/cat_content"

@@ -1,0 +1,14 @@
+# Package discovery paths (finds engines and their layer packages)
+package_paths:
+  - "engines/*/"
+  - "engines/*/app/**/"
+
+# File inclusion/exclusion
+include:
+  - "engines/**/*.rb"
+exclude:
+  - "engines/*/app/assets/**/*"
+  - "engines/*/app/helpers/**/*"
+  - "engines/*/app/views/**/*"
+
+parallel: true
