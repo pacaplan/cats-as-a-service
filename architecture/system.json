@@ -27,27 +27,6 @@
   },
   "discovery": {
     "architecture_filename": "cat_content.json",
-    "strict_engine_list": true,
-    "ignore": [
-      "vendor/**",
-      "tmp/**",
-      "node_modules/**",
-      ".git/**",
-      "worktrees/**"
-    ]
-  },
-  "system_constraints": {
-    "integration": [],
-    "shared_kernel": [],
-    "global_rules": [
-      {
-        "id": "no_cross_engine_domain_imports",
-        "statement": "Engines must not import each other's Domain layer; integrate via ports or events."
-      }
-    ]
-  },
-  "diagram_defaults": {
-    "levels": ["L1_context", "L2_layers", "L3_components"],
-    "include_optional": false
+    "strict_engine_list": true
   }
 }

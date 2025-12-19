@@ -1,13 +1,5 @@
 PATH
-  remote: ../../engines/cat_content
-  specs:
-    cat_content (0.1.0)
-      dry-struct (~> 1.6)
-      dry-types (~> 1.7)
-      rails (>= 8.1.1)
-
-PATH
-  remote: ../../gems/rampart
+  remote: ../../../rampart
   specs:
     rampart (0.1.0)
       dry-auto_inject (~> 1.0)
@@ -16,6 +8,14 @@ PATH
       dry-monads (~> 1.6)
       dry-struct (~> 1.6)
       dry-types (~> 1.7)
+
+PATH
+  remote: ../../engines/cat_content
+  specs:
+    cat_content (0.1.0)
+      dry-struct (~> 1.6)
+      dry-types (~> 1.7)
+      rails (>= 8.1.1)
 
 GEM
   remote: https://rubygems.org/

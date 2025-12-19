@@ -4,18 +4,30 @@
   "profile": "rampart_hexddd_v1",
   "description": "Premade cat catalog (Cat-alog), user-generated custom cats (AI), and AI-generated copy & media",
 
-  "scope": {
-    "in": [
-      "Premade cat catalog (Cat-alog)",
-      "View premade cats",
-      "View user-specific custom cats",
-      "Delete/archive custom cats",
-      "AI-authored descriptions & prompt templates"
+  "actors": [
+    {
+      "name": "Shopper",
+      "description": "Browses catalog, creates custom cats (guest or registered)"
+    },
+    {
+      "name": "Admin",
+      "description": "Manages premade catalog, moderates custom cats"
+    }
+  ],
+
+  "relationships": {
+    "publishes_to": [
+      {
+        "bc": "commerce",
+        "via": "events",
+        "events": ["CatListingPublished", "CatListingArchived", "CustomCatCreated"]
+      }
     ],
-    "out": [
-      "Orders, payments, carts, pricing",
-      "Order update emails & unsubscribe flows",
-      "Authentication & user accounts"
+    "consumed_by": [
+      {
+        "bc": "commerce",
+        "purpose": "reads cat data for cart/checkout"
+      }
     ]
   },
 
@@ -25,33 +37,51 @@
         {
           "name": "CatListing",
           "description": "Premade, curated, globally visible cat in the Cat-alog; root for catalog browsing",
-          "entity": "CatProfile"
+          "entity": "CatProfile",
+          "key_attributes": ["id", "name", "description", "image_url", "base_price"],
+          "invariants": [
+            "must have name",
+            "must have description",
+            "base_price must be positive"
+          ],
+          "lifecycle": ["draft", "published", "archived"]
         },
         {
           "name": "CustomCat",
-          "description": "User-specific, AI-generated cat record; root for user's created cats"
+          "description": "User-specific, AI-generated cat record; root for user's created cats",
+          "key_attributes": ["id", "name", "description", "image_url", "creator_user_id"],
+          "invariants": [
+            "must have creator_user_id",
+            "must have name"
+          ],
+          "lifecycle": ["generating", "active", "archived"]
         }
       ],
       "events": [
         {
           "name": "CatListingPublished",
-          "description": "Emitted when a premade cat becomes publicly visible"
+          "description": "Emitted when a premade cat becomes publicly visible",
+          "payload_intent": ["listing_id", "name", "base_price", "published_at"]
         },
         {
           "name": "CatListingArchived",
-          "description": "Emitted when a premade cat is removed from public view"
+          "description": "Emitted when a premade cat is removed from public view",
+          "payload_intent": ["listing_id", "archived_at"]
         },
         {
           "name": "CustomCatCreated",
-          "description": "Emitted when a user's custom cat is successfully generated"
+          "description": "Emitted when a user's custom cat is successfully generated",
+          "payload_intent": ["custom_cat_id", "creator_user_id", "name", "created_at"]
         },
         {
           "name": "CustomCatArchived",
-          "description": "Emitted when a user archives their custom cat"
+          "description": "Emitted when a user archives their custom cat",
+          "payload_intent": ["custom_cat_id", "archived_at", "archived_by"]
         },
         {
           "name": "CatDescriptionRegenerated",
-          "description": "Emitted when AI regenerates a cat's description"
+          "description": "Emitted when AI regenerates a cat's description",
+          "payload_intent": ["cat_id", "cat_type", "regenerated_at"]
         }
       ],
       "ports": {
@@ -84,53 +114,73 @@
       "services": [
         {
           "name": "CatListingService",
-          "orchestrates": "CatListing",
-          "uses_ports": ["CatListingRepository", "ClockPort", "IdGeneratorPort", "TransactionPort"],
-          "publishes": ["CatListingPublished", "CatListingArchived"],
-          "operations": {
-            "consumer": ["list", "get"],
-            "admin": ["create", "update", "publish", "archive"]
-          }
+          "orchestrates": "CatListing"
         },
         {
           "name": "CustomCatService",
-          "orchestrates": "CustomCat",
-          "uses_ports": ["CustomCatRepository", "LanguageModelPort", "ClockPort", "IdGeneratorPort", "TransactionPort"],
-          "publishes": ["CustomCatCreated", "CustomCatArchived", "CatDescriptionRegenerated"],
-          "operations": {
-            "consumer": ["list", "get", "generate", "regenerateDescription", "archive"],
-            "admin": ["listAll"]
-          }
+          "orchestrates": "CustomCat"
+        }
+      ],
+      "capabilities": [
+        {
+          "name": "BrowseCatalog",
+          "actors": ["Shopper", "Guest"],
+          "entrypoints": ["CatListingsController#index", "CatListingsController#show"],
+          "orchestrates": ["CatListingService"],
+          "uses_ports": ["CatListingRepository"],
+          "emits": [],
+          "outputs": ["CatListing"]
+        },
+        {
+          "name": "GenerateCustomCat",
+          "actors": ["Shopper"],
+          "entrypoints": ["CustomCatsController#generate"],
+          "orchestrates": ["CustomCatService"],
+          "uses_ports": ["LanguageModelPort", "CustomCatRepository"],
+          "emits": ["CustomCatCreated"],
+          "outputs": ["CustomCat"]
+        },
+        {
+          "name": "ManageCatalog",
+          "actors": ["Admin"],
+          "entrypoints": ["CatListingsController#create", "CatListingsController#update", "CatListingsController#publish", "CatListingsController#archive"],
+          "orchestrates": ["CatListingService"],
+          "uses_ports": ["CatListingRepository"],
+          "emits": ["CatListingPublished", "CatListingArchived"],
+          "outputs": ["CatListing"]
+        },
+        {
+          "name": "ModerateCustomCats",
+          "actors": ["Admin"],
+          "entrypoints": ["CustomCatsController#index", "CustomCatsController#archive"],
+          "orchestrates": ["CustomCatService"],
+          "uses_ports": ["CustomCatRepository"],
+          "emits": ["CustomCatArchived"],
+          "outputs": []
         }
       ]
     },
 
     "infrastructure": {
-      "constraint": "Rails only",
       "adapters": {
         "persistence": [
           {
             "name": "SqlCatListingRepository",
-            "implements": "CatListingRepository",
-            "technology": "ActiveRecord/PostgreSQL"
+            "implements": "CatListingRepository"
           },
           {
             "name": "SqlCustomCatRepository",
-            "implements": "CustomCatRepository",
-            "technology": "ActiveRecord/PostgreSQL"
+            "implements": "CustomCatRepository"
           }
         ],
         "external": [
           {
             "name": "OpenAIApiLanguageModelAdapter",
-            "implements": "LanguageModelPort",
-            "technology": "OpenAI GPT-4 API"
+            "implements": "LanguageModelPort"
           },
           {
             "name": "ClaudeApiLanguageModelAdapter",
-            "implements": "LanguageModelPort",
-            "technology": "Anthropic Claude API",
-            "pending": true
+            "implements": "LanguageModelPort"
           },
           {
             "name": "SystemClockAdapter",
@@ -142,8 +192,7 @@
           },
           {
             "name": "DatabaseTransactionAdapter",
-            "implements": "TransactionPort",
-            "technology": "ActiveRecord"
+            "implements": "TransactionPort"
           }
         ]
       },
@@ -151,13 +200,11 @@
         "http": [
           {
             "name": "CatListingsController",
-            "routes": "/catalog",
-            "invokes": "CatListingService"
+            "routes": "/catalog"
           },
           {
             "name": "CustomCatsController",
-            "routes": "/custom-cats",
-            "invokes": "CustomCatService"
+            "routes": "/custom-cats"
           }
         ]
       },
@@ -168,19 +215,16 @@
   "external_systems": [
     {
       "name": "Language Models",
-      "type": "external_api",
       "providers": ["OpenAI", "Claude"],
-      "purpose": "AI text generation for cat names, stories, descriptions"
+      "description": "AI text generation for cat names, stories, descriptions"
     },
     {
       "name": "Event Bus",
-      "type": "host_app",
-      "purpose": "Domain event publishing to other bounded contexts"
+      "description": "Domain event publishing to other bounded contexts"
     },
     {
       "name": "PostgreSQL",
-      "type": "database",
-      "purpose": "Persistence for aggregates"
+      "description": "Persistence for aggregates"
     }
   ]
 }
