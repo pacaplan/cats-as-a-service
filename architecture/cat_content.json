@@ -7,7 +7,7 @@
   "actors": [
     {
       "name": "Shopper",
-      "description": "Browses catalog, creates custom cats (guest or registered)"
+      "description": "Browses catalog; when authenticated, can create and purchase custom cats"
     },
     {
       "name": "Admin",
@@ -52,7 +52,8 @@
           "key_attributes": ["id", "name", "description", "image_url", "creator_user_id"],
           "invariants": [
             "must have creator_user_id",
-            "must have name"
+            "must have name",
+            "price is fixed at system-configured rate"
           ],
           "lifecycle": ["generating", "active", "archived"]
         }
@@ -75,13 +76,13 @@
         },
         {
           "name": "CustomCatArchived",
-          "description": "Emitted when a user archives their custom cat",
+          "description": "Emitted when an admin archives a custom cat during moderation",
           "payload_intent": ["custom_cat_id", "archived_at", "archived_by"]
         },
         {
-          "name": "CatDescriptionRegenerated",
-          "description": "Emitted when AI regenerates a cat's description",
-          "payload_intent": ["cat_id", "cat_type", "regenerated_at"]
+          "name": "CustomCatRefined",
+          "description": "Emitted when a user refines their custom cat's description or image",
+          "payload_intent": ["custom_cat_id", "refined_at"]
         }
       ],
       "ports": {
@@ -92,19 +93,11 @@
         "external": [
           {
             "name": "LanguageModelPort",
-            "description": "Interface for LLM text generation"
+            "description": "Interface for LLM text generation (names, descriptions)"
           },
           {
-            "name": "ClockPort",
-            "description": "Interface for current time (testability)"
-          },
-          {
-            "name": "IdGeneratorPort",
-            "description": "Interface for unique ID generation"
-          },
-          {
-            "name": "TransactionPort",
-            "description": "Interface for database transaction management"
+            "name": "ImageGenerationPort",
+            "description": "Interface for AI image generation (cat visuals)"
           }
         ]
       }
@@ -124,7 +117,7 @@
       "capabilities": [
         {
           "name": "BrowseCatalog",
-          "actors": ["Shopper", "Guest"],
+          "actors": ["Shopper"],
           "entrypoints": ["CatListingsController#index", "CatListingsController#show"],
           "orchestrates": ["CatListingService"],
           "uses_ports": ["CatListingRepository"],
@@ -136,8 +129,17 @@
           "actors": ["Shopper"],
           "entrypoints": ["CustomCatsController#generate"],
           "orchestrates": ["CustomCatService"],
-          "uses_ports": ["LanguageModelPort", "CustomCatRepository"],
+          "uses_ports": ["LanguageModelPort", "ImageGenerationPort", "CustomCatRepository"],
           "emits": ["CustomCatCreated"],
+          "outputs": ["CustomCat"]
+        },
+        {
+          "name": "RefineCustomCat",
+          "actors": ["Shopper"],
+          "entrypoints": ["CustomCatsController#refine"],
+          "orchestrates": ["CustomCatService"],
+          "uses_ports": ["LanguageModelPort", "ImageGenerationPort", "CustomCatRepository"],
+          "emits": ["CustomCatRefined"],
           "outputs": ["CustomCat"]
         },
         {
@@ -156,7 +158,7 @@
           "orchestrates": ["CustomCatService"],
           "uses_ports": ["CustomCatRepository"],
           "emits": ["CustomCatArchived"],
-          "outputs": []
+          "outputs": ["CustomCat"]
         }
       ]
     },
@@ -175,24 +177,12 @@
         ],
         "external": [
           {
-            "name": "OpenAIApiLanguageModelAdapter",
+            "name": "OpenAILanguageModelAdapter",
             "implements": "LanguageModelPort"
           },
           {
-            "name": "ClaudeApiLanguageModelAdapter",
+            "name": "ClaudeLanguageModelAdapter",
             "implements": "LanguageModelPort"
-          },
-          {
-            "name": "SystemClockAdapter",
-            "implements": "ClockPort"
-          },
-          {
-            "name": "UuidIdGeneratorAdapter",
-            "implements": "IdGeneratorPort"
-          },
-          {
-            "name": "DatabaseTransactionAdapter",
-            "implements": "TransactionPort"
           }
         ]
       },
@@ -217,6 +207,10 @@
       "name": "Language Models",
       "providers": ["OpenAI", "Claude"],
       "description": "AI text generation for cat names, stories, descriptions"
+    },
+    {
+      "name": "Image Generation",
+      "description": "AI image generation for cat visuals (provider TBD)"
     },
     {
       "name": "Event Bus",

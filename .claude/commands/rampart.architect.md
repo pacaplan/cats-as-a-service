@@ -1,0 +1,1 @@
+../../prompts/architecture.prompt.md

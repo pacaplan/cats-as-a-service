@@ -1,7 +1,7 @@
 # ManageCatalog — Capability Spec
 
 **Bounded Context:** Cat & Content
-**Generated:** 2025-12-19T19:43:53.696Z
+**Generated:** 2025-12-19T21:53:31.838Z
 **Source:** `/Users/pcaplan/paul/cats-as-a-service/architecture/cat_content.json`
 
 ---
@@ -33,6 +33,74 @@
 
 - [ ] IF ... THEN THE SYSTEM SHALL ...
 - [ ] IF ... THEN THE SYSTEM SHALL ...
+
+---
+
+## Domain State & Data
+
+### Aggregates involved
+
+#### CatListing
+> Premade, curated, globally visible cat in the Cat-alog; root for catalog browsing
+
+**Key Attributes:**
+- `id`
+- `name`
+- `description`
+- `image_url`
+- `base_price`
+
+**Invariants:**
+- must have name
+- must have description
+- base_price must be positive
+
+**Lifecycle:** draft -> published -> archived
+
+
+### Domain Events Emitted
+
+#### CatListingPublished
+> Emitted when a premade cat becomes publicly visible
+
+**Payload Intent:**
+- `listing_id`
+- `name`
+- `base_price`
+- `published_at`
+
+#### CatListingArchived
+> Emitted when a premade cat is removed from public view
+
+**Payload Intent:**
+- `listing_id`
+- `archived_at`
+
+
+---
+
+## Data Model
+
+<!-- Map the Aggregate attributes above to a persistence schema -->
+<!-- Note: Only model tables owned by this Bounded Context -->
+
+| Table | Column | Type | Constraints |
+|-------|--------|------|-------------|
+| ...   | ...    | ...  | ...         |
+
+---
+
+## Request/Response Contracts
+
+<!-- Define API payloads and Event DTOs -->
+<!-- Tip: Use Task-Based naming (e.g. GenerateCustomCatRequest) -->
+
+```json
+// Request
+{
+  ...
+}
+```
 
 ---
 
