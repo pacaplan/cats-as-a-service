@@ -1,8 +1,17 @@
 # ModerateCustomCats — Capability Spec
 
 **Bounded Context:** Cat & Content
-**Generated:** 2025-12-19T21:53:31.838Z
+**Status:** template
+**Generated:** 2025-12-23T01:51:59.651Z
 **Source:** `/Users/pcaplan/paul/cats-as-a-service/architecture/cat_content.json`
+
+<!-- 
+Status values:
+  - template: Initial generated template, not yet planned
+  - planned: Specs completed via /rampart.plan, ready for implementation
+  - implemented: Code implementation complete
+Update this status as you progress through the workflow.
+-->
 
 ---
 
@@ -10,7 +19,7 @@
 
 **Actors:** Admin
 **Entrypoints:** CustomCatsController#index, CustomCatsController#archive
-**Outputs:** N/A
+**Outputs:** CustomCat
 
 ---
 
@@ -53,6 +62,7 @@
 **Invariants:**
 - must have creator_user_id
 - must have name
+- price is fixed at system-configured rate
 
 **Lifecycle:** generating -> active -> archived
 
@@ -60,7 +70,7 @@
 ### Domain Events Emitted
 
 #### CustomCatArchived
-> Emitted when a user archives their custom cat
+> Emitted when an admin archives a custom cat during moderation
 
 **Payload Intent:**
 - `custom_cat_id`
@@ -75,9 +85,19 @@
 <!-- Map the Aggregate attributes above to a persistence schema -->
 <!-- Note: Only model tables owned by this Bounded Context -->
 
+### Schema
+
 | Table | Column | Type | Constraints |
 |-------|--------|------|-------------|
 | ...   | ...    | ...  | ...         |
+
+### Relationships
+
+<!-- Define foreign keys, join tables, and cross-aggregate references -->
+
+### Indexes
+
+<!-- Define indexes for query optimization -->
 
 ---
 
@@ -86,8 +106,17 @@
 <!-- Define API payloads and Event DTOs -->
 <!-- Tip: Use Task-Based naming (e.g. GenerateCustomCatRequest) -->
 
+### Request
+
 ```json
-// Request
+{
+  ...
+}
+```
+
+### Response
+
+```json
 {
   ...
 }
@@ -109,7 +138,7 @@ flowchart TB
     Service -->|uses port| Port0["CustomCatRepository<br/>(port)"]
     Port0 -.->|impl| Adapter0["SqlCustomCatRepository"]
     Adapter0 --> PostgreSQL[("PostgreSQL")]
-    Service -->|orchestrates| Aggregate["CustomCat Aggregate<br/>─────<br/>Invariants:<br/>• must have creator_user_id<br/>• must have name"]
+    Service -->|orchestrates| Aggregate["CustomCat Aggregate<br/>─────<br/>Invariants:<br/>• must have creator_user_id<br/>• must have name<br/>• price is fixed at<br/>system-configured rate"]
     Aggregate -->|emits| Event0["CustomCatArchived<br/>─────<br/>custom_cat_id<br/>archived_at<br/>archived_by"]
     Event0 --> EventBus[Event Bus]
 ```
@@ -126,6 +155,7 @@ flowchart TB
 **Invariants:**
 - must have creator_user_id
 - must have name
+- price is fixed at system-configured rate
 
 **Lifecycle:** generating → active → archived
 
@@ -142,24 +172,16 @@ flowchart TB
 
 ---
 
-## Data Model
-
-<!-- Fill in during planning -->
-
-### Schema
-
-### Relationships
-
-### Indexes
-
----
-
-## Request/Response Contracts
-
-<!-- Fill in during planning -->
-
----
-
 ## Implementation Notes (Optional)
 
 <!-- Add any implementation-specific notes, constraints, or considerations -->
+
+---
+
+## ✅ Post-Implementation Checklist
+
+Once implementation is complete:
+
+- [ ] All acceptance criteria pass
+- [ ] Error handling scenarios covered by tests
+- [ ] Update **Status** field at top of this file from `planned` to `implemented`

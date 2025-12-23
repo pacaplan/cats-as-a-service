@@ -1,8 +1,8 @@
-# ManageCatalog — Capability Spec
+# RefineCustomCat — Capability Spec
 
 **Bounded Context:** Cat & Content
 **Status:** template
-**Generated:** 2025-12-23T01:51:59.651Z
+**Generated:** 2025-12-23T01:51:59.650Z
 **Source:** `/Users/pcaplan/paul/cats-as-a-service/architecture/cat_content.json`
 
 <!-- 
@@ -17,9 +17,9 @@ Update this status as you progress through the workflow.
 
 ## Overview
 
-**Actors:** Admin
-**Entrypoints:** CatListingsController#create, CatListingsController#update, CatListingsController#publish, CatListingsController#archive
-**Outputs:** CatListing
+**Actors:** Shopper
+**Entrypoints:** CustomCatsController#refine
+**Outputs:** CustomCat
 
 ---
 
@@ -49,41 +49,32 @@ Update this status as you progress through the workflow.
 
 ### Aggregates involved
 
-#### CatListing
-> Premade, curated, globally visible cat in the Cat-alog; root for catalog browsing
+#### CustomCat
+> User-specific, AI-generated cat record; root for user's created cats
 
 **Key Attributes:**
 - `id`
 - `name`
 - `description`
 - `image_url`
-- `base_price`
+- `creator_user_id`
 
 **Invariants:**
+- must have creator_user_id
 - must have name
-- must have description
-- base_price must be positive
+- price is fixed at system-configured rate
 
-**Lifecycle:** draft -> published -> archived
+**Lifecycle:** generating -> active -> archived
 
 
 ### Domain Events Emitted
 
-#### CatListingPublished
-> Emitted when a premade cat becomes publicly visible
+#### CustomCatRefined
+> Emitted when a user refines their custom cat's description or image
 
 **Payload Intent:**
-- `listing_id`
-- `name`
-- `base_price`
-- `published_at`
-
-#### CatListingArchived
-> Emitted when a premade cat is removed from public view
-
-**Payload Intent:**
-- `listing_id`
-- `archived_at`
+- `custom_cat_id`
+- `refined_at`
 
 
 ---
@@ -138,48 +129,52 @@ Update this status as you progress through the workflow.
 
 ```mermaid
 flowchart TB
-    Admin["Admin"]
-    Admin -->|"/catalog"| Controller
-    Controller["CatListingsController#create"]
+    Shopper["Shopper"]
+    Shopper -->|"/custom-cats"| Controller
+    Controller["CustomCatsController#refine"]
     Controller -->|invokes| Service
-    Service["CatListingService"]
-    Service -->|uses port| Port0["CatListingRepository<br/>(port)"]
-    Port0 -.->|impl| Adapter0["SqlCatListingRepository"]
-    Adapter0 --> PostgreSQL[("PostgreSQL")]
-    Service -->|orchestrates| Aggregate["CatListing Aggregate<br/>─────<br/>Invariants:<br/>• must have name<br/>• must have description<br/>• base_price must be positive"]
-    Aggregate -->|emits| Event0["CatListingPublished<br/>─────<br/>listing_id<br/>name<br/>base_price<br/>published_at"]
+    Service["CustomCatService"]
+    Service -->|uses port| Port0["LanguageModelPort<br/>(port)"]
+    Port0 -.->|impl| Adapter0["OpenAILanguageModelAdapter"]
+    Adapter0 --> LanguageModels["Language Models"]
+    Service -->|uses port| Port1["ImageGenerationPort<br/>(port)"]
+    Service -->|uses port| Port2["CustomCatRepository<br/>(port)"]
+    Port2 -.->|impl| Adapter2["SqlCustomCatRepository"]
+    Adapter2 --> PostgreSQL[("PostgreSQL")]
+    Service -->|orchestrates| Aggregate["CustomCat Aggregate<br/>─────<br/>Invariants:<br/>• must have creator_user_id<br/>• must have name<br/>• price is fixed at<br/>system-configured rate"]
+    Aggregate -->|emits| Event0["CustomCatRefined<br/>─────<br/>custom_cat_id<br/>refined_at"]
     Event0 --> EventBus[Event Bus]
-    Aggregate -->|emits| Event1["CatListingArchived<br/>─────<br/>listing_id<br/>archived_at"]
-    Event1 --> EventBus[Event Bus]
 ```
 
 ### Application Layer
 
 **Services:**
-- CatListingService
+- CustomCatService
 
 ### Domain Layer
 
-**Aggregate:** CatListing
+**Aggregate:** CustomCat
 
 **Invariants:**
+- must have creator_user_id
 - must have name
-- must have description
-- base_price must be positive
+- price is fixed at system-configured rate
 
-**Lifecycle:** draft → published → archived
+**Lifecycle:** generating → active → archived
 
 **Events Emitted:**
-- CatListingPublished
-- CatListingArchived
+- CustomCatRefined
 
 ### Infrastructure Layer
 
 **Ports Used:**
-- CatListingRepository
+- LanguageModelPort
+- ImageGenerationPort
+- CustomCatRepository
 
 **Adapters:**
-- SqlCatListingRepository → CatListingRepository
+- OpenAILanguageModelAdapter → LanguageModelPort
+- SqlCustomCatRepository → CustomCatRepository
 
 ---
 
