@@ -150,6 +150,7 @@ See [API Documentation](../../docs/cat_app/cat_content_api.md) for complete endp
 ### Key Value Objects
 - **CatId** / **CustomCatId** - Unique identifiers
 - **CatName** - Validated cat name (1-100 chars)
+- **CatDescription** - Validated listing description
 - **Slug** - URL-friendly identifier
 - **Visibility** - Enum: public, private, archived
 - **Money** - Price with currency

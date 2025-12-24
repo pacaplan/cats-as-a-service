@@ -1,7 +1,7 @@
 # BrowseCatalog — Capability Spec
 
 **Bounded Context:** Cat & Content
-**Status:** planned
+**Status:** implemented
 **Generated:** 2025-12-23T01:51:59.650Z
 **Source:** `/Users/pcaplan/paul/cats-as-a-service/architecture/cat_content.json`
 
@@ -29,18 +29,18 @@ Update this status as you progress through the workflow.
 
 ### Index (Browse Catalog)
 
-- [ ] WHEN a shopper navigates to /api/catalog THE SYSTEM SHALL return a list of published CatListings
-- [ ] WHILE displaying the catalog THE SYSTEM SHALL show each listing's id, name, slug, description, image, price, and tags
-- [ ] WHILE displaying the catalog THE SYSTEM SHALL only include CatListings with visibility = 'published'
-- [ ] WHILE displaying the catalog THE SYSTEM SHALL include a count of total listings returned
-- [ ] WHEN no published CatListings exist THE SYSTEM SHALL return an empty list with count = 0
+- [x] WHEN a shopper navigates to /api/catalog THE SYSTEM SHALL return a list of published CatListings
+- [x] WHILE displaying the catalog THE SYSTEM SHALL show each listing's id, name, slug, description, image, price, and tags
+- [x] WHILE displaying the catalog THE SYSTEM SHALL only include CatListings with visibility = 'published'
+- [x] WHILE displaying the catalog THE SYSTEM SHALL include a count of total listings returned
+- [x] WHEN no published CatListings exist THE SYSTEM SHALL return an empty list with count = 0
 
 ### Show (View Single Listing)
 
-- [ ] WHEN a shopper navigates to /api/catalog/:slug THE SYSTEM SHALL return the full CatListing details
-- [ ] WHILE displaying a single listing THE SYSTEM SHALL show: id, name, slug, full description, image (url + alt), price, and tags
-- [ ] WHERE price is formatted as USD currency (e.g., "$48.00")
-- [ ] WHERE visibility mapping: private = draft, published = published, archived = archived
+- [x] WHEN a shopper navigates to /api/catalog/:slug THE SYSTEM SHALL return the full CatListing details
+- [x] WHILE displaying a single listing THE SYSTEM SHALL show: id, name, slug, full description, image (url + alt), price, and tags
+- [x] WHERE price is formatted as USD currency (e.g., "$48.00")
+- [x] WHERE visibility mapping: private = draft, published = published, archived = archived
 
 ---
 
@@ -48,9 +48,9 @@ Update this status as you progress through the workflow.
 
 <!-- Define error scenarios using EARS IF/THEN notation -->
 
-- [ ] IF the requested slug does not exist THEN THE SYSTEM SHALL return 404 Not Found with error body
-- [ ] IF the requested CatListing has visibility != 'published' THEN THE SYSTEM SHALL return 404 Not Found
-- [ ] IF the database is unavailable THEN THE SYSTEM SHALL return 503 Service Unavailable with a retry-friendly message
+- [x] IF the requested slug does not exist THEN THE SYSTEM SHALL return 404 Not Found with error body
+- [x] IF the requested CatListing has visibility != 'published' THEN THE SYSTEM SHALL return 404 Not Found
+- [x] IF the database is unavailable THEN THE SYSTEM SHALL return 503 Service Unavailable with a retry-friendly message
 
 ---
 
@@ -261,6 +261,6 @@ flowchart TB
 
 Once implementation is complete:
 
-- [ ] All acceptance criteria pass
-- [ ] Error handling scenarios covered by tests
-- [ ] Update **Status** field at top of this file from `planned` to `implemented`
+- [x] All acceptance criteria pass
+- [x] Error handling scenarios covered by tests
+- [x] Update **Status** field at top of this file from `planned` to `implemented`

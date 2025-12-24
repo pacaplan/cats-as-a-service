@@ -8,8 +8,10 @@ Rails.application.routes.draw do
   # Comprehensive health check endpoint
   get "health" => "health#show"
 
-  # Mount bounded context engines
-  mount CatContent::Engine => "/catalog", as: "cat_content"
+  # Mount bounded context engines under /api namespace
+  scope "/api" do
+    mount CatContent::Engine => "/", as: "cat_content"
+  end
 
   # Defines the root path route ("/")
   # root "posts#index"

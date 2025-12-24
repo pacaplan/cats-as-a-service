@@ -39,55 +39,29 @@ module CatContent
           money
           tag_list
           visibility
-          content_block
           cat_media
-          trait_set
-          cat_profile
-          paginated_result
         ])
 
         # Events
         load_files(domain.join("events"), %w[
           cat_listing_published
           cat_listing_archived
-          custom_cat_created
-          custom_cat_archived
-          cat_description_regenerated
         ])
 
         # Aggregates
-        load_files(domain.join("aggregates"), %w[cat_listing custom_cat])
+        load_files(domain.join("aggregates"), %w[cat_listing])
 
         # Ports
         load_files(domain.join("ports"), %w[
           cat_listing_repository
-          custom_cat_repository
-          language_model_port
-          clock_port
-          id_generator_port
-          transaction_port
-          event_bus_port
         ])
       end
 
       def load_application_layer(root)
         app = root.join("app/application/cat_content")
 
-        # Commands
-        load_files(app.join("commands"), %w[
-          create_cat_listing_command
-          update_cat_listing_command
-          publish_cat_listing_command
-          archive_cat_listing_command
-          generate_custom_cat_command
-          regenerate_description_command
-        ])
-
-        # Queries
-        load_files(app.join("queries"), %w[list_cat_listings_query])
-
         # Services
-        load_files(app.join("services"), %w[cat_listing_service custom_cat_service])
+        load_files(app.join("services"), %w[cat_listing_service])
       end
 
       def load_infrastructure_layer(root)
@@ -96,24 +70,20 @@ module CatContent
         # Models and Controllers are autoloaded by Rails from app/models and app/controllers
         # No need to manually load them here
 
-        # Adapters
-        load_files(infra.join("adapters"), %w[
-          system_clock_adapter
-          uuid_id_generator_adapter
-          database_transaction_adapter
-          open_ai_api_language_model_adapter
-          event_bus_adapter
-        ])
+        # Persistence Models
+        load_files(infra.join("persistence/models"), %w[cat_listing_record])
 
-        # Persistence
-        load_files(infra.join("persistence/mappers"), %w[cat_listing_mapper custom_cat_mapper])
-        load_files(infra.join("persistence/repositories"), %w[sql_cat_listing_repository sql_custom_cat_repository])
+        # Persistence Mappers
+        load_files(infra.join("persistence/mappers"), %w[cat_listing_mapper])
+
+        # Persistence Repositories
+        load_files(infra.join("persistence/repositories"), %w[sql_cat_listing_repository])
 
         # Wiring (DI container)
         load_files(infra.join("wiring"), %w[container])
 
         # HTTP Serializers
-        load_files(infra.join("http/serializers"), %w[cat_listing_serializer custom_cat_serializer])
+        load_files(infra.join("http/serializers"), %w[cat_listing_serializer])
       end
 
       def load_files(dir, files)
