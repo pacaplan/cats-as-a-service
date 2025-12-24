@@ -1,0 +1,227 @@
+{
+  "$schema": "rampart/schema/bounded_context_v1.json",
+  "name": "Identity & Profile",
+  "profile": "rampart_hexddd_v1",
+  "description": "Authentication for shoppers and admins; future home of user preferences",
+
+  "actors": [
+    {
+      "name": "Guest",
+      "description": "Unauthenticated visitor who can register or sign in"
+    },
+    {
+      "name": "Shopper",
+      "description": "Authenticated user who browses catalog and creates custom cats"
+    },
+    {
+      "name": "Admin",
+      "description": "Privileged user who manages catalog and moderates content"
+    },
+    {
+      "name": "Operator",
+      "description": "Server-side script or rake task that provisions admin accounts"
+    }
+  ],
+
+  "relationships": {
+    "consumed_by": [
+      {
+        "bc": "cat_content",
+        "purpose": "reads current principal for authorization (creator_user_id, admin checks)"
+      }
+    ]
+  },
+
+  "layers": {
+    "domain": {
+      "aggregates": [
+        {
+          "name": "ShopperIdentity",
+          "description": "Authentication record for a shopper; supports password and Google OAuth",
+          "key_attributes": ["id", "email", "encrypted_password", "provider", "uid", "email_verified"],
+          "invariants": [
+            "email must be present and valid format",
+            "password must meet minimum strength requirements (12+ chars)",
+            "Google-linked identity requires provider='google_oauth2' and uid"
+          ],
+          "lifecycle": ["active", "suspended"]
+        },
+        {
+          "name": "AdminIdentity",
+          "description": "Authentication record for an admin; password-only, no self-registration",
+          "key_attributes": ["id", "username", "encrypted_password"],
+          "invariants": [
+            "username must be present and unique",
+            "password must meet minimum strength requirements",
+            "can only be created via server-side script"
+          ],
+          "lifecycle": ["active", "locked"]
+        }
+      ],
+      "events": [],
+      "ports": {
+        "repositories": [
+          "ShopperIdentityRepository",
+          "AdminIdentityRepository"
+        ],
+        "external": [
+          {
+            "name": "GoogleOAuthPort",
+            "description": "Interface for Google OAuth2 identity verification"
+          }
+        ]
+      }
+    },
+
+    "application": {
+      "services": [
+        {
+          "name": "ShopperAuthService",
+          "orchestrates": "ShopperIdentity"
+        },
+        {
+          "name": "AdminAuthService",
+          "orchestrates": "AdminIdentity"
+        }
+      ],
+      "capabilities": [
+        {
+          "name": "RegisterShopper",
+          "description": "Create a new shopper account with email and password",
+          "actors": ["Guest"],
+          "entrypoints": ["ShopperRegistrationsController#create"],
+          "orchestrates": ["ShopperAuthService"],
+          "uses_ports": ["ShopperIdentityRepository"],
+          "emits": [],
+          "outputs": ["ShopperIdentity"]
+        },
+        {
+          "name": "SignInShopper",
+          "description": "Authenticate a shopper using email and password, establishing a session",
+          "actors": ["Guest"],
+          "entrypoints": ["ShopperSessionsController#create"],
+          "orchestrates": ["ShopperAuthService"],
+          "uses_ports": ["ShopperIdentityRepository"],
+          "emits": [],
+          "outputs": ["ShopperIdentity"]
+        },
+        {
+          "name": "SignInShopperWithGoogle",
+          "description": "Authenticate a shopper via Google OAuth; creates or links account automatically",
+          "actors": ["Guest"],
+          "entrypoints": ["ShopperOmniauthCallbacksController#google_oauth2"],
+          "orchestrates": ["ShopperAuthService"],
+          "uses_ports": ["GoogleOAuthPort", "ShopperIdentityRepository"],
+          "emits": [],
+          "outputs": ["ShopperIdentity"]
+        },
+        {
+          "name": "SignOutShopper",
+          "description": "Invalidate the shopper's current session",
+          "actors": ["Shopper"],
+          "entrypoints": ["ShopperSessionsController#destroy"],
+          "orchestrates": ["ShopperAuthService"],
+          "uses_ports": [],
+          "emits": [],
+          "outputs": []
+        },
+        {
+          "name": "GetShopperSession",
+          "description": "Return current authentication state and minimal profile for the Vercel frontend",
+          "actors": ["Shopper", "Guest"],
+          "entrypoints": ["ShopperSessionsController#show"],
+          "orchestrates": ["ShopperAuthService"],
+          "uses_ports": ["ShopperIdentityRepository"],
+          "emits": [],
+          "outputs": ["ShopperIdentity"]
+        },
+        {
+          "name": "SignInAdmin",
+          "description": "Authenticate an admin using username and password for the Rails admin UI",
+          "actors": ["Guest"],
+          "entrypoints": ["AdminSessionsController#create"],
+          "orchestrates": ["AdminAuthService"],
+          "uses_ports": ["AdminIdentityRepository"],
+          "emits": [],
+          "outputs": ["AdminIdentity"]
+        },
+        {
+          "name": "SignOutAdmin",
+          "description": "Invalidate the admin's current session",
+          "actors": ["Admin"],
+          "entrypoints": ["AdminSessionsController#destroy"],
+          "orchestrates": ["AdminAuthService"],
+          "uses_ports": [],
+          "emits": [],
+          "outputs": []
+        },
+        {
+          "name": "ProvisionAdmin",
+          "description": "Create a new admin account via server-side script; not exposed via web endpoints",
+          "actors": ["Operator"],
+          "entrypoints": ["rake identity:create_admin", "rails runner"],
+          "orchestrates": ["AdminAuthService"],
+          "uses_ports": ["AdminIdentityRepository"],
+          "emits": [],
+          "outputs": ["AdminIdentity"]
+        }
+      ]
+    },
+
+    "infrastructure": {
+      "adapters": {
+        "persistence": [
+          {
+            "name": "DeviseShopperIdentityRepository",
+            "implements": "ShopperIdentityRepository"
+          },
+          {
+            "name": "DeviseAdminIdentityRepository",
+            "implements": "AdminIdentityRepository"
+          }
+        ],
+        "external": [
+          {
+            "name": "OmniAuthGoogleAdapter",
+            "implements": "GoogleOAuthPort"
+          }
+        ]
+      },
+      "entrypoints": {
+        "http": [
+          {
+            "name": "ShopperRegistrationsController",
+            "routes": "/users"
+          },
+          {
+            "name": "ShopperSessionsController",
+            "routes": "/users/sign_in, /users/sign_out, /session"
+          },
+          {
+            "name": "ShopperOmniauthCallbacksController",
+            "routes": "/users/auth/google_oauth2/callback"
+          },
+          {
+            "name": "AdminSessionsController",
+            "routes": "/admin_users/sign_in, /admin_users/sign_out, /admin/session"
+          }
+        ],
+        "cli": [
+          {
+            "name": "AdminProvisioningTask",
+            "command": "rake identity:create_admin"
+          }
+        ]
+      },
+      "wiring": "Devise"
+    }
+  },
+
+  "external_systems": [
+    {
+      "name": "Google OAuth2",
+      "providers": ["Google"],
+      "description": "Identity provider for shopper sign-in via Google"
+    }
+  ]
+}

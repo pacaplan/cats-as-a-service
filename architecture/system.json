@@ -18,6 +18,13 @@
         "path": "engines/cat_content",
         "architecture_file": "architecture/cat_content.json",
         "enabled": true
+      },
+      {
+        "id": "identity",
+        "engine_name": "identity",
+        "path": "engines/identity",
+        "architecture_file": "architecture/identity.json",
+        "enabled": true
       }
     ]
   },

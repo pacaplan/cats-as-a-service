@@ -8,6 +8,9 @@ Rails.application.routes.draw do
   # Comprehensive health check endpoint
   get "health" => "health#show"
 
+  # Admin interface (non-API endpoint, no auth for now)
+  get "admin" => "admin#index"
+
   # Mount bounded context engines under /api namespace
   scope "/api" do
     mount CatContent::Engine => "/", as: "cat_content"

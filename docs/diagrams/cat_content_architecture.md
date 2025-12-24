@@ -1,6 +1,6 @@
 # Cat & Content — Architecture Diagrams
 
-Generated from `/Users/pcaplan/paul/cats-as-a-service/architecture/cat_content.json` on 2025-12-24T01:47:18.858Z
+Generated from `/Users/pcaplan/paul/cats-as-a-service/architecture/cat_content.json` on 2025-12-24T02:56:49.385Z
 
 ---
 
@@ -15,27 +15,32 @@ Generated from `/Users/pcaplan/paul/cats-as-a-service/architecture/cat_content.j
 
 ### BrowseCatalog
 
-![BrowseCatalog](images/cat_content_l3_browsecatalog.svg)
+
+![BrowseCatalog](images/cat_content_l3_browse_catalog.svg)
 
 
 ### GenerateCustomCat
 
-![GenerateCustomCat](images/cat_content_l3_generatecustomcat.svg)
+
+![GenerateCustomCat](images/cat_content_l3_generate_custom_cat.svg)
 
 
 ### RefineCustomCat
 
-![RefineCustomCat](images/cat_content_l3_refinecustomcat.svg)
+
+![RefineCustomCat](images/cat_content_l3_refine_custom_cat.svg)
 
 
 ### ManageCatalog
 
-![ManageCatalog](images/cat_content_l3_managecatalog.svg)
+
+![ManageCatalog](images/cat_content_l3_manage_catalog.svg)
 
 
 ### ModerateCustomCats
 
-![ModerateCustomCats](images/cat_content_l3_moderatecustomcats.svg)
+
+![ModerateCustomCats](images/cat_content_l3_moderate_custom_cats.svg)
 
 
 
