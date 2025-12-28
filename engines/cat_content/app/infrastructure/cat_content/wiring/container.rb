@@ -23,3 +23,4 @@ module CatContent
   Import = Dry::AutoInject(Container)
 end
 
+

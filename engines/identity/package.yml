@@ -1,0 +1,10 @@
+# Bounded Context boundary - isolates this engine from others
+enforce_dependencies: true
+enforce_privacy: true
+
+# Add public API to this engine:
+# public_path: "app/public"
+
+# Add dependencies to other engines as needed:
+# dependencies:
+#   - "engines/orders"      # Only sees orders/app/public/*

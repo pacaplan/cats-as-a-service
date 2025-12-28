@@ -1,0 +1,5 @@
+enforce_dependencies: true
+enforce_privacy: true
+dependencies:
+  - "engines/identity/app/domain/identity"
+  - "engines/identity/app/application/identity"

@@ -1,0 +1,6 @@
+# Public API for this bounded context
+# Only classes here are accessible to other engines
+enforce_dependencies: true
+enforce_privacy: false
+dependencies:
+  - "engines/identity/app/application/identity"
