@@ -1,6 +1,6 @@
 # Cat & Content — Architecture Diagrams
 
-Generated from `/Users/pcaplan/paul/cats-as-a-service/architecture/cat_content.json` on 2025-12-24T02:56:49.385Z
+Generated from `/Users/pcaplan/paul/cats-as-a-service/architecture/cat_content.json` on 2025-12-28T03:18:15.142Z
 
 ---
 
