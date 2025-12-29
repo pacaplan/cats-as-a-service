@@ -40,5 +40,12 @@ module Api
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+
+    # Enable sessions for Devise authentication
+    config.middleware.use ActionDispatch::Cookies
+    config.middleware.use ActionDispatch::Session::CookieStore, key: "_identity_session"
+
+    # Add Rack::Attack middleware for rate limiting
+    config.middleware.use Rack::Attack
   end
 end

@@ -38,6 +38,10 @@ development:
   cat_content:
     <<: *supabase_local
     schema_search_path: cat_content
+  
+  identity:
+    <<: *supabase_local
+    schema_search_path: identity
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -50,6 +54,10 @@ test:
   cat_content:
     <<: *supabase_local
     schema_search_path: cat_content
+  
+  identity:
+    <<: *supabase_local
+    schema_search_path: identity
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
@@ -95,6 +103,15 @@ production:
     host: <%= ENV.fetch("DATABASE_HOST", "localhost") %>
     port: <%= ENV.fetch("DATABASE_PORT", "5432") %>
     schema_search_path: cat_content
+  
+  identity:
+    <<: *default
+    database: <%= ENV.fetch("DATABASE_NAME", "api_production") %>
+    username: <%= ENV.fetch("DATABASE_USERNAME", "postgres") %>
+    password: <%= ENV["DATABASE_PASSWORD"] %>
+    host: <%= ENV.fetch("DATABASE_HOST", "localhost") %>
+    port: <%= ENV.fetch("DATABASE_PORT", "5432") %>
+    schema_search_path: identity
   
   cache:
     <<: *default

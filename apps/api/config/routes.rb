@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   # Mount bounded context engines under /api namespace
   scope "/api" do
     mount CatContent::Engine => "/", as: "cat_content"
+    mount Identity::Engine => "/", as: "identity"
   end
 
   # Defines the root path route ("/")

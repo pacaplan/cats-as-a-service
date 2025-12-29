@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
 Rails.application.routes.draw do
-  mount Identity::Engine => "/identity"
+  # Mount the engine at root for testing
+  mount Identity::Engine => "/", as: "identity"
 end

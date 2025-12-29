@@ -64,4 +64,7 @@ Rails.application.configure do
 
   # Raise error when a before_action's only/except options reference missing actions.
   config.action_controller.raise_on_missing_callback_actions = true
+
+  # Set secret_key_base for Devise and Rails
+  config.secret_key_base = "test_secret_key_base_for_dummy_app_#{Rails.env}_not_for_production_use_at_all_very_long_key_required_by_rails"
 end
