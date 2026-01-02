@@ -6,7 +6,7 @@ module CatContent
   # Endpoints:
   # - GET /catalog - List all published cat listings
   # - GET /catalog/:slug - Show a single cat listing
-  class CatalogController < ApplicationController
+  class CatListingsController < ApplicationController
     # GET /catalog
     #
     # Returns all published cat listings

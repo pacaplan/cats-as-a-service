@@ -56,7 +56,8 @@ export async function registerUser(data: RegisterRequest): Promise<User> {
       const errorData: ValidationError = await response.json();
       throw { status: 422, errors: errorData.errors };
     }
-    throw new Error('Registration failed');
+    // Include status code for better error handling
+    throw { status: response.status, message: `Registration failed (${response.status})` };
   }
 
   return response.json();

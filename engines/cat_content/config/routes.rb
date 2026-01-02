@@ -3,8 +3,8 @@ CatContent::Engine.routes.draw do
   get "health", to: "health#show"
 
   # Public catalog endpoints
-  get "catalog", to: "catalog#index"
-  get "catalog/:slug", to: "catalog#show"
+  get "catalog", to: "cat_listings#index"
+  get "catalog/:slug", to: "cat_listings#show"
   
   # Admin endpoints
   scope "admin" do

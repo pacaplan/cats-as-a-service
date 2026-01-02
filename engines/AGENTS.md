@@ -49,33 +49,27 @@ engines/cat_content/
 │   └── infrastructure/   # Repos, adapters, other infrastructure
 ├── lib/
 │   └── {engine_name}/
-│       ├── engine.rb     # Rails engine configuration
-│       └── loader.rb     # Hexagonal architecture loader
+│       └── engine.rb     # Rails engine configuration
 └── {engine_name}.gemspec
 ```
 
-## Hexagonal Architecture Loader
+## Auto-Loading with Rampart
 
-Each engine uses a **Loader** module (`lib/{engine}/loader.rb`) to load hexagonal components in the correct order. This is necessary because the directory structure (`app/{layer}/{engine}/`) doesn't match Ruby namespace conventions.
-
-### Key Points
-
-- **Never use `require` or `require_relative`** to load classes within the engine
-- The loader handles dependency ordering automatically
-- When adding new files, update the loader to include them
+Each engine uses `Rampart::EngineLoader` to auto-discover and load all hexagonal architecture components. The loader handles the directory structure mismatch between organizational subdirectories and Ruby namespaces.
 
 ### Adding New Components
 
-Update `lib/{engine}/loader.rb` when adding new domain, application, or infrastructure files:
+Simply create the file in the appropriate directory - no configuration needed:
 
-```ruby
-def load_domain_layer(root)
-  domain = root.join("app/domain/{engine}")
-  load_files(domain.join("aggregates"), %w[existing_aggregate new_aggregate])
-end
+```bash
+# Create a new value object
+touch app/domain/cat_content/value_objects/cat_color.rb
+
+# Create a new aggregate
+touch app/domain/cat_content/aggregates/cat_order.rb
 ```
 
-See `app/infrastructure/AGENTS.md` for detailed examples.
+The loader auto-discovers all `.rb` files and loads them in the correct order.
 
 ## Conventions
 
@@ -83,4 +77,11 @@ See `app/infrastructure/AGENTS.md` for detailed examples.
 2. **Repository Pattern**: Access persistence through repository interfaces
 3. **Service Objects**: Encapsulate use cases in application services
 4. **Events**: Use domain events for cross-context communication
-5. **No Manual Requires**: Let the loader handle class loading
+5. **No Manual Requires**: `Rampart::EngineLoader` handles class loading automatically
+6. **Flat Namespace**: All classes use `{Context}::{ClassName}` (e.g., `CatContent::CatListing`, `CatContent::Container`)
+
+## Namespace Convention
+
+All classes within an engine use a flat namespace under the context module:
+- ✅ CORRECT - CatContent::CatListingRecord
+- ❌ WRONG - CatContent::Infrastructure::Persistence::CatListingRecord

@@ -2,48 +2,22 @@
 
 The infrastructure layer contains all framework-specific code, I/O, and external integrations.
 
-## Loading & Dependencies
+## Namespace Convention
 
-**Critical:** Never use `require` or `require_relative` to load classes within the engine. The hexagonal architecture loader (`lib/cat_content/loader.rb`) handles loading all components in the correct order.
-
-### Namespace Rules for ActiveRecord Models
-
-**Important:** ActiveRecord models must be nested under `CatContent::Infrastructure::Persistence` to keep them out of the public API.
-
-```ruby
-# ✅ CORRECT - Nested under Infrastructure::Persistence
-module CatContent
-  module Infrastructure
-    module Persistence
-      class CatListingRecord < CatContent::Infrastructure::Persistence::BaseRecord
-        # ...
-      end
-    end
-  end
-end
-```
+All classes within an engine use a flat namespace under the context module:
+- ✅ CORRECT - CatContent::CatListingRecord
+- ❌ WRONG - CatContent::Infrastructure::Persistence::CatListingRecord
 
 **File locations:**
 - Base class: `app/infrastructure/cat_content/persistence/base_record.rb`
 - Models: `app/infrastructure/cat_content/persistence/models/*.rb`
+- Container: `app/infrastructure/cat_content/wiring/container.rb`
 
-This ensures the architecture spec passes: "public API does not expose ActiveRecord models"
+Packwerk's `enforce_privacy: true` prevents external access to infrastructure internals—no namespace-based hiding is needed.
 
 ### Adding New Files
 
-When adding new files, update `lib/cat_content/loader.rb`:
-
-```ruby
-def load_infrastructure_layer(root)
-  infra = root.join("app/infrastructure/cat_content")
-  
-  # Base record must load before models
-  load_files(infra.join("persistence"), %w[base_record])
-  
-  # Models
-  load_files(infra.join("persistence/models"), %w[cat_listing_record your_new_record])
-end
-```
+Simply create the file in the appropriate directory. `Rampart::EngineLoader` auto-discovers all `.rb` files.
 
 ---
 
@@ -60,13 +34,13 @@ Repositories implement persistence ports, translating between domain and databas
 ```ruby
 class SqlOrderRepository < OrderRepository
   def find(id)
-    record = Infrastructure::Persistence::OrderRecord.find_by(id: id)
+    record = OrderRecord.find_by(id: id)
     return nil unless record
     OrderMapper.to_domain(record)
   end
 
   def save(order)
-    record = Infrastructure::Persistence::OrderRecord.find_or_initialize_by(id: order.id)
+    record = OrderRecord.find_or_initialize_by(id: order.id)
     OrderMapper.to_record(order, record)
     record.save!
   end
@@ -110,4 +84,3 @@ Container configuration wires ports to their adapters.
 - Keep in `wiring/container.rb`
 - Register all port implementations
 - Use constructor injection in services
-

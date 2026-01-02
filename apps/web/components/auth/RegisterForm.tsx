@@ -31,11 +31,15 @@ export default function RegisterForm() {
       await register({ user: formData });
       // Success - the AuthContext will handle redirect
     } catch (error: any) {
-      if (error.status === 422) {
+      if (error.status === 422 && error.errors) {
         // Validation errors from backend
         setErrors(error.errors);
+      } else if (error.status === 500) {
+        setErrors({ general: 'Server error. Please try again later or contact support.' });
+      } else if (error.message === 'Failed to fetch') {
+        setErrors({ general: 'Unable to connect to server. Please check your connection.' });
       } else {
-        setErrors({ general: 'Registration failed. Please try again.' });
+        setErrors({ general: error.message || 'Registration failed. Please try again.' });
       }
     } finally {
       setIsLoading(false);
@@ -72,16 +76,23 @@ export default function RegisterForm() {
         autoComplete="name"
       />
 
-      <FormInput
-        label="Password"
-        type="password"
-        value={formData.password}
-        onChange={(value) => setFormData({ ...formData, password: value })}
-        error={errors.password}
-        placeholder="At least 12 characters"
-        required
-        autoComplete="new-password"
-      />
+      <div>
+        <FormInput
+          label="Password"
+          type="password"
+          value={formData.password}
+          onChange={(value) => setFormData({ ...formData, password: value })}
+          error={errors.password}
+          placeholder="At least 12 characters"
+          required
+          autoComplete="new-password"
+        />
+        {!errors.password && formData.password.length > 0 && formData.password.length < 12 && (
+          <div className="text-xs text-muted-foreground -mt-3 mb-4">
+            {12 - formData.password.length} more characters needed
+          </div>
+        )}
+      </div>
 
       <FormInput
         label="Confirm Password"

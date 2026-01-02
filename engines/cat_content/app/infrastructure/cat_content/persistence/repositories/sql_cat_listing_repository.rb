@@ -7,7 +7,7 @@ module CatContent
     #
     # @return [Array<CatListing>]
     def find_all_published
-      records = Infrastructure::Persistence::CatListingRecord.published.order(created_at: :desc)
+      records = CatListingRecord.published.order(created_at: :desc)
       records.map { |record| CatListingMapper.to_domain(record) }
     end
 
@@ -16,7 +16,7 @@ module CatContent
     # @param slug [String]
     # @return [CatListing, nil]
     def find_by_slug(slug)
-      record = Infrastructure::Persistence::CatListingRecord.find_by(slug: slug)
+      record = CatListingRecord.find_by(slug: slug)
       CatListingMapper.to_domain(record)
     end
   end

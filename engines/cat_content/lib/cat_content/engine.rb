@@ -1,4 +1,6 @@
-require_relative "loader"
+# frozen_string_literal: true
+
+require "rampart"
 
 module CatContent
   class Engine < ::Rails::Engine
@@ -13,8 +15,6 @@ module CatContent
     end
 
     # Add hexagonal layer directories to autoload paths
-    # (Zeitwerk can't auto-resolve due to directory/namespace mismatch,
-    # but this enables require_dependency to work)
     initializer "cat_content.autoload_paths", before: :set_autoload_paths do |app|
       app.config.autoload_paths << root.join("app/domain")
       app.config.autoload_paths << root.join("app/application")
@@ -25,11 +25,14 @@ module CatContent
       app.config.eager_load_paths << root.join("app/infrastructure")
     end
 
-    # Load all hexagonal architecture components
+    # Load all hexagonal architecture components using Rampart's generic loader
     # The directory structure (app/{layer}/cat_content/) doesn't match
-    # Ruby namespace conventions, so we use a structured loader
+    # Ruby namespace conventions, so we use Rampart::EngineLoader which auto-discovers files
     config.to_prepare do
-      CatContent::Loader.load_all(CatContent::Engine.root)
+      Rampart::EngineLoader.load_all(
+        engine_root: CatContent::Engine.root,
+        context_name: "cat_content"
+      )
     end
   end
 end

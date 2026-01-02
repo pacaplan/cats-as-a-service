@@ -2,88 +2,22 @@
 
 The infrastructure layer contains all framework-specific code, I/O, and external integrations.
 
-## Loading & Dependencies
+## Namespace Convention
 
-**Critical:** Never use `require` or `require_relative` to load classes within the engine. The hexagonal architecture loader (`lib/identity/loader.rb`) handles loading all components in the correct order.
-
-### Why No Manual Requires?
-
-The directory structure (`app/{layer}/identity/`) doesn't match Ruby namespace conventions, so Zeitwerk can't auto-resolve. Instead, we use a structured loader that:
-
-1. Loads domain layer first (aggregates, ports)
-2. Loads application layer (services)
-3. Loads infrastructure layer (models, mappers, repositories, wiring)
-
-### Adding New Files
-
-When adding new files, update `lib/identity/loader.rb`:
-
-```ruby
-def load_domain_layer(root)
-  domain = root.join("app/domain/identity")
-  load_files(domain.join("aggregates"), %w[shopper_identity your_new_aggregate])
-  load_files(domain.join("ports"), %w[shopper_identity_repository your_new_port])
-end
-```
-
-### Namespace Rules for ActiveRecord Models
-
-**Important:** ActiveRecord models must be nested under `Identity::Infrastructure::Persistence` to keep them out of the public API.
-
-```ruby
-# ✅ CORRECT - Nested under Infrastructure::Persistence
-module Identity
-  module Infrastructure
-    module Persistence
-      class ShopperIdentityRecord < Identity::Infrastructure::Persistence::BaseRecord
-        # ...
-      end
-    end
-  end
-end
-```
+All classes within an engine use a flat namespace under the context module:
+- ✅ CORRECT - Identity::ShopperIdentityRecord
+- ❌ WRONG - Identity::Infrastructure::Persistence::ShopperIdentityRecord
 
 **File locations:**
 - Base class: `app/infrastructure/identity/persistence/base_record.rb`
 - Models: `app/infrastructure/identity/persistence/models/*.rb`
+- Container: `app/infrastructure/identity/wiring/container.rb`
 
-This ensures the architecture spec passes: "public API does not expose ActiveRecord models"
+Packwerk's `enforce_privacy: true` prevents external access to infrastructure internals—no namespace-based hiding is needed.
 
-### What NOT to Do
+### Adding New Files
 
-```ruby
-# ❌ WRONG - Don't use require_relative
-class MyRepository < SomePort
-  def initialize
-    require_relative "../models/some_model"  # NO!
-  end
-end
-
-# ❌ WRONG - Don't use require_relative in class body
-class MyMapper
-  require_relative "../../domain/some_aggregate"  # NO!
-end
-
-# ❌ WRONG - Don't expose ActiveRecord at top level
-module Identity
-  class SomeRecord < ApplicationRecord  # NO! This exposes it in the public API
-  end
-end
-```
-
-### Correct Pattern
-
-```ruby
-# ✅ CORRECT - Just reference the class directly
-class MyRepository < SomePort
-  def find(id)
-    record = Infrastructure::Persistence::SomeRecord.find_by(id: id)
-    SomeMapper.to_domain(record)
-  end
-end
-```
-
-The loader ensures all dependencies are available before your class is loaded.
+Simply create the file in the appropriate directory. `Rampart::EngineLoader` auto-discovers all `.rb` files.
 
 ---
 
@@ -146,15 +80,3 @@ Container configuration wires ports to their adapters.
 - Keep in `wiring/container.rb`
 - Register all port implementations
 - Use constructor injection in services
-- Reference classes directly (no requires needed)
-
-```ruby
-# ✅ CORRECT - Classes are already loaded by the loader
-register(:shopper_identity_repo) { DeviseShopperIdentityRepository.new }
-
-register(:shopper_auth_service) do
-  ShopperAuthService.new(shopper_identity_repo: resolve(:shopper_identity_repo))
-end
-```
-
-

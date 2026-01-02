@@ -5,6 +5,9 @@ module Identity
   #
   # Primary adapter that delegates to ShopperAuthService
   class ShopperRegistrationsController < ApplicationController
+    # Skip CSRF verification for API requests from external clients (e.g., Next.js frontend)
+    skip_before_action :verify_authenticity_token
+
     # POST /users
     def create
       result = shopper_auth_service.register(

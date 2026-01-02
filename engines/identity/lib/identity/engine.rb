@@ -1,4 +1,6 @@
-require_relative "loader"
+# frozen_string_literal: true
+
+require "rampart"
 
 module Identity
   class Engine < ::Rails::Engine
@@ -9,9 +11,12 @@ module Identity
       g.fixture_replacement :factory_bot
     end
 
+    # Ensure Devise is loaded early
+    initializer "identity.devise", before: :load_config_initializers do
+      require "devise"
+    end
+
     # Add hexagonal layer directories to autoload paths
-    # (Zeitwerk can't auto-resolve due to directory/namespace mismatch,
-    # but this enables require_dependency to work)
     initializer "identity.autoload_paths", before: :set_autoload_paths do |app|
       app.config.autoload_paths << root.join("app/domain")
       app.config.autoload_paths << root.join("app/application")
@@ -22,16 +27,14 @@ module Identity
       app.config.eager_load_paths << root.join("app/infrastructure")
     end
 
-    # Ensure Devise is loaded early
-    initializer "identity.devise", before: :load_config_initializers do
-      require "devise"
-    end
-
-    # Load all hexagonal architecture components
+    # Load all hexagonal architecture components using Rampart's generic loader
     # The directory structure (app/{layer}/identity/) doesn't match
-    # Ruby namespace conventions, so we use a structured loader
+    # Ruby namespace conventions, so we use Rampart::EngineLoader which auto-discovers files
     config.to_prepare do
-      Identity::Loader.load_all(Identity::Engine.root)
+      Rampart::EngineLoader.load_all(
+        engine_root: Identity::Engine.root,
+        context_name: "identity"
+      )
     end
   end
 end
