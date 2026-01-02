@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 module CatContent
-  # Maps between CatListingRecord (ActiveRecord) and CatListing (Domain)
+  # Maps between Infrastructure::Persistence::CatListingRecord (ActiveRecord) and CatListing (Domain)
   class CatListingMapper
     class << self
       # Convert ActiveRecord record to domain aggregate
       #
-      # @param record [CatListingRecord]
+      # @param record [Infrastructure::Persistence::CatListingRecord]
       # @return [CatListing]
       def to_domain(record)
         return nil if record.nil?

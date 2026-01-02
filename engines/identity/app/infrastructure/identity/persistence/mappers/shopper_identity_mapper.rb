@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 module Identity
-  # Maps between ShopperIdentityRecord (ActiveRecord) and ShopperIdentity (Domain)
+  # Maps between Infrastructure::Persistence::ShopperIdentityRecord (ActiveRecord) and ShopperIdentity (Domain)
   class ShopperIdentityMapper
     class << self
       # Convert ActiveRecord record to domain aggregate
       #
-      # @param record [ShopperIdentityRecord]
+      # @param record [Infrastructure::Persistence::ShopperIdentityRecord]
       # @return [ShopperIdentity, nil]
       def to_domain(record)
         return nil if record.nil?

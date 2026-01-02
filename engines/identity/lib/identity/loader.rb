@@ -45,6 +45,9 @@ module Identity
       def load_infrastructure_layer(root)
         infra = root.join("app/infrastructure/identity")
 
+        # Persistence Base Record (must load before models)
+        load_files(infra.join("persistence"), %w[base_record])
+
         # Persistence Models
         load_files(infra.join("persistence/models"), %w[shopper_identity_record])
 

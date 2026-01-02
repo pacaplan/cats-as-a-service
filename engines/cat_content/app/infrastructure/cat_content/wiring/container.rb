@@ -4,23 +4,27 @@ require "dry-container"
 require "dry-auto_inject"
 
 module CatContent
-  # Dependency Injection container for the Cat Content bounded context
-  class Container
-    extend Dry::Container::Mixin
+  module Infrastructure
+    module Wiring
+      # Dependency Injection container for the Cat Content bounded context
+      class Container
+        extend Dry::Container::Mixin
 
-    # Repositories
-    register(:cat_listing_repo) { SqlCatListingRepository.new }
+        # Repositories
+        register(:cat_listing_repo) { CatContent::SqlCatListingRepository.new }
 
-    # Services
-    register(:cat_listing_service) do
-      CatListingService.new(
-        cat_listing_repo: resolve(:cat_listing_repo)
-      )
+        # Services
+        register(:cat_listing_service) do
+          CatContent::CatListingService.new(
+            cat_listing_repo: resolve(:cat_listing_repo)
+          )
+        end
+      end
     end
   end
 
   # Auto-inject module for dependency injection
-  Import = Dry::AutoInject(Container)
+  Import = Dry::AutoInject(Infrastructure::Wiring::Container)
 end
 
 

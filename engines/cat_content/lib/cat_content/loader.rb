@@ -35,6 +35,7 @@ module CatContent
         load_files(domain.join("value_objects"), %w[
           cat_id
           cat_name
+          cat_description
           slug
           money
           tag_list
@@ -67,8 +68,8 @@ module CatContent
       def load_infrastructure_layer(root)
         infra = root.join("app/infrastructure/cat_content")
 
-        # Models and Controllers are autoloaded by Rails from app/models and app/controllers
-        # No need to manually load them here
+        # Persistence Base Record (must load before models)
+        load_files(infra.join("persistence"), %w[base_record])
 
         # Persistence Models
         load_files(infra.join("persistence/models"), %w[cat_listing_record])

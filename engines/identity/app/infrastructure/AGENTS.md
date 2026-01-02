@@ -26,6 +26,29 @@ def load_domain_layer(root)
 end
 ```
 
+### Namespace Rules for ActiveRecord Models
+
+**Important:** ActiveRecord models must be nested under `Identity::Infrastructure::Persistence` to keep them out of the public API.
+
+```ruby
+# ✅ CORRECT - Nested under Infrastructure::Persistence
+module Identity
+  module Infrastructure
+    module Persistence
+      class ShopperIdentityRecord < Identity::Infrastructure::Persistence::BaseRecord
+        # ...
+      end
+    end
+  end
+end
+```
+
+**File locations:**
+- Base class: `app/infrastructure/identity/persistence/base_record.rb`
+- Models: `app/infrastructure/identity/persistence/models/*.rb`
+
+This ensures the architecture spec passes: "public API does not expose ActiveRecord models"
+
 ### What NOT to Do
 
 ```ruby
@@ -40,6 +63,12 @@ end
 class MyMapper
   require_relative "../../domain/some_aggregate"  # NO!
 end
+
+# ❌ WRONG - Don't expose ActiveRecord at top level
+module Identity
+  class SomeRecord < ApplicationRecord  # NO! This exposes it in the public API
+  end
+end
 ```
 
 ### Correct Pattern
@@ -48,7 +77,7 @@ end
 # ✅ CORRECT - Just reference the class directly
 class MyRepository < SomePort
   def find(id)
-    record = SomeRecord.find_by(id: id)
+    record = Infrastructure::Persistence::SomeRecord.find_by(id: id)
     SomeMapper.to_domain(record)
   end
 end

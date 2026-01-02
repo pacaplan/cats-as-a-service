@@ -1,0 +1,16 @@
+# frozen_string_literal: true
+
+module Identity
+  module Infrastructure
+    module Persistence
+      # Base ActiveRecord class for Identity engine models
+      class BaseRecord < ActiveRecord::Base
+        self.abstract_class = true
+
+        # Schema isolation is handled by database.yml schema_search_path
+        # In production multi-DB setups, configure connects_to at the host app level
+      end
+    end
+  end
+end
+

@@ -18,7 +18,7 @@ module Identity
       # Normalize email to lowercase for case-insensitive lookup
       normalized_email = email.strip.downcase
 
-      record = ShopperIdentityRecord.new(
+      record = Infrastructure::Persistence::ShopperIdentityRecord.new(
         email: normalized_email,
         password: password,
         password_confirmation: password_confirmation,
@@ -37,7 +37,7 @@ module Identity
     # @param email [String]
     # @return [ShopperIdentity, nil]
     def find_by_email(email)
-      record = ShopperIdentityRecord.find_by(email: email.downcase)
+      record = Infrastructure::Persistence::ShopperIdentityRecord.find_by(email: email.downcase)
       ShopperIdentityMapper.to_domain(record)
     end
   end

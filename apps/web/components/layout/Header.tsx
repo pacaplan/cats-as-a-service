@@ -4,9 +4,11 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import CartButton from '../cart/CartButton';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function Header() {
   const pathname = usePathname();
+  const { user, logout } = useAuth();
 
   const isActive = (path: string) => {
     if (path === '/') {
@@ -48,7 +50,30 @@ export default function Header() {
         </Link>
       </nav>
       <div className="flex items-center gap-4 text-sm">
-        <div className="text-foreground font-medium cursor-pointer">Log in / Sign up</div>
+        {user ? (
+          <div className="flex items-center gap-3">
+            <span className="text-foreground font-medium">
+              {user.name || user.email}
+            </span>
+            <button
+              onClick={logout}
+              className="rounded-md px-2.5 py-2 text-[13px] font-medium bg-transparent text-foreground cursor-pointer"
+            >
+              Log out
+            </button>
+          </div>
+        ) : (
+          <div className="flex items-center gap-3">
+            <Link href="/login" className="text-foreground font-medium no-underline">
+              Log in
+            </Link>
+            <Link href="/register">
+              <button className="rounded-md px-2.5 py-2 text-[13px] font-medium bg-transparent text-foreground cursor-pointer">
+                Sign up
+              </button>
+            </Link>
+          </div>
+        )}
         <CartButton />
       </div>
     </header>
