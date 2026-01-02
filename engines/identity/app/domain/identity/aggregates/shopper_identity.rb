@@ -14,7 +14,10 @@ module Identity
   class ShopperIdentity < Rampart::Domain::AggregateRoot
     attribute :id, Rampart::Types::String
     attribute :email, Rampart::Types::String
+    attribute :encrypted_password, Rampart::Types::String
     attribute :name, Rampart::Types::String
+    attribute :provider, Rampart::Types::String.optional.default(nil)
+    attribute :uid, Rampart::Types::String.optional.default(nil)
     attribute :email_verified, Rampart::Types::Bool.default(false)
     attribute :status, Rampart::Types::String.default("active")
     attribute :created_at, Rampart::Types::Time.optional.default(nil)

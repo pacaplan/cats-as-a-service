@@ -27,7 +27,7 @@ RSpec.describe "Shopper Registration", type: :request do
     it "returns errors with invalid params" do
       post "/users", params: { user: { email: "" } }
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       json_response = JSON.parse(response.body)
       expect(json_response["errors"]).to be_present
     end

@@ -14,7 +14,10 @@ module Identity
         ShopperIdentity.new(
           id: record.id.to_s,
           email: record.email,
+          encrypted_password: record.encrypted_password,
           name: record.name,
+          provider: record.provider,
+          uid: record.uid,
           email_verified: record.email_verified || false,
           status: record.status || "active",
           created_at: record.created_at,

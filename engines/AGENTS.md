@@ -48,8 +48,34 @@ engines/cat_content/
 │   ├── application/      # Services, use cases
 │   └── infrastructure/   # Repos, adapters, other infrastructure
 ├── lib/
-└── cat_content.gemspec
+│   └── {engine_name}/
+│       ├── engine.rb     # Rails engine configuration
+│       └── loader.rb     # Hexagonal architecture loader
+└── {engine_name}.gemspec
 ```
+
+## Hexagonal Architecture Loader
+
+Each engine uses a **Loader** module (`lib/{engine}/loader.rb`) to load hexagonal components in the correct order. This is necessary because the directory structure (`app/{layer}/{engine}/`) doesn't match Ruby namespace conventions.
+
+### Key Points
+
+- **Never use `require` or `require_relative`** to load classes within the engine
+- The loader handles dependency ordering automatically
+- When adding new files, update the loader to include them
+
+### Adding New Components
+
+Update `lib/{engine}/loader.rb` when adding new domain, application, or infrastructure files:
+
+```ruby
+def load_domain_layer(root)
+  domain = root.join("app/domain/{engine}")
+  load_files(domain.join("aggregates"), %w[existing_aggregate new_aggregate])
+end
+```
+
+See `app/infrastructure/AGENTS.md` for detailed examples.
 
 ## Conventions
 
@@ -57,3 +83,4 @@ engines/cat_content/
 2. **Repository Pattern**: Access persistence through repository interfaces
 3. **Service Objects**: Encapsulate use cases in application services
 4. **Events**: Use domain events for cross-context communication
+5. **No Manual Requires**: Let the loader handle class loading
