@@ -45,8 +45,14 @@ export async function fetchCatalog(): Promise<CatalogResponse> {
   });
 
   if (!response.ok) {
-    const error: ApiError = await response.json();
-    throw new Error(error.message || 'Failed to fetch catalog');
+    let errorMessage = `Failed to fetch catalog (HTTP ${response.status})`;
+    try {
+      const error: ApiError = await response.json();
+      errorMessage = error.message || errorMessage;
+    } catch {
+      // Response is not JSON, use default error message
+    }
+    throw new Error(errorMessage);
   }
 
   return response.json();
@@ -64,8 +70,14 @@ export async function fetchCatListing(slug: string): Promise<CatListing> {
   });
 
   if (!response.ok) {
-    const error: ApiError = await response.json();
-    throw new Error(error.message || 'Cat listing not found');
+    let errorMessage = `Cat listing not found (HTTP ${response.status})`;
+    try {
+      const error: ApiError = await response.json();
+      errorMessage = error.message || errorMessage;
+    } catch {
+      // Response is not JSON, use default error message
+    }
+    throw new Error(errorMessage);
   }
 
   return response.json();
