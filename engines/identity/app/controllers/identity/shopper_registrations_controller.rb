@@ -19,6 +19,8 @@ module Identity
 
       if result.success?
         shopper = result.value!
+        record = Identity::ShopperIdentityRecord.find_by(email: shopper.email)
+        sign_in(record) if record
         render json: {
           id: shopper.id,
           email: shopper.email,
@@ -42,4 +44,3 @@ module Identity
     end
   end
 end
-

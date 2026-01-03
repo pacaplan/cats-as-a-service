@@ -16,7 +16,7 @@ module Identity
     # @return [Result<ShopperIdentity>]
     def create(email:, password:, password_confirmation:, name:)
       # Normalize email to lowercase for case-insensitive lookup
-      normalized_email = email.strip.downcase
+      normalized_email = email.to_s.strip.downcase
 
       record = ShopperIdentityRecord.new(
         email: normalized_email,
@@ -42,5 +42,4 @@ module Identity
     end
   end
 end
-
 
