@@ -98,6 +98,8 @@ Create Supabase migrations in `supabase/migrations/`.
 
 Implement the hexagonal architecture layers in the appropriate engine under `engines/`.
 
+> 🤖 **Engine Guidance:** Consult `engines/{context}/AGENTS.md` for engine-specific instructions if it exists.
+
 **Layer Order:**
 
 ### 2.1 Domain Layer (`app/domain/{context}/`)
