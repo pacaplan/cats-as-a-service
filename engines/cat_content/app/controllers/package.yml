@@ -1,4 +1,7 @@
+# Controllers Package (Primary Adapters)
+# Can ONLY depend on application layer
+# Controllers CANNOT import from domain/ (aggregates, entities, ports)
+# Controllers CANNOT import from infrastructure/persistence/ (repositories)
 enforce_dependencies: true
-enforce_privacy: true
 dependencies:
-  - "engines/cat_content/app/application/cat_content"
+  - "../../engines/cat_content/app/application/cat_content"

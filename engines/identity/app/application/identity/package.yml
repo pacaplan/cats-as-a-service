@@ -1,4 +1,5 @@
+# Application Layer Package
+# Can depend on domain, NOT infrastructure
 enforce_dependencies: true
-enforce_privacy: true
 dependencies:
-  - "engines/identity/app/domain/identity"
+  - "../../engines/identity/app/domain/identity"

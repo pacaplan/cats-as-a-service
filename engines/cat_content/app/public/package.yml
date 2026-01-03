@@ -3,4 +3,4 @@
 enforce_dependencies: true
 enforce_privacy: false
 dependencies:
-  - "engines/cat_content/app/application/cat_content"
+  - "../../engines/cat_content/app/application/cat_content"

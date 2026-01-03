@@ -4,7 +4,7 @@ module Identity
   # Controller for shopper registration
   #
   # Primary adapter that delegates to ShopperAuthService
-  class ShopperRegistrationsController < ApplicationController
+  class ShopperRegistrationsController < Identity::ApplicationController
     # Skip CSRF verification for API requests from external clients (e.g., Next.js frontend)
     skip_before_action :verify_authenticity_token
 

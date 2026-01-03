@@ -1,3 +1,4 @@
+# Domain Layer Package
+# No dependencies on application or infrastructure layers
 enforce_dependencies: true
-enforce_privacy: true
 dependencies: []

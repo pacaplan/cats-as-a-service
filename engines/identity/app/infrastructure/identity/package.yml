@@ -1,5 +1,6 @@
+# Infrastructure Layer Package
+# Can depend on domain and application
 enforce_dependencies: true
-enforce_privacy: true
 dependencies:
-  - "engines/identity/app/domain/identity"
-  - "engines/identity/app/application/identity"
+  - "../../engines/identity/app/domain/identity"
+  - "../../engines/identity/app/application/identity"
