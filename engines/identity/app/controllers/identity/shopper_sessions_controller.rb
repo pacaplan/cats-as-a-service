@@ -65,7 +65,7 @@ module Identity
     end
 
     def current_shopper_identity_record
-      warden.user(:shopper_identity_record)
+      warden.user(:shopper_identity)
     end
 
     def handle_sign_in_failure(failure)
