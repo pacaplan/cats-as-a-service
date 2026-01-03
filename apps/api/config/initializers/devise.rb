@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Devise.setup do |config|
-  require 'devise/orm/active_record'
+  require "devise/orm/active_record"
 
   # Password length: 12-128 characters
   config.password_length = 12..128

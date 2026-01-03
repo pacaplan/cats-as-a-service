@@ -10,5 +10,3 @@ module CatContent
     abstract_method :find_all_published
   end
 end
-
-

@@ -22,6 +22,3 @@ module CatContent
   # Auto-inject module for dependency injection
   Import = Dry::AutoInject(Container)
 end
-
-
-

@@ -27,5 +27,3 @@ module Identity
     end
   end
 end
-
-

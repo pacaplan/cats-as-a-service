@@ -2,7 +2,7 @@
 
 # Skip if Devise is not loaded (e.g., during initial bootstrapping)
 if defined?(Devise)
-  require 'devise/orm/active_record'
+  require "devise/orm/active_record"
 
   Devise.setup do |config|
     # Password length: 12-128 characters
@@ -27,4 +27,3 @@ if defined?(Devise)
     Devise.secret_key = Rails.application.secret_key_base
   end
 end
-

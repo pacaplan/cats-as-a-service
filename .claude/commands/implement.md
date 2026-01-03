@@ -162,6 +162,40 @@ cd engines/{context} && bundle exec rspec
 
 ---
 
+## Phase 8: Lint (StandardRB)
+
+Lint all Ruby code in the engine with StandardRB.
+
+**Loop:**
+
+1. Run safe auto-fix:
+```bash
+cd engines/{context} && bundle exec standardrb --fix
+```
+
+2. If violations remain, run unsafe auto-fix and review each change for safety:
+```bash
+cd engines/{context} && bundle exec standardrb --fix-unsafely
+```
+Review the diff to ensure unsafe fixes didn't break anything.
+
+3. If violations still remain, manually fix them.
+
+4. Re-run specs to ensure fixes didn't break anything:
+```bash
+cd engines/{context} && bundle exec rspec
+```
+
+5. If specs fail, fix the failures and return to step 1.
+
+6. Exit loop when standardrb passes and all specs pass.
+
+**Max iterations:** 3. If still failing, stop and report remaining issues.
+
+**Commit changes** after phase 8 is complete.
+
+---
+
 ## Completion Checklist
 
 Before marking complete, verify:
@@ -173,4 +207,5 @@ Before marking complete, verify:
 - [ ] Packwerk check passing
 - [ ] Both reviewers provided feedback with no remaining issues
 - [ ] New specs written and passing
+- [ ] StandardRB linting passing
 - [ ] All changes committed

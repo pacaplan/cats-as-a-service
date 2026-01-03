@@ -29,7 +29,7 @@ module Identity
           created_at: shopper.created_at
         }, status: :created
       else
-        render json: { errors: result.failure }, status: :unprocessable_entity
+        render json: {errors: result.failure}, status: :unprocessable_entity
       end
     end
 

@@ -32,3 +32,4 @@ CREATE TRIGGER update_shopper_identities_updated_at BEFORE UPDATE ON identity.sh
 FOR EACH ROW EXECUTE FUNCTION identity.update_updated_at_column();
 
 
+

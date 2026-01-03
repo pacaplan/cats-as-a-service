@@ -31,7 +31,7 @@ Dir[File.join(__dir__, "support", "**", "*.rb")].sort.each { |f| require f }
 
 # Checks for pending migrations and applies them before tests are run.
 # We use Supabase migrations, not Rails migrations, so we skip this check
-require 'active_record/tasks/database_tasks'
+require "active_record/tasks/database_tasks"
 
 begin
   ActiveRecord::Tasks::DatabaseTasks.database_configuration = Rails.application.config.database_configuration

@@ -17,14 +17,22 @@ require "rspec/rails"
 RSpec.configure do |config|
   config.before(:suite) do
     # Ensure identity schema exists
-    ActiveRecord::Base.connection.execute("CREATE SCHEMA IF NOT EXISTS identity") rescue nil
-    
+    begin
+      ActiveRecord::Base.connection.execute("CREATE SCHEMA IF NOT EXISTS identity")
+    rescue
+      nil
+    end
+
     # Run the migration if table doesn't exist
     unless ActiveRecord::Base.connection.table_exists?("identity.shopper_identities")
       migration_file = File.join(Identity::Engine.root, "../../supabase/migrations/20250101000003_create_identity_schema.sql")
       if File.exist?(migration_file)
         sql = File.read(migration_file)
-        ActiveRecord::Base.connection.execute(sql) rescue nil
+        begin
+          ActiveRecord::Base.connection.execute(sql)
+        rescue
+          nil
+        end
       end
     end
   end
@@ -55,4 +63,3 @@ RSpec.configure do |config|
     example.run
   end
 end
-

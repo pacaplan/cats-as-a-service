@@ -14,8 +14,8 @@ class HealthController < ApplicationController
     }
 
     all_healthy = checks[:api][:status] == "healthy" &&
-                  checks[:database][:status] == "connected" &&
-                  checks[:engines][:cat_content][:status] == "healthy"
+      checks[:database][:status] == "connected" &&
+      checks[:engines][:cat_content][:status] == "healthy"
 
     render json: {
       service: "rampart-api",
@@ -44,7 +44,7 @@ class HealthController < ApplicationController
       status: "connected",
       adapter: ActiveRecord::Base.connection.adapter_name
     }
-  rescue StandardError => e
+  rescue => e
     {
       status: "disconnected",
       error: e.message
@@ -52,12 +52,12 @@ class HealthController < ApplicationController
   end
 
   def check_cat_content_engine
-    CatContent::ApplicationRecord.connection.execute("SELECT 1")
+    CatContent::BaseRecord.connection.execute("SELECT 1")
     {
       status: "healthy",
       schema: "cat_content"
     }
-  rescue StandardError => e
+  rescue => e
     {
       status: "unhealthy",
       error: e.message
@@ -82,5 +82,3 @@ class HealthController < ApplicationController
     parts.join(" ")
   end
 end
-
-

@@ -8,7 +8,7 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
     # CORS origins from FRONTEND_URL environment variable
     # Supports multiple origins (comma-separated) or single origin
     origin_env = ENV["FRONTEND_URL"]
-    
+
     origins(
       if origin_env.nil? || origin_env.empty?
         if Rails.env.production?
@@ -21,7 +21,7 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
       else
         # Parse comma-separated origins or use single origin
         origins_list = origin_env.split(",").map(&:strip).reject(&:empty?)
-        origins_list.length == 1 ? origins_list.first : origins_list
+        (origins_list.length == 1) ? origins_list.first : origins_list
       end
     )
 

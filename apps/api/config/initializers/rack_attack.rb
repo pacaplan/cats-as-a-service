@@ -21,6 +21,6 @@ Rack::Attack.throttled_responder = lambda do |env|
     "X-RateLimit-Reset" => (now + (match_data[:period] - now % match_data[:period])).to_s
   }
 
-  [429, headers, [{ error: "Too many requests. Please try again later." }.to_json]]
+  [429, headers, [{error: "Too many requests. Please try again later."}.to_json]]
 end
 

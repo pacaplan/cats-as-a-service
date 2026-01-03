@@ -8,6 +8,7 @@ module Identity
   # Orchestrates domain logic for shopper authentication.
   class ShopperAuthService < Rampart::Application::Service
     include Dry::Monads[:result]
+
     def initialize(shopper_identity_repo:)
       @shopper_identity_repo = shopper_identity_repo
     end
@@ -21,18 +22,14 @@ module Identity
     # @return [Result<ShopperIdentity>]
     def register(email:, password:, password_confirmation:, name:)
       # Delegate validation to repository/Devise
-      result = @shopper_identity_repo.create(
+      @shopper_identity_repo.create(
         email: email,
         password: password,
         password_confirmation: password_confirmation,
         name: name
       )
-
-      result
-    rescue StandardError => e
+    rescue => e
       Failure(e.message)
     end
   end
 end
-
-

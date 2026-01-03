@@ -15,7 +15,7 @@ module CatContent
     def list_published
       listings = @cat_listing_repo.find_all_published
       Success(listings)
-    rescue StandardError => e
+    rescue => e
       Failure(e)
     end
 
@@ -33,11 +33,9 @@ module CatContent
       else
         Success(listing)
       end
-    rescue StandardError => e
+    rescue => e
       Failure(e)
     end
   end
 end
-
-
 

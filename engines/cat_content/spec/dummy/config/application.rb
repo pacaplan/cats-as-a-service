@@ -10,9 +10,8 @@ module Dummy
     config.load_defaults Rails::VERSION::STRING.to_f
     config.api_only = true
     config.eager_load = false
-    
+
     # Configure database path for the dummy app
     config.paths["config/database"] = File.expand_path("../database.yml", __FILE__)
   end
 end
-

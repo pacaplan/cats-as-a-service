@@ -12,19 +12,16 @@ RSpec.describe "Cat Listings API", type: :request do
           slug: "test-cat-alpha-#{SecureRandom.hex(4)}",
           description: "A test cat",
           price_cents: 4800,
-          tags: ["cozy", "cosmic"]
-        )
+          tags: ["cozy", "cosmic"])
         create(:cat_listing_record, :published,
           name: "Test Cat Beta",
           slug: "test-cat-beta-#{SecureRandom.hex(4)}",
           description: "Another test cat",
           price_cents: 3900,
-          tags: ["chaotic"]
-        )
+          tags: ["chaotic"])
         create(:cat_listing_record, :draft,
           name: "Draft Cat",
-          slug: "draft-cat-#{SecureRandom.hex(4)}"
-        )
+          slug: "draft-cat-#{SecureRandom.hex(4)}")
       end
 
       it "returns 200 OK" do
@@ -85,8 +82,7 @@ RSpec.describe "Cat Listings API", type: :request do
           price_cents: 4800,
           image_url: "https://example.com/cat.jpg",
           image_alt: "Test cat",
-          tags: ["cozy", "cosmic"]
-        )
+          tags: ["cozy", "cosmic"])
       end
 
       it "returns 200 OK" do

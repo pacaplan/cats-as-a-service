@@ -9,4 +9,3 @@ module Identity
     # In production multi-DB setups, configure connects_to at the host app level
   end
 end
-

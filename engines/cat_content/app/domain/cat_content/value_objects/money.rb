@@ -25,4 +25,3 @@ module CatContent
   end
 end
 
-

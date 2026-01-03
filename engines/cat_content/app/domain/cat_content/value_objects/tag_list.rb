@@ -11,14 +11,12 @@ module CatContent
 
     def self.from(tags)
       tags_array = case tags
-                   when Array then tags.map(&:to_s)
-                   when String then tags.split(",").map(&:strip)
-                   else []
-                   end
+      when Array then tags.map(&:to_s)
+      when String then tags.split(",").map(&:strip)
+      else []
+      end
       new(values: tags_array)
     end
   end
 end
-
-
 

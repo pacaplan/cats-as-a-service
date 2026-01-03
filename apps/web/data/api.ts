@@ -2,7 +2,10 @@
 
 import { ApiNotFoundError, fetchWithTimeout } from './fetchWithTimeout';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const DEFAULT_API_URL = 'http://localhost:8000';
+const API_BASE_URL = typeof window === 'undefined'
+  ? (process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || DEFAULT_API_URL)
+  : (process.env.NEXT_PUBLIC_API_URL || DEFAULT_API_URL);
 
 export interface CatPrice {
   cents: number;
@@ -56,7 +59,7 @@ export async function fetchCatalog(): Promise<CatalogResponse> {
 
   if (!response.ok) {
     const error = await parseApiError(response);
-    throw new Error(error?.message || 'Failed to fetch catalog');
+    throw new Error(error?.message || `Failed to fetch catalog (${response.status})`);
   }
 
   return response.json();
@@ -79,7 +82,7 @@ export async function fetchCatListing(slug: string): Promise<CatListing> {
 
   if (!response.ok) {
     const error = await parseApiError(response);
-    throw new Error(error?.message || 'Cat listing not found');
+    throw new Error(error?.message || `Cat listing not found (${response.status})`);
   }
 
   return response.json();

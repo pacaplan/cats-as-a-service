@@ -46,4 +46,3 @@ module CatContent
   end
 end
 
-

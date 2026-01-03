@@ -2,7 +2,10 @@
 
 import { fetchWithTimeout } from './fetchWithTimeout';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const DEFAULT_API_URL = 'http://localhost:8000';
+const API_BASE_URL = typeof window === 'undefined'
+  ? (process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || DEFAULT_API_URL)
+  : (process.env.NEXT_PUBLIC_API_URL || DEFAULT_API_URL);
 
 export interface User {
   id: string;

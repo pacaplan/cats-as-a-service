@@ -12,7 +12,7 @@ class CreateCatContentCustomCats < ActiveRecord::Migration[7.1]
       t.string :tags, array: true, default: []
       t.timestamps
     end
-    
+
     add_index "cat_content.custom_cats", :user_id
     add_index "cat_content.custom_cats", :visibility
   end

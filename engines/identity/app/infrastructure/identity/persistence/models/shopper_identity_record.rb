@@ -9,9 +9,8 @@ module Identity
     devise :database_authenticatable, :registerable, :validatable
 
     # Validations
-    validates :name, presence: true, length: { maximum: 100 }
-    validates :email, uniqueness: { case_sensitive: false }
-    validates :status, presence: true, inclusion: { in: %w[active suspended] }
+    validates :name, presence: true, length: {maximum: 100}
+    validates :email, uniqueness: {case_sensitive: false}
+    validates :status, presence: true, inclusion: {in: %w[active suspended]}
   end
 end
-

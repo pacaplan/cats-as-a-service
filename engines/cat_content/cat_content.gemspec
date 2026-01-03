@@ -1,14 +1,14 @@
 require_relative "lib/cat_content/version"
 
 Gem::Specification.new do |spec|
-  spec.name        = "cat_content"
-  spec.version     = CatContent::VERSION
-  spec.authors     = [ "Paul Caplan" ]
-  spec.email       = [ "pcaplan@teladoc.com" ]
-  spec.homepage    = "TODO"
-  spec.summary     = "TODO: Summary of CatContent."
+  spec.name = "cat_content"
+  spec.version = CatContent::VERSION
+  spec.authors = ["Paul Caplan"]
+  spec.email = ["pcaplan@teladoc.com"]
+  spec.homepage = "TODO"
+  spec.summary = "TODO: Summary of CatContent."
   spec.description = "TODO: Description of CatContent."
-  spec.license     = "MIT"
+  spec.license = "MIT"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the "allowed_push_host"
   # to allow pushing to a single host or delete this section to allow pushing to any host.
