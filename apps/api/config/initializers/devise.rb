@@ -18,4 +18,21 @@ Devise.setup do |config|
 
   # Expire remember me tokens on sign out
   config.expire_all_remember_me_on_sign_out = true
+
+  # === LOCKABLE CONFIGURATION ===
+  # Lock strategy: lock after N failed attempts
+  config.lock_strategy = :failed_attempts
+
+  # Unlock strategy: time-based only (no email unlock)
+  config.unlock_strategy = :time
+
+  # Maximum failed attempts before lock
+  config.maximum_attempts = 5
+
+  # Unlock after 1 hour
+  config.unlock_in = 1.hour
+
+  # === TIMEOUTABLE CONFIGURATION ===
+  # Session expires after 24 hours of inactivity
+  config.timeout_in = 24.hours
 end

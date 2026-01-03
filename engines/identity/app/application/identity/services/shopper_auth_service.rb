@@ -31,5 +31,18 @@ module Identity
     rescue => e
       Failure(e.message)
     end
+
+    # Authenticate a shopper
+    #
+    # @param email [String]
+    # @param password [String]
+    # @return [Result<ShopperIdentity>]
+    #   Success with ShopperIdentity on valid credentials
+    #   Failure with :invalid_credentials, :account_suspended, or :account_locked
+    def sign_in(email:, password:)
+      @shopper_identity_repo.authenticate(email: email, password: password)
+    rescue => e
+      Failure(e.message)
+    end
   end
 end

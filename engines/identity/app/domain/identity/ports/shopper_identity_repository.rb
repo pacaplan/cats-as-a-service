@@ -8,6 +8,8 @@ module Identity
   class ShopperIdentityRepository < Rampart::Ports::SecondaryPort
     abstract_method :create
     abstract_method :find_by_email
+    abstract_method :authenticate
   end
 end
+
 

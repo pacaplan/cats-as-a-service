@@ -7,6 +7,13 @@ class Rack::Attack
       req.ip
     end
   end
+
+  # Throttle sign-in attempts by IP address
+  throttle("sign_in/ip", limit: 5, period: 1.minute) do |req|
+    if req.post? && (req.path == "/api/users/sign_in" || req.path == "/users/sign_in")
+      req.ip
+    end
+  end
 end
 
 # Return 429 status for throttled requests
@@ -23,4 +30,5 @@ Rack::Attack.throttled_responder = lambda do |env|
 
   [429, headers, [{error: "Too many requests. Please try again later."}.to_json]]
 end
+
 

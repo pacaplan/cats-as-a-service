@@ -7,4 +7,9 @@ Identity::Engine.routes.draw do
 
   # Shopper registration endpoint
   post "users", to: "shopper_registrations#create"
+
+  # Shopper session endpoints
+  post "users/sign_in", to: "shopper_sessions#create"
+  delete "users/sign_out", to: "shopper_sessions#destroy"
+  get "users/current", to: "shopper_sessions#current"
 end

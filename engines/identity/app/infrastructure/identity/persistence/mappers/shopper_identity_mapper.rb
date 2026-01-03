@@ -20,6 +20,8 @@ module Identity
           uid: record.uid,
           email_verified: record.email_verified || false,
           status: record.status || "active",
+          failed_attempts: record.failed_attempts || 0,
+          locked_at: record.locked_at,
           created_at: record.created_at,
           updated_at: record.updated_at
         )
