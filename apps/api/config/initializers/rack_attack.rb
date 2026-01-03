@@ -3,7 +3,7 @@
 class Rack::Attack
   # Throttle registration attempts by IP address
   throttle("registrations/ip", limit: 5, period: 1.minute) do |req|
-    if req.path == "/api/users" && req.post?
+    if req.post? && (req.path == "/api/users" || req.path == "/users")
       req.ip
     end
   end
@@ -23,5 +23,4 @@ Rack::Attack.throttled_responder = lambda do |env|
 
   [429, headers, [{ error: "Too many requests. Please try again later." }.to_json]]
 end
-
 
