@@ -71,6 +71,10 @@ cd engines/cat_content && bundle exec rspec
 cd engines/cat_content && bundle exec rspec spec/architecture_spec.rb
 ```
 
+## Manual Server Startup
+
+- Do not start servers automatically; the user will start and manage all server processes manually.
+
 ---
 
 ## Key Conventions

@@ -71,6 +71,11 @@ class ShipOrderService < Rampart::Application::Service
 end
 ```
 
+### Controllers (Primary Adapters)
+- **Explicit namespace for base class** — prevents accidental dependency on host app
+- **Delegate to application services** — controllers only orchestrate, never call domain/repos directly
+- **Handle Result monads** — convert Success/Failure to HTTP responses
+
 ### Mappers
 Translate between domain objects and ActiveRecord:
 

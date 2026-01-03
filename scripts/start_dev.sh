@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -e
 
+#!/usr/bin/env bash
+set -e
+
 # Colors for output
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
@@ -35,8 +38,7 @@ trap cleanup SIGINT SIGTERM EXIT
 # Start API server
 echo -e "${BLUE}[API]${NC} Starting Rails server on port 8000..."
 (
-  cd apps/api
-  bundle exec rails server -p 8000
+  scripts/start_api.sh
 ) &
 API_PID=$!
 
@@ -46,12 +48,9 @@ sleep 3
 # Start Web server
 echo -e "${BLUE}[Web]${NC} Starting Next.js dev server on port 3000..."
 (
-  cd apps/web
-  npm run dev
+  scripts/start_web.sh
 ) &
 WEB_PID=$!
 
 # Wait for both processes
 wait
-
-
