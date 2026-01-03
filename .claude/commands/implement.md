@@ -106,16 +106,16 @@ cd engines/{context} && bundle exec rspec
 ```
 
 **2. Packwerk Subagent:**
-Spawn a subagent with task: "Run packwerk check in the engine and report any layer boundary violations"
+Spawn a subagent with task: "Run packwerk check for the engine and report any layer boundary violations"
 ```bash
-packwerk check
+./scripts/check-packwerk.sh {context}
 ```
 
 **3. Rampart Reviewer Subagent:**
-Spawn the `rampart-reviewer` agent with task: "Review all code changes made in this session for hexagonal architecture adherence"
+Spawn the `rampart-reviewer` agent with task: "Review code changes for hexagonal architecture adherence. Scope: all commits in current branch divergent from origin/main. Use `git diff origin/main...HEAD` to identify changed files."
 
 **4. Code Reviewer Subagent:**
-Spawn the `code-reviewer` agent with task: "Review all code changes made in this session for bugs and quality issues"
+Spawn the `code-reviewer` agent with task: "Review code changes for bugs and quality issues. Scope: all commits in current branch divergent from origin/main. Use `git diff origin/main...HEAD` to identify changed files."
 
 **Output:** Collect all failures, violations, and review findings from all 4 subagents.
 
@@ -146,6 +146,12 @@ After all existing checks pass, add new specs for the implemented feature.
 - `spec/application/` - Service tests with stubbed ports
 - `spec/infrastructure/` - Integration tests with database
 - `spec/requests/` - Full API integration tests
+
+**Test isolation from seeded data:**
+The test database contains seeded data. To avoid conflicts:
+- Use unique identifiers in factories (e.g., `slug: "test-#{SecureRandom.hex(4)}"`)
+- Don't assert exact counts when seeded data may exist
+- Use `let!` with dynamic values rather than hardcoded slugs/names
 
 **Run new specs to verify they pass:**
 ```bash

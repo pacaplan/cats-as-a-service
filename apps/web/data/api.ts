@@ -1,5 +1,7 @@
 // API client for the Cat Content backend
 
+import { ApiNotFoundError, fetchWithTimeout } from './fetchWithTimeout';
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 export interface CatPrice {
@@ -33,11 +35,19 @@ export interface ApiError {
   message: string;
 }
 
+async function parseApiError(response: Response): Promise<ApiError | null> {
+  try {
+    return await response.json();
+  } catch (error) {
+    return null;
+  }
+}
+
 /**
  * Fetch all published cat listings from the catalog
  */
 export async function fetchCatalog(): Promise<CatalogResponse> {
-  const response = await fetch(`${API_BASE_URL}/api/catalog`, {
+  const response = await fetchWithTimeout(`${API_BASE_URL}/api/catalog`, {
     cache: 'no-store', // Always fetch fresh data
     headers: {
       'Accept': 'application/json',
@@ -45,8 +55,8 @@ export async function fetchCatalog(): Promise<CatalogResponse> {
   });
 
   if (!response.ok) {
-    const error: ApiError = await response.json();
-    throw new Error(error.message || 'Failed to fetch catalog');
+    const error = await parseApiError(response);
+    throw new Error(error?.message || 'Failed to fetch catalog');
   }
 
   return response.json();
@@ -56,20 +66,23 @@ export async function fetchCatalog(): Promise<CatalogResponse> {
  * Fetch a single cat listing by slug
  */
 export async function fetchCatListing(slug: string): Promise<CatListing> {
-  const response = await fetch(`${API_BASE_URL}/api/catalog/${slug}`, {
+  const response = await fetchWithTimeout(`${API_BASE_URL}/api/catalog/${slug}`, {
     cache: 'no-store',
     headers: {
       'Accept': 'application/json',
     },
   });
 
+  if (response.status === 404) {
+    throw new ApiNotFoundError('Cat listing not found');
+  }
+
   if (!response.ok) {
-    const error: ApiError = await response.json();
-    throw new Error(error.message || 'Cat listing not found');
+    const error = await parseApiError(response);
+    throw new Error(error?.message || 'Cat listing not found');
   }
 
   return response.json();
 }
-
 
 

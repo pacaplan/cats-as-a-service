@@ -5,6 +5,7 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import Button from '@/components/ui/Button';
 import { fetchCatListing, CatListing } from '@/data/api';
+import { ApiNotFoundError } from '@/data/fetchWithTimeout';
 import { notFound } from 'next/navigation';
 
 interface CatDetailPageProps {
@@ -15,8 +16,10 @@ async function getCatListing(slug: string): Promise<CatListing | null> {
   try {
     return await fetchCatListing(slug);
   } catch (error) {
-    console.error('Failed to fetch cat listing:', error);
-    return null;
+    if (error instanceof ApiNotFoundError) {
+      return null;
+    }
+    throw error;
   }
 }
 
@@ -114,6 +117,5 @@ export default async function CatDetailPage({ params }: CatDetailPageProps) {
     </div>
   );
 }
-
 
 

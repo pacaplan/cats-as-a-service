@@ -1,5 +1,7 @@
 // Authentication API client for shopper registration and login
 
+import { fetchWithTimeout } from './fetchWithTimeout';
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 export interface User {
@@ -41,7 +43,7 @@ export interface AuthError {
  * POST /api/users
  */
 export async function registerUser(data: RegisterRequest): Promise<User> {
-  const response = await fetch(`${API_BASE_URL}/api/users`, {
+  const response = await fetchWithTimeout(`${API_BASE_URL}/api/users`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -68,7 +70,7 @@ export async function registerUser(data: RegisterRequest): Promise<User> {
  * POST /api/users/sign_in
  */
 export async function loginUser(data: LoginRequest): Promise<User> {
-  const response = await fetch(`${API_BASE_URL}/api/users/sign_in`, {
+  const response = await fetchWithTimeout(`${API_BASE_URL}/api/users/sign_in`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -94,7 +96,7 @@ export async function loginUser(data: LoginRequest): Promise<User> {
  * DELETE /api/users/sign_out
  */
 export async function logoutUser(): Promise<void> {
-  const response = await fetch(`${API_BASE_URL}/api/users/sign_out`, {
+  const response = await fetchWithTimeout(`${API_BASE_URL}/api/users/sign_out`, {
     method: 'DELETE',
     headers: {
       'Accept': 'application/json',
@@ -113,7 +115,7 @@ export async function logoutUser(): Promise<void> {
  */
 export async function getCurrentUser(): Promise<User | null> {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/users/current`, {
+    const response = await fetchWithTimeout(`${API_BASE_URL}/api/users/current`, {
       headers: {
         'Accept': 'application/json',
       },
