@@ -4,6 +4,78 @@ Execute a complete vertical slice implementation for: **$ARGUMENTS**
 
 > ⚠️ **Single Engine Scope:** Each vertical slice must be implemented within a single engine. If the requirements necessitate changes across multiple engines (e.g., both `cat_content` and `identity`), **HALT and request human guidance** before proceeding.
 
+> 📖 **Database Guide:** See `supabase/AGENT.md` for detailed Supabase setup, troubleshooting, and database management instructions.
+
+---
+
+## Phase 0: Branching & Database Setup
+
+### 0.1 Branching
+
+Before starting, check for uncommitted changes. If any exist, pause and request user input before proceeding.
+
+Ensure work is on a feature branch. If the current branch is `main`, check out a new feature branch.
+
+### 0.2 Database Setup
+
+Verify Supabase is running and the database is ready:
+
+```bash
+npx supabase status
+```
+
+If Supabase is not running or shows errors:
+
+1. Stop any existing instances (resolves container conflicts):
+   ```bash
+   npx supabase stop --no-backup
+   ```
+
+2. Start Supabase (applies all migrations automatically):
+   ```bash
+   npx supabase start
+   ```
+
+**Note:** Test and development share the same database. Clean up any stale test data if needed before running specs.
+
+### 0.3 API Server Setup
+
+Verify the Rails API is running:
+
+```bash
+curl -s http://localhost:8000/api/catalog | head -c 100
+```
+
+If not running, start it:
+
+```bash
+./scripts/start_api.sh
+```
+
+Wait for startup, then verify with a health check:
+
+```bash
+curl -s http://localhost:8000/api/catalog
+```
+
+The API should return a JSON response with catalog listings.
+
+### 0.4 Web App Setup
+
+Verify the Next.js web app is running:
+
+```bash
+curl -s http://localhost:3000 | head -c 100
+```
+
+If not running, start it:
+
+```bash
+./scripts/start_web.sh
+```
+
+The web app should be accessible at `http://localhost:3000`.
+
 ---
 
 ## Phase 1: Database
@@ -209,3 +281,4 @@ Before marking complete, verify:
 - [ ] New specs written and passing
 - [ ] StandardRB linting passing
 - [ ] All changes committed
+- [ ] Opened a pull request to `main` using GitHub CLI (`gh pr create --base main`)
