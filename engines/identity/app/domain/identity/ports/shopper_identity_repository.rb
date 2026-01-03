@@ -11,5 +11,3 @@ module Identity
     abstract_method :authenticate
   end
 end
-
-
