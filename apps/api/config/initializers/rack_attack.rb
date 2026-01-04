@@ -14,6 +14,13 @@ class Rack::Attack
       req.ip
     end
   end
+
+  # Throttle admin sign-in attempts by IP address (5 requests/minute)
+  throttle("admin_sign_in/ip", limit: 5, period: 1.minute) do |req|
+    if req.post? && req.path == "/admin/sign_in"
+      req.ip
+    end
+  end
 end
 
 # Return 429 status for throttled requests

@@ -1,13 +1,26 @@
 class AdminController < ApplicationController
+  before_action :authenticate_admin!
+
   # GET /admin
-  # Simple admin interface (no authentication for now)
+  # Admin dashboard (requires authentication)
   def index
     render html: admin_html.html_safe
   end
 
   private
 
+  def authenticate_admin!
+    unless warden.authenticated?(:admin_identity)
+      redirect_to "/admin/sign_in"
+    end
+  end
+
+  def current_admin
+    warden.user(:admin_identity)
+  end
+
   def admin_html
+    username = current_admin&.username || "Admin"
     <<~HTML
       <!DOCTYPE html>
       <html>
@@ -37,13 +50,37 @@ class AdminController < ApplicationController
               color: #666;
               line-height: 1.6;
             }
+            .sign-out {
+              margin-top: 20px;
+            }
+            .sign-out form {
+              display: inline;
+            }
+            .sign-out button {
+              background-color: #dc3545;
+              color: white;
+              border: none;
+              padding: 8px 16px;
+              border-radius: 4px;
+              cursor: pointer;
+            }
+            .sign-out button:hover {
+              background-color: #c82333;
+            }
           </style>
         </head>
         <body>
           <div class="container">
-            <h1>Hello World</h1>
-            <p>Welcome to the Cats as a Service admin interface.</p>
-            <p>This is a non-API endpoint with no authentication (for now).</p>
+            <h1>Admin Dashboard</h1>
+            <p>Welcome to the Cats as a Service admin interface, #{username}!</p>
+            <p>You are successfully authenticated.</p>
+            <div class="sign-out">
+              <form action="/admin/sign_out" method="post">
+                <input type="hidden" name="_method" value="delete">
+                <input type="hidden" name="authenticity_token" value="#{form_authenticity_token}">
+                <button type="submit">Sign Out</button>
+              </form>
+            </div>
           </div>
         </body>
       </html>
