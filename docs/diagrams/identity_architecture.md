@@ -1,6 +1,6 @@
 # Identity & Profile — Architecture Diagrams
 
-Generated from `/Users/pcaplan/paul/cats-as-a-service/architecture/identity.json` on 2025-12-28T03:16:33.125Z
+Generated from `/Users/pcaplan/paul/cats-as-a-service/architecture/identity/architecture.json` on 2025-12-28T03:16:33.125Z
 
 ---
 

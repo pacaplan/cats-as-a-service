@@ -1,7 +1,7 @@
 # Implementation Plan: Cat & Content
 
 Generated: 2025-01-27
-Architecture: architecture/cat_content.json
+Architecture: architecture/cat_content/architecture.json
 Mode: Incremental
 
 ## Summary

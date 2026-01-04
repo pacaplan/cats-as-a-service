@@ -3,7 +3,7 @@
 **Bounded Context:** Identity & Profile
 **Status:** planned
 **Generated:** 2025-12-28T03:09:05.692Z
-**Source:** `/Users/pcaplan/paul/cats-as-a-service/architecture/identity.json`
+**Source:** `/Users/pcaplan/paul/cats-as-a-service/architecture/identity/architecture.json`
 
 <!-- 
 Status values:

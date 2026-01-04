@@ -42,8 +42,8 @@ Use `/implement <feature>` to execute the full workflow. See [`.claude/commands/
 
 Architecture is defined in JSON blueprints:
 - `architecture/system.json` - System-level configuration and engine registry
-- `architecture/cat_content.json` - Cat content context architecture
-- `architecture/identity.json` - Identity context architecture
+- `architecture/cat_content/architecture.json` - Cat content context architecture
+- `architecture/identity/architecture.json` - Identity context architecture
 
 When implementing features, consult these blueprints for:
 - Aggregate definitions and invariants

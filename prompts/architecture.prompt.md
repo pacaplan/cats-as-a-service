@@ -16,7 +16,7 @@ Rampart also optimizes for two goals:
 - **Bounded Context Autonomy** — Clear seams so each context can evolve independently
 - **Human/AI Clarity** — Ubiquitous language and explicit boundaries make intent obvious
 
-The output of this workflow is `architecture/{bc_id}.json` — a machine-readable blueprint that drives scaffolding, validation, and documentation.
+The output of this workflow is `architecture/{bc_id}/architecture.json` — a machine-readable blueprint that drives scaffolding, validation, and documentation.
 
 ---
 
@@ -192,8 +192,8 @@ Before starting, determine whether you're creating a new bounded context, modify
 Ask:
 > "What bounded context are we working on, and what do you want to do?
 >
-> 1. **Create new** architecture — design from scratch and create `architecture/{bc_id}.json`
-> 2. **Modify** existing architecture — make targeted changes to an existing `architecture/{bc_id}.json`
+> 1. **Create new** architecture — design from scratch and create `architecture/{bc_id}/architecture.json`
+> 2. **Modify** existing architecture — make targeted changes to an existing `architecture/{bc_id}/architecture.json`
 > 3. **Review/validate** existing architecture — assess soundness and consistency (no changes unless requested)
 >
 > If you have an existing file, share the file path or paste the current JSON so I can load it."
@@ -226,7 +226,7 @@ When the user asks to "revisit" a bounded context or "validate if the architectu
 ### Minimum Questions (Required)
 
 Before giving any assessment, ask these questions (even if the user says “just validate”):
-1. **Which file should I review?** Provide the path to `architecture/{bc_id}.json` (or paste it).
+1. **Which file should I review?** Provide the path to `architecture/{bc_id}/architecture.json` (or paste it).
 2. **What does “sound” mean for you right now?** Choose 1–3 focus areas:
    - Layer direction (domain <- application <- interfaces)
    - Port/adapter completeness and wiring clarity
@@ -508,7 +508,7 @@ During elicitation, watch for and gently correct these anti-patterns:
 
 **User:** I have an existing architecture for cat_content. I want to add a new capability for regenerating cat descriptions with AI.
 
-**Assistant:** I'd be happy to help add that capability. Please share the current `architecture/cat_content.json` so I can review it and ensure consistency.
+**Assistant:** I'd be happy to help add that capability. Please share the current `architecture/cat_content/architecture.json` so I can review it and ensure consistency.
 
 **User:** [pastes current JSON]
 
@@ -814,7 +814,7 @@ When the design is complete (new or modified), output:
 2. **Updated JSON sections** — Only the sections that changed
 3. **Full JSON** — Complete, valid blueprint
 4. **Validation checklist** — Confirm consistency (see "Modification Output Format")
-5. **Next Steps** — Run `rampart diagram architecture/{bc_id}.json` to generate diagrams, then `rampart scaffold {bc_id}` or `rampart spec {bc_id}` as needed
+5. **Next Steps** — Run `rampart diagram architecture/{bc_id}/architecture.json` to generate diagrams, then `rampart scaffold {bc_id}` or `rampart spec {bc_id}` as needed
 
 ---
 

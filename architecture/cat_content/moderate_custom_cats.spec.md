@@ -1,9 +1,9 @@
-# RefineCustomCat — Capability Spec
+# ModerateCustomCats — Capability Spec
 
 **Bounded Context:** Cat & Content
 **Status:** template
-**Generated:** 2025-12-23T01:51:59.650Z
-**Source:** `/Users/pcaplan/paul/cats-as-a-service/architecture/cat_content.json`
+**Generated:** 2025-12-23T01:51:59.651Z
+**Source:** `/Users/pcaplan/paul/cats-as-a-service/architecture/cat_content/architecture.json`
 
 <!-- 
 Status values:
@@ -17,8 +17,8 @@ Update this status as you progress through the workflow.
 
 ## Overview
 
-**Actors:** Shopper
-**Entrypoints:** CustomCatsController#refine
+**Actors:** Admin
+**Entrypoints:** CustomCatsController#index, CustomCatsController#archive
 **Outputs:** CustomCat
 
 ---
@@ -69,12 +69,13 @@ Update this status as you progress through the workflow.
 
 ### Domain Events Emitted
 
-#### CustomCatRefined
-> Emitted when a user refines their custom cat's description or image
+#### CustomCatArchived
+> Emitted when an admin archives a custom cat during moderation
 
 **Payload Intent:**
 - `custom_cat_id`
-- `refined_at`
+- `archived_at`
+- `archived_by`
 
 
 ---
@@ -129,20 +130,16 @@ Update this status as you progress through the workflow.
 
 ```mermaid
 flowchart TB
-    Shopper["Shopper"]
-    Shopper -->|"/custom-cats"| Controller
-    Controller["CustomCatsController#refine"]
+    Admin["Admin"]
+    Admin -->|"/custom-cats"| Controller
+    Controller["CustomCatsController#index"]
     Controller -->|invokes| Service
     Service["CustomCatService"]
-    Service -->|uses port| Port0["LanguageModelPort<br/>(port)"]
-    Port0 -.->|impl| Adapter0["OpenAILanguageModelAdapter"]
-    Adapter0 --> LanguageModels["Language Models"]
-    Service -->|uses port| Port1["ImageGenerationPort<br/>(port)"]
-    Service -->|uses port| Port2["CustomCatRepository<br/>(port)"]
-    Port2 -.->|impl| Adapter2["SqlCustomCatRepository"]
-    Adapter2 --> PostgreSQL[("PostgreSQL")]
+    Service -->|uses port| Port0["CustomCatRepository<br/>(port)"]
+    Port0 -.->|impl| Adapter0["SqlCustomCatRepository"]
+    Adapter0 --> PostgreSQL[("PostgreSQL")]
     Service -->|orchestrates| Aggregate["CustomCat Aggregate<br/>─────<br/>Invariants:<br/>• must have creator_user_id<br/>• must have name<br/>• price is fixed at<br/>system-configured rate"]
-    Aggregate -->|emits| Event0["CustomCatRefined<br/>─────<br/>custom_cat_id<br/>refined_at"]
+    Aggregate -->|emits| Event0["CustomCatArchived<br/>─────<br/>custom_cat_id<br/>archived_at<br/>archived_by"]
     Event0 --> EventBus[Event Bus]
 ```
 
@@ -163,17 +160,14 @@ flowchart TB
 **Lifecycle:** generating → active → archived
 
 **Events Emitted:**
-- CustomCatRefined
+- CustomCatArchived
 
 ### Infrastructure Layer
 
 **Ports Used:**
-- LanguageModelPort
-- ImageGenerationPort
 - CustomCatRepository
 
 **Adapters:**
-- OpenAILanguageModelAdapter → LanguageModelPort
 - SqlCustomCatRepository → CustomCatRepository
 
 ---

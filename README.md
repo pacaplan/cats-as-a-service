@@ -104,7 +104,9 @@ cats-as-a-service/
 │       └── ...
 │
 ├── architecture/                # Architecture blueprints
-│   ├── cat_content.json        # Bounded context definition
+│   ├── cat_content/             # Bounded context definition
+│   │   ├── architecture.json
+│   │   └── browse_catalog.spec.md
 │   └── system.json              # System-level architecture
 │
 ├── supabase/                    # Database migrations

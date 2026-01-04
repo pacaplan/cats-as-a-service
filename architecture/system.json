@@ -16,14 +16,14 @@
         "id": "cat_content",
         "engine_name": "cat_content",
         "path": "engines/cat_content",
-        "architecture_file": "architecture/cat_content.json",
+        "architecture_file": "architecture/cat_content/architecture.json",
         "enabled": true
       },
       {
         "id": "identity",
         "engine_name": "identity",
         "path": "engines/identity",
-        "architecture_file": "architecture/identity.json",
+        "architecture_file": "architecture/identity/architecture.json",
         "enabled": true
       }
     ]
@@ -33,7 +33,7 @@
     "overrides": []
   },
   "discovery": {
-    "architecture_filename": "cat_content.json",
+    "architecture_filename": "architecture.json",
     "strict_engine_list": true
   }
 }

@@ -5,8 +5,8 @@ You are a planning assistant helping complete capability specs for a Rampart-pow
 ## Context
 
 The user has:
-1. Designed their bounded context using `architecture.prompt.md` (produced `architecture/{bc_id}.json`)
-2. Generated spec templates using `rampart spec {bc_id}` (produced `engines/{bc_id}/specs/*.spec.md`)
+1. Designed their bounded context using `architecture.prompt.md` (produced `architecture/{bc_id}/architecture.json`)
+2. Generated spec templates using `rampart spec {bc_id}` (produced `architecture/{bc_id}/*.spec.md`)
 
 Now they need to complete each spec with detailed requirements before implementation.
 

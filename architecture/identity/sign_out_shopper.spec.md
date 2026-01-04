@@ -1,9 +1,9 @@
-# SignOutAdmin — Capability Spec
+# SignOutShopper — Capability Spec
 
 **Bounded Context:** Identity & Profile
 **Status:** planned
 **Generated:** 2025-12-28T03:09:05.692Z
-**Source:** `/Users/pcaplan/paul/cats-as-a-service/architecture/identity.json`
+**Source:** `/Users/pcaplan/paul/cats-as-a-service/architecture/identity/architecture.json`
 
 <!-- 
 Status values:
@@ -17,10 +17,10 @@ Update this status as you progress through the workflow.
 
 ## Overview
 
-Invalidate the admin's current session
+Invalidate the shopper's current session
 
-**Actors:** Admin
-**Entrypoints:** AdminSessionsController#destroy
+**Actors:** Shopper
+**Entrypoints:** ShopperSessionsController#destroy
 **Outputs:** N/A
 
 ---
@@ -31,13 +31,13 @@ Invalidate the admin's current session
 
 ### Happy Path
 
-- [ ] WHEN an authenticated admin requests sign-out THE SYSTEM SHALL invalidate the current session
+- [ ] WHEN an authenticated shopper requests sign-out THE SYSTEM SHALL invalidate the current session
 - [ ] WHEN sign-out succeeds THE SYSTEM SHALL clear the session cookie
-- [ ] WHEN sign-out succeeds THE SYSTEM SHALL redirect to admin sign-in page
+- [ ] WHEN sign-out succeeds THE SYSTEM SHALL return HTTP 200 with confirmation
 
 ### Idempotency
 
-- [ ] WHEN an unauthenticated guest requests sign-out THE SYSTEM SHALL redirect to sign-in page (no-op, idempotent)
+- [ ] WHEN an unauthenticated guest requests sign-out THE SYSTEM SHALL return HTTP 200 (no-op, idempotent)
 
 ---
 
@@ -53,7 +53,7 @@ Invalidate the admin's current session
 
 ### Aggregates involved
 
-**Aggregate:** AdminIdentity (read-only for session validation)
+**Aggregate:** ShopperIdentity (read-only for session validation)
 
 *Sign-out does not modify aggregate state — it only destroys the session.*
 
@@ -74,25 +74,40 @@ Invalidate the admin's current session
 
 ### Entrypoint
 
-**DELETE /admin_users/sign_out**
+**DELETE /users/sign_out**
 
 ### Request
 
-No request body required. Session cookie identifies the admin.
+No request body required. Session cookie identifies the user.
 
 ```
-DELETE /admin_users/sign_out
+DELETE /users/sign_out
 Cookie: _session_id=...
 ```
 
 ### Success Response
 
-**HTTP 302 Found** — Redirect to admin sign-in
+**HTTP 200 OK**
 
+```json
+{
+  "message": "Signed out successfully"
+}
 ```
-Location: /admin_users/sign_in
-Set-Cookie: _session_id=; expires=...  (cleared)
+
+*Note: Session cookie is cleared (set to expired).*
+
+### Alternative: No-Op Response
+
+**HTTP 200 OK** (when already signed out)
+
+```json
+{
+  "message": "Signed out successfully"
+}
 ```
+
+*Idempotent — same response whether session existed or not.*
 
 ---
 
@@ -102,22 +117,22 @@ Set-Cookie: _session_id=; expires=...  (cleared)
 
 ```mermaid
 flowchart TB
-    Admin["Admin"]
-    Admin -->|"DELETE /admin_users/sign_out"| Controller
-    Controller["AdminSessionsController#destroy"]
+    Shopper["Shopper"]
+    Shopper -->|"DELETE /users/sign_out"| Controller
+    Controller["ShopperSessionsController#destroy"]
     Controller -->|invokes| Service
-    Service["AdminAuthService"]
+    Service["ShopperAuthService"]
     Service -->|"invalidate session"| Session[("Session Store")]
 ```
 
 ### Application Layer
 
 **Services:**
-- AdminAuthService
+- ShopperAuthService
 
 ### Domain Layer
 
-**Aggregate:** AdminIdentity (not modified)
+**Aggregate:** ShopperIdentity (not modified)
 
 ### Infrastructure Layer
 
@@ -133,10 +148,14 @@ flowchart TB
 Sign-out is handled entirely by Devise's `SessionsController#destroy`:
 
 ```ruby
-# AdminSessionsController
-class AdminSessionsController < Devise::SessionsController
-  # Default Devise behavior is sufficient for admin sign-out
-  # Redirects to sign-in page after destroying session
+# ShopperSessionsController
+class ShopperSessionsController < Devise::SessionsController
+  def destroy
+    super do
+      # Return JSON instead of redirect for API clients
+      return render json: { message: "Signed out successfully" }
+    end
+  end
 end
 ```
 
@@ -148,22 +167,22 @@ end
 
 ### CSRF Protection
 
-- Ensure `DELETE /admin_users/sign_out` validates CSRF token
-- Admin UI always uses browser-based requests with CSRF tokens
+- Ensure `DELETE /users/sign_out` validates CSRF token for browser requests
+- For API clients using bearer tokens (future), CSRF is not required
 
 ### Hexagonal Mapping
 
 | Rampart Layer | Implementation |
 |---------------|----------------|
-| Controller | `AdminSessionsController#destroy` (inherits Devise) |
-| Service | `AdminAuthService` (delegates to Devise) |
+| Controller | `ShopperSessionsController#destroy` (inherits Devise) |
+| Service | `ShopperAuthService` (thin wrapper, delegates to Devise) |
 
 ### Keeping It Simple
 
 Since we're leaning on Devise:
 - `Devise::SessionsController#destroy` handles session invalidation
-- No custom overrides needed for admin sign-out
-- Standard redirect to sign-in page
+- Override only needed to return JSON instead of redirect
+- No domain logic involved — purely infrastructure concern
 
 ---
 

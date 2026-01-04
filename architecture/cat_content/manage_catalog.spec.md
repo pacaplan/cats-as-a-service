@@ -3,7 +3,7 @@
 **Bounded Context:** Cat & Content
 **Status:** planned
 **Generated:** 2025-12-23T01:51:59.651Z
-**Source:** `/Users/pcaplan/paul/cats-as-a-service/architecture/cat_content.json`
+**Source:** `/Users/pcaplan/paul/cats-as-a-service/architecture/cat_content/architecture.json`
 
 <!-- 
 Status values:
