@@ -8,9 +8,10 @@ RSpec.describe "Register shopper", type: :request do
   end
 
   it "creates a shopper and establishes a session" do
+    email = "shopper-#{SecureRandom.hex(4)}@example.com"
     payload = {
       user: {
-        email: "shopper@example.com",
+        email: email,
         password: "securepassword123",
         password_confirmation: "securepassword123",
         name: "Jane Doe"
@@ -20,14 +21,14 @@ RSpec.describe "Register shopper", type: :request do
     post "/users", params: payload, as: :json
 
     expect(response).to have_http_status(:created)
-    expect(parsed_body.fetch("email")).to eq("shopper@example.com")
+    expect(parsed_body.fetch("email")).to eq(email)
     expect(parsed_body.fetch("name")).to eq("Jane Doe")
     expect(parsed_body.fetch("email_verified")).to eq(false)
 
     session_key = Rails.application.config.session_options[:key]
     expect(response.headers.fetch("Set-Cookie", "")).to include(session_key)
 
-    record = Identity::ShopperIdentityRecord.find_by(email: "shopper@example.com")
+    record = Identity::ShopperIdentityRecord.find_by(email: email)
     expect(record).not_to be_nil
   end
 

@@ -37,5 +37,3 @@ $$ language 'plpgsql';
 
 CREATE TRIGGER update_cat_listings_updated_at BEFORE UPDATE ON cat_content.cat_listings
 FOR EACH ROW EXECUTE FUNCTION cat_content.update_updated_at_column();
-
-

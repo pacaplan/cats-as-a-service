@@ -117,6 +117,3 @@ export default async function CatDetailPage({ params }: CatDetailPageProps) {
     </div>
   );
 }
-
-
-

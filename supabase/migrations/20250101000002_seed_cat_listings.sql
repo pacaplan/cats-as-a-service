@@ -70,6 +70,3 @@ VALUES
     ARRAY['digital', 'chaos']
   )
 ON CONFLICT (slug) DO NOTHING;
-
-
-

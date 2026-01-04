@@ -30,5 +30,3 @@ Rack::Attack.throttled_responder = lambda do |env|
 
   [429, headers, [{error: "Too many requests. Please try again later."}.to_json]]
 end
-
-
