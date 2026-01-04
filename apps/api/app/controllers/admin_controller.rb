@@ -20,7 +20,8 @@ class AdminController < ApplicationController
   end
 
   def admin_html
-    username = current_admin&.username || "Admin"
+    require "erb"
+    username = ERB::Util.html_escape(current_admin&.username || "Admin")
     <<~HTML
       <!DOCTYPE html>
       <html>

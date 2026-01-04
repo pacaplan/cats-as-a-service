@@ -5,6 +5,10 @@ Identity::Engine.routes.draw do
     class_name: "Identity::ShopperIdentityRecord",
     skip: %i[registrations sessions passwords]
 
+  devise_for :admin_identities,
+    class_name: "Identity::AdminIdentityRecord",
+    skip: %i[registrations sessions passwords]
+
   # Shopper registration endpoint
   post "users", to: "shopper_registrations#create"
 

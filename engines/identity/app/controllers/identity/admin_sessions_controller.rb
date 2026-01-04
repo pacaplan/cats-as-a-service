@@ -47,10 +47,6 @@ module Identity
       params.require(:admin).permit(:username, :password)
     end
 
-    def current_admin_identity_record
-      warden.user(:admin_identity)
-    end
-
     def handle_sign_in_failure(failure)
       error_message = case failure
       when :account_locked

@@ -17,7 +17,8 @@ module Identity
 
       record = AdminIdentityRecord.new(
         username: normalized_username,
-        password: password
+        password: password,
+        password_confirmation: password
       )
 
       if record.save
@@ -72,8 +73,8 @@ module Identity
         # Failure: increment failed attempts, potentially lock
         record.increment_failed_attempts
 
-        # Re-check if the increment caused a lock
-        if record.access_locked?
+        # Re-check if the increment caused a lock (reload to get fresh state)
+        if record.reload.access_locked?
           Failure(:account_locked)
         else
           Failure(:invalid_credentials)

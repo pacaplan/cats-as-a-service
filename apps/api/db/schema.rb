@@ -19,4 +19,5 @@ ActiveRecord::Schema[8.1].define(version: 0) do
   enable_extension "graphql.pg_graphql"
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vault.supabase_vault"
+
 end
