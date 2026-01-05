@@ -16,8 +16,9 @@ class Rack::Attack
   end
 
   # Throttle admin sign-in attempts by IP address (5 requests/minute)
+  # Protect both /admin/sign_in and /api/sign_in to prevent bypass
   throttle("admin_sign_in/ip", limit: 5, period: 1.minute) do |req|
-    if req.post? && req.path == "/admin/sign_in"
+    if req.post? && (req.path == "/admin/sign_in" || req.path == "/api/sign_in")
       req.ip
     end
   end

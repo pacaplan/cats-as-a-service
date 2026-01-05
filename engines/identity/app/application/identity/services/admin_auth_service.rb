@@ -51,23 +51,28 @@ module Identity
     private
 
     def generate_secure_password
-      # Generate 24+ character password with mixed case, numbers, symbols
-      chars = [
-        ("a".."z").to_a,
-        ("A".."Z").to_a,
-        ("0".."9").to_a,
-        %w[! @ # $ % ^ & * ( ) - _ = + [ ] { } | ; : , . < > ?]
+      # Generate 24+ character password with mixed case, numbers, symbols using SecureRandom
+      lowercase = ("a".."z").to_a
+      uppercase = ("A".."Z").to_a
+      digits = ("0".."9").to_a
+      symbols = %w[! @ # $ % ^ & * ( ) - _ = + [ ] { } | ; : , . < > ?]
+
+      # Ensure at least one of each type using cryptographically secure random
+      password = [
+        lowercase[SecureRandom.random_number(lowercase.length)],
+        uppercase[SecureRandom.random_number(uppercase.length)],
+        digits[SecureRandom.random_number(digits.length)],
+        symbols[SecureRandom.random_number(symbols.length)]
       ]
 
-      # Ensure at least one of each type
-      password = chars.map { |set| set.sample }.join
+      # Fill remaining with random from all character sets
+      all_chars = lowercase + uppercase + digits + symbols
+      (PASSWORD_LENGTH - 4).times do
+        password << all_chars[SecureRandom.random_number(all_chars.length)]
+      end
 
-      # Fill remaining with random from all
-      all_chars = chars.flatten
-      (PASSWORD_LENGTH - 4).times { password += all_chars.sample }
-
-      # Shuffle to randomize positions
-      password.chars.shuffle.join
+      # Shuffle using SecureRandom to randomize positions
+      password.shuffle(random: SecureRandom).join
     end
   end
 end

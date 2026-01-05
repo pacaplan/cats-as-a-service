@@ -23,9 +23,15 @@ module Identity
       if result.success?
         admin = result.value!
         record = Identity::AdminIdentityRecord.find_by(id: admin.id)
-        sign_in(:admin_identity, record) if record
 
-        redirect_to "/admin", notice: "Signed in successfully"
+        if record
+          sign_in(:admin_identity, record)
+          redirect_to "/admin", notice: "Signed in successfully"
+        else
+          # Record not found - should never happen, but handle gracefully
+          flash[:error] = "Authentication error. Please try again."
+          redirect_to admin_sign_in_path
+        end
       else
         handle_sign_in_failure(result.failure)
       end

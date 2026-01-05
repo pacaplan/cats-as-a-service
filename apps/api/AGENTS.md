@@ -1,3 +1,5 @@
+# Rails API Agent Guidelines
+
 ## Project Structure
 
 This is the main Rails API application that serves as the host for bounded context engines.

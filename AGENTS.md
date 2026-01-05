@@ -26,6 +26,18 @@ This application depends on the Rampart framework located at `../rampart`:
 
 ---
 
+## Vertical Slice Workflow
+
+Implement features as complete vertical slices following this phase order:
+
+```
+Database → Rails → Frontend → Playwright → Specs → Review
+```
+
+Use `/implement <feature>` to execute the full workflow. See [`.claude/commands/implement.md`](.claude/commands/implement.md) for detailed phase instructions.
+
+---
+
 ## Architecture Blueprints
 
 Architecture is defined in JSON blueprints:
@@ -43,13 +55,20 @@ When implementing features, consult these blueprints for:
 ## Development Commands
 
 ```bash
+# Start development environment
+supabase start
+scripts/start_dev.sh
+
+# Or individually:
+cd apps/api && rails server      # API on :8000
+cd apps/web && npm run dev       # Web on :3000
 
 # Run specs
 cd apps/api && bundle exec rspec
-cd engines/<name> && bundle exec rspec
+cd engines/cat_content && bundle exec rspec
 
 # Run architecture fitness tests
-cd engines/<name> && bundle exec rspec spec/architecture_spec.rb
+cd engines/cat_content && bundle exec rspec spec/architecture_spec.rb
 ```
 
 ## Manual Server Startup

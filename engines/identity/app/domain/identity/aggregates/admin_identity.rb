@@ -30,10 +30,6 @@ module Identity
     attribute :created_at, Rampart::Types::Time.optional.default(nil)
     attribute :updated_at, Rampart::Types::Time.optional.default(nil)
 
-    def active?
-      status == "active"
-    end
-
     # Check if account is currently locked due to failed attempts
     # Account is locked if locked_at is set and within LOCK_DURATION
     def locked?
