@@ -26,18 +26,6 @@ This application depends on the Rampart framework located at `../rampart`:
 
 ---
 
-## Vertical Slice Workflow
-
-Implement features as complete vertical slices following this phase order:
-
-```
-Database → Rails → Frontend → Playwright → Specs → Review
-```
-
-Use `/implement <feature>` to execute the full workflow. See [`.claude/commands/implement.md`](.claude/commands/implement.md) for detailed phase instructions.
-
----
-
 ## Architecture Blueprints
 
 Architecture is defined in JSON blueprints:
@@ -55,25 +43,34 @@ When implementing features, consult these blueprints for:
 ## Development Commands
 
 ```bash
-# Start development environment
-supabase start
-scripts/start_dev.sh
-
-# Or individually:
-cd apps/api && rails server      # API on :8000
-cd apps/web && npm run dev       # Web on :3000
 
 # Run specs
 cd apps/api && bundle exec rspec
-cd engines/cat_content && bundle exec rspec
+cd engines/<name> && bundle exec rspec
 
 # Run architecture fitness tests
-cd engines/cat_content && bundle exec rspec spec/architecture_spec.rb
+cd engines/<name> && bundle exec rspec spec/architecture_spec.rb
 ```
 
 ## Manual Server Startup
 
 - Do not start servers automatically; the user will start and manage all server processes manually.
+
+---
+
+## Service Ports (Local Development)
+
+| Service | Port | URL |
+|---------|------|-----|
+| Rails API | 8000 | http://localhost:8000 |
+| Next.js Web | 3000 | http://localhost:3000 |
+| Supabase Studio | 54323 | http://localhost:54323 |
+| PostgreSQL | 54322 | localhost:54322 |
+
+**Common Mistakes to Avoid:**
+- The Rails API runs on port **8000**, NOT 3000
+- Port 3000 is the Next.js frontend
+- Always verify which port you're testing against
 
 ---
 

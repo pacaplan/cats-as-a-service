@@ -6,6 +6,21 @@ Execute a complete vertical slice implementation for: **$ARGUMENTS**
 
 > 📖 **Database Guide:** See `supabase/AGENT.md` for detailed Supabase setup, troubleshooting, and database management instructions.
 
+## ⚠️ CRITICAL: Follow Implementation Instructions Exactly
+
+When executing the `/implement` command or any structured workflow:
+
+1. **Follow each phase in order** - Do not skip phases or combine them
+2. **Complete each step before proceeding** - If a step fails, investigate and fix before moving on
+3. **If stuck, HALT for human input** - Do not guess or skip problematic steps
+4. **Manual UI testing is required** - Phase 4 requires actual browser interaction, not just curl commands
+
+If you encounter problems (server errors, connection issues, unexpected behavior):
+- First, investigate the root cause (check logs, verify services are running)
+- Attempt to fix the issue
+- If unsuccessful after reasonable effort, **STOP and ask for human guidance**
+- Do NOT skip the phase or mark it as complete
+
 ---
 
 ## Phase 0: Branching & Database Setup

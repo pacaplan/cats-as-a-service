@@ -1,38 +1,3 @@
-# Rails API Agent Guidelines
-
-## ⚠️ CRITICAL: Follow Implementation Instructions Exactly
-
-When executing the `/implement` command or any structured workflow:
-
-1. **Follow each phase in order** - Do not skip phases or combine them
-2. **Complete each step before proceeding** - If a step fails, investigate and fix before moving on
-3. **If stuck, HALT for human input** - Do not guess or skip problematic steps
-4. **Manual UI testing is required** - Phase 4 requires actual browser interaction, not just curl commands
-
-If you encounter problems (server errors, connection issues, unexpected behavior):
-- First, investigate the root cause (check logs, verify services are running)
-- Attempt to fix the issue
-- If unsuccessful after reasonable effort, **STOP and ask for human guidance**
-- Do NOT skip the phase or mark it as complete
-
----
-
-## Service Ports (Local Development)
-
-| Service | Port | URL |
-|---------|------|-----|
-| Rails API | 8000 | http://localhost:8000 |
-| Next.js Web | 3000 | http://localhost:3000 |
-| Supabase Studio | 54323 | http://localhost:54323 |
-| PostgreSQL | 54322 | localhost:54322 |
-
-**Common Mistakes to Avoid:**
-- The Rails API runs on port **8000**, NOT 3000
-- Port 3000 is the Next.js frontend
-- Always verify which port you're testing against
-
----
-
 ## Project Structure
 
 This is the main Rails API application that serves as the host for bounded context engines.

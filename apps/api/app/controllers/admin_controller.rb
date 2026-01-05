@@ -1,4 +1,5 @@
-class AdminController < ApplicationController
+class AdminController < ActionController::Base
+  protect_from_forgery with: :exception
   before_action :authenticate_admin!
 
   # GET /admin

@@ -12,6 +12,16 @@ module Identity
     # Note: NOT registerable (admins created via rake task only)
     devise :database_authenticatable, :lockable, :timeoutable
 
+    # Use username instead of email for authentication
+    self.devise_modules.delete(:validatable) # Don't validate email
+    def self.authentication_keys
+      [:username]
+    end
+
+    def email_required?
+      false
+    end
+
     # Validations
     validates :username, presence: true, length: {maximum: 100}, uniqueness: {case_sensitive: false}
     validates :status, presence: true, inclusion: {in: %w[active locked]}
