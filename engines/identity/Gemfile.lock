@@ -1,15 +1,4 @@
 PATH
-  remote: ../../../rampart
-  specs:
-    rampart (0.1.0)
-      dry-auto_inject (~> 1.0)
-      dry-container (~> 0.11)
-      dry-initializer (~> 3.1)
-      dry-monads (~> 1.6)
-      dry-struct (~> 1.6)
-      dry-types (~> 1.7)
-
-PATH
   remote: .
   specs:
     identity (0.1.0)
@@ -258,6 +247,13 @@ GEM
       zeitwerk (~> 2.6)
     rainbow (3.1.1)
     rake (13.3.1)
+    rampart-core (0.1.1)
+      dry-auto_inject (~> 1.0)
+      dry-container (~> 0.11)
+      dry-initializer (~> 3.1)
+      dry-monads (~> 1.6)
+      dry-struct (~> 1.6)
+      dry-types (~> 1.7)
     rdoc (7.0.3)
       erb
       psych (>= 4.0.0)
@@ -368,7 +364,7 @@ DEPENDENCIES
   identity!
   pg
   puma
-  rampart!
+  rampart-core
   rspec-rails (~> 8.0)
   rubocop-rails-omakase
   sprockets-rails

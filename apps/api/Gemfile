@@ -6,7 +6,7 @@ gem "rails", "~> 8.1.1"
 gem "pg", "~> 1.1"
 
 # Rampart framework and bounded context engines
-gem "rampart", path: "../../../rampart"
+gem "rampart-core"
 gem "cat_content", path: "../../engines/cat_content"
 gem "identity", path: "../../engines/identity"
 
