@@ -1,0 +1,148 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  RAILS_ENV: test
+
+jobs:
+  lint:
+    name: StandardRB
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/api
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3.6"
+          bundler-cache: true
+          working-directory: apps/api
+
+      - name: Run StandardRB
+        run: bundle exec standardrb
+
+  packwerk:
+    name: Packwerk
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/api
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3.6"
+          bundler-cache: true
+          working-directory: apps/api
+
+      - name: Run Packwerk check
+        run: bundle exec packwerk check
+
+  specs:
+    name: RSpec
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_HOST: 127.0.0.1
+      DATABASE_PORT: 5432
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: postgres
+      DATABASE_NAME: postgres
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3.6"
+          bundler-cache: true
+          working-directory: apps/api
+
+      - name: Create database schemas
+        run: |
+          PGPASSWORD=postgres psql -h 127.0.0.1 -U postgres -d postgres -c "CREATE SCHEMA IF NOT EXISTS cat_content;"
+          PGPASSWORD=postgres psql -h 127.0.0.1 -U postgres -d postgres -c "CREATE SCHEMA IF NOT EXISTS identity;"
+
+      - name: Apply Supabase migrations
+        run: |
+          for migration in supabase/migrations/*.sql; do
+            echo "Applying migration: $migration"
+            PGPASSWORD=postgres psql -h 127.0.0.1 -U postgres -d postgres -f "$migration"
+          done
+
+      - name: Install cat_content dependencies
+        working-directory: engines/cat_content
+        run: bundle install
+
+      - name: Install identity dependencies
+        working-directory: engines/identity
+        run: bundle install
+
+      - name: Run cat_content specs
+        working-directory: engines/cat_content
+        env:
+          DATABASE_HOST: 127.0.0.1
+          DATABASE_PORT: 5432
+        run: |
+          # Override database.yml for CI
+          cat > spec/dummy/config/database.yml << 'EOF'
+          test:
+            adapter: postgresql
+            encoding: unicode
+            host: 127.0.0.1
+            port: 5432
+            username: postgres
+            password: postgres
+            database: postgres
+            schema_search_path: cat_content
+          EOF
+          bundle exec rspec
+
+      - name: Run identity specs
+        working-directory: engines/identity
+        env:
+          DATABASE_HOST: 127.0.0.1
+          DATABASE_PORT: 5432
+        run: |
+          # Override database.yml for CI
+          cat > test/dummy/config/database.yml << 'EOF'
+          test:
+            adapter: postgresql
+            encoding: unicode
+            host: 127.0.0.1
+            port: 5432
+            username: postgres
+            password: postgres
+            database: postgres
+            schema_search_path: identity
+          EOF
+          bundle exec rspec
+
