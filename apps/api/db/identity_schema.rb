@@ -27,6 +27,8 @@ ActiveRecord::Schema[8.1].define(version: 0) do
     t.string "email", limit: 255, null: false
     t.boolean "email_verified", default: false, null: false
     t.string "encrypted_password", limit: 255, null: false
+    t.integer "failed_attempts", default: 0, null: false
+    t.datetime "locked_at", precision: nil
     t.string "name", limit: 100, null: false
     t.string "provider", limit: 50
     t.string "status", limit: 20, default: "active", null: false

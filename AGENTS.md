@@ -77,6 +77,22 @@ cd engines/cat_content && bundle exec rspec spec/architecture_spec.rb
 
 ---
 
+## Service Ports (Local Development)
+
+| Service | Port | URL |
+|---------|------|-----|
+| Rails API | 8000 | http://localhost:8000 |
+| Next.js Web | 3000 | http://localhost:3000 |
+| Supabase Studio | 54323 | http://localhost:54323 |
+| PostgreSQL | 54322 | localhost:54322 |
+
+**Common Mistakes to Avoid:**
+- The Rails API runs on port **8000**, NOT 3000
+- Port 3000 is the Next.js frontend
+- Always verify which port you're testing against
+
+---
+
 ## Key Conventions
 
 1. **Hexagonal Architecture** - Domain and Application layers are pure Ruby with no Rails dependencies

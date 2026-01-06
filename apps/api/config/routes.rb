@@ -8,7 +8,12 @@ Rails.application.routes.draw do
   # Comprehensive health check endpoint
   get "health" => "health#show"
 
-  # Admin interface (non-API endpoint, no auth for now)
+  # Admin routes - mount identity engine's admin routes
+  scope "/admin" do
+    mount Identity::Engine => "/", :as => "identity_admin"
+  end
+
+  # Admin dashboard (requires authentication)
   get "admin" => "admin#index"
 
   # Mount bounded context engines under /api namespace
