@@ -11,7 +11,7 @@ env:
 
 jobs:
   lint:
-    name: StandardRB
+    name: Lint
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -50,9 +50,29 @@ jobs:
       - name: Run Packwerk check
         run: bundle exec packwerk check
 
-  specs:
-    name: RSpec
+  discover-engines:
+    name: Discover Engines
     runs-on: ubuntu-latest
+    outputs:
+      engines: ${{ steps.find-engines.outputs.engines }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Find all engines
+        id: find-engines
+        run: |
+          engines=$(ls -d engines/*/ 2>/dev/null | xargs -I {} basename {} | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          echo "engines=$engines" >> $GITHUB_OUTPUT
+          echo "Found engines: $engines"
+
+  specs:
+    name: RSpec (${{ matrix.engine }})
+    runs-on: ubuntu-latest
+    needs: discover-engines
+    strategy:
+      fail-fast: false
+      matrix:
+        engine: ${{ fromJson(needs.discover-engines.outputs.engines) }}
 
     services:
       postgres:
@@ -84,12 +104,7 @@ jobs:
         with:
           ruby-version: "3.3.6"
           bundler-cache: true
-          working-directory: apps/api
-
-      - name: Create database schemas
-        run: |
-          PGPASSWORD=postgres psql -h 127.0.0.1 -U postgres -d postgres -c "CREATE SCHEMA IF NOT EXISTS cat_content;"
-          PGPASSWORD=postgres psql -h 127.0.0.1 -U postgres -d postgres -c "CREATE SCHEMA IF NOT EXISTS identity;"
+          working-directory: engines/${{ matrix.engine }}
 
       - name: Apply Supabase migrations
         run: |
@@ -98,22 +113,20 @@ jobs:
             PGPASSWORD=postgres psql -h 127.0.0.1 -U postgres -d postgres -f "$migration"
           done
 
-      - name: Install cat_content dependencies
-        working-directory: engines/cat_content
-        run: bundle install
-
-      - name: Install identity dependencies
-        working-directory: engines/identity
-        run: bundle install
-
-      - name: Run cat_content specs
-        working-directory: engines/cat_content
-        env:
-          DATABASE_HOST: 127.0.0.1
-          DATABASE_PORT: 5432
+      - name: Configure database for CI
+        working-directory: engines/${{ matrix.engine }}
         run: |
-          # Override database.yml for CI
-          cat > spec/dummy/config/database.yml << 'EOF'
+          # Find the dummy app's database.yml location (spec/dummy or test/dummy)
+          if [ -d "spec/dummy/config" ]; then
+            DB_CONFIG_PATH="spec/dummy/config/database.yml"
+          elif [ -d "test/dummy/config" ]; then
+            DB_CONFIG_PATH="test/dummy/config/database.yml"
+          else
+            echo "No dummy app found, skipping database config"
+            exit 0
+          fi
+
+          cat > "$DB_CONFIG_PATH" << EOF
           test:
             adapter: postgresql
             encoding: unicode
@@ -122,27 +135,10 @@ jobs:
             username: postgres
             password: postgres
             database: postgres
-            schema_search_path: cat_content
+            schema_search_path: ${{ matrix.engine }}
           EOF
-          bundle exec rspec
+          echo "Configured $DB_CONFIG_PATH for ${{ matrix.engine }} schema"
 
-      - name: Run identity specs
-        working-directory: engines/identity
-        env:
-          DATABASE_HOST: 127.0.0.1
-          DATABASE_PORT: 5432
-        run: |
-          # Override database.yml for CI
-          cat > test/dummy/config/database.yml << 'EOF'
-          test:
-            adapter: postgresql
-            encoding: unicode
-            host: 127.0.0.1
-            port: 5432
-            username: postgres
-            password: postgres
-            database: postgres
-            schema_search_path: identity
-          EOF
-          bundle exec rspec
-
+      - name: Run specs
+        working-directory: engines/${{ matrix.engine }}
+        run: bundle exec rspec
