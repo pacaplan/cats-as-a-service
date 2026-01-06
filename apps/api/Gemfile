@@ -5,8 +5,12 @@ gem "rails", "~> 8.1.1"
 # Use postgresql as the database for Active Record
 gem "pg", "~> 1.1"
 
+# Load shared rampart version from monorepo root
+require File.expand_path("../../config/rampart_version.rb", __dir__) if File.exist?(File.expand_path("../../config/rampart_version.rb", __dir__))
+RAMPART_VERSION ||= ">= 0"
+
 # Rampart framework and bounded context engines
-gem "rampart-core"
+gem "rampart-core", RAMPART_VERSION
 gem "cat_content", path: "../../engines/cat_content"
 gem "identity", path: "../../engines/identity"
 

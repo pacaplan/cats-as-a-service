@@ -3,7 +3,11 @@ source "https://rubygems.org"
 # Specify your gem's dependencies in identity.gemspec.
 gemspec
 
-gem "rampart-core"
+# Load shared rampart version from monorepo root
+require File.expand_path("../../../config/rampart_version.rb", __dir__) if File.exist?(File.expand_path("../../../config/rampart_version.rb", __dir__))
+RAMPART_VERSION ||= ">= 0"
+
+gem "rampart-core", RAMPART_VERSION
 
 gem "puma"
 

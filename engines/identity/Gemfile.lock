@@ -247,7 +247,7 @@ GEM
       zeitwerk (~> 2.6)
     rainbow (3.1.1)
     rake (13.3.1)
-    rampart-core (0.1.1)
+    rampart-core (0.1.2)
       dry-auto_inject (~> 1.0)
       dry-container (~> 0.11)
       dry-initializer (~> 3.1)

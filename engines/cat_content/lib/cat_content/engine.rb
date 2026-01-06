@@ -15,15 +15,18 @@ module CatContent
     end
 
     # Add hexagonal layer directories to autoload paths
-    initializer "cat_content.autoload_paths", before: :set_autoload_paths do |app|
-      app.config.autoload_paths << root.join("app/domain")
-      app.config.autoload_paths << root.join("app/application")
-      app.config.autoload_paths << root.join("app/infrastructure")
+    # Set directly in config to avoid frozen array errors
+    config.autoload_paths += [
+      root.join("app/domain"),
+      root.join("app/application"),
+      root.join("app/infrastructure")
+    ]
 
-      app.config.eager_load_paths << root.join("app/domain")
-      app.config.eager_load_paths << root.join("app/application")
-      app.config.eager_load_paths << root.join("app/infrastructure")
-    end
+    config.eager_load_paths += [
+      root.join("app/domain"),
+      root.join("app/application"),
+      root.join("app/infrastructure")
+    ]
 
     # Load all hexagonal architecture components using Rampart's generic loader
     # The directory structure (app/{layer}/cat_content/) doesn't match

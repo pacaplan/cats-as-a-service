@@ -11,20 +11,23 @@ module Identity
       g.fixture_replacement :factory_bot
     end
 
+    # Add hexagonal layer directories to autoload paths
+    # Set directly in config to avoid frozen array errors
+    config.autoload_paths += [
+      root.join("app/domain"),
+      root.join("app/application"),
+      root.join("app/infrastructure")
+    ]
+
+    config.eager_load_paths += [
+      root.join("app/domain"),
+      root.join("app/application"),
+      root.join("app/infrastructure")
+    ]
+
     # Ensure Devise is loaded early
     initializer "identity.devise", before: :load_config_initializers do
       require "devise"
-    end
-
-    # Add hexagonal layer directories to autoload paths
-    initializer "identity.autoload_paths", before: :set_autoload_paths do |app|
-      app.config.autoload_paths << root.join("app/domain")
-      app.config.autoload_paths << root.join("app/application")
-      app.config.autoload_paths << root.join("app/infrastructure")
-
-      app.config.eager_load_paths << root.join("app/domain")
-      app.config.eager_load_paths << root.join("app/application")
-      app.config.eager_load_paths << root.join("app/infrastructure")
     end
 
     # Load all hexagonal architecture components using Rampart's generic loader
