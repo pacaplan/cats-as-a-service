@@ -6,8 +6,9 @@ gem "rails", "~> 8.1.1"
 gem "pg", "~> 1.1"
 
 # Load shared rampart version from monorepo root
-require File.expand_path("../../config/rampart_version.rb", __dir__) if File.exist?(File.expand_path("../../config/rampart_version.rb", __dir__))
-RAMPART_VERSION ||= ">= 0"
+rampart_version_path = File.expand_path("../../config/rampart_version.rb", __dir__)
+require rampart_version_path if File.exist?(rampart_version_path)
+RAMPART_VERSION = ">= 0" unless defined?(RAMPART_VERSION)
 
 # Rampart framework and bounded context engines
 gem "rampart-core", RAMPART_VERSION
