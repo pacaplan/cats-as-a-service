@@ -10,11 +10,17 @@ module Identity
 
     # Repositories
     register(:shopper_identity_repo) { DeviseShopperIdentityRepository.new }
+    register(:admin_identity_repo) { DeviseAdminIdentityRepository.new }
 
     # Services
     register(:shopper_auth_service) do
       ShopperAuthService.new(
         shopper_identity_repo: resolve(:shopper_identity_repo)
+      )
+    end
+    register(:admin_auth_service) do
+      AdminAuthService.new(
+        admin_identity_repo: resolve(:admin_identity_repo)
       )
     end
   end

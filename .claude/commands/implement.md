@@ -6,6 +6,21 @@ Execute a complete vertical slice implementation for: **$ARGUMENTS**
 
 > 📖 **Database Guide:** See `supabase/AGENT.md` for detailed Supabase setup, troubleshooting, and database management instructions.
 
+## ⚠️ CRITICAL: Follow Implementation Instructions Exactly
+
+When executing the `/implement` command or any structured workflow:
+
+1. **Follow each phase in order** - Do not skip phases or combine them
+2. **Complete each step before proceeding** - If a step fails, investigate and fix before moving on
+3. **If stuck, HALT for human input** - Do not guess or skip problematic steps
+4. **Manual UI testing is required** - Phase 4 requires actual browser interaction, not just curl commands
+
+If you encounter problems (server errors, connection issues, unexpected behavior):
+- First, investigate the root cause (check logs, verify services are running)
+- Attempt to fix the issue
+- If unsuccessful after reasonable effort, **STOP and ask for human guidance**
+- Do NOT skip the phase or mark it as complete
+
 ---
 
 ## Phase 0: Branching & Database Setup
@@ -98,6 +113,7 @@ Create Supabase migrations in `supabase/migrations/`.
 
 Implement the hexagonal architecture layers in the appropriate engine under `engines/`.
 
+> 🤖 **Rampart Guidance:** Use the rampart skill for general guidance implementing all Rails code (`.claude/skills/rampart/SKILL.md`).
 > 🤖 **Engine Guidance:** Consult `engines/{context}/AGENTS.md` for engine-specific instructions if it exists.
 
 **Layer Order:**
@@ -167,31 +183,35 @@ Manually test the feature in the browser using Playwright MCP tools. This is han
 
 ---
 
-## Phase 5: Validate (Parallel Subagents)
+## Phase 5: Validate
 
-Spawn all validation checks in parallel using subagents to gather comprehensive feedback:
+Execute validation checks to gather comprehensive feedback.
 
-### Spawn These 4 Subagents in Parallel:
+**Check Agent Capabilities:**
+- If **subagents** are available (e.g., Claude Code), run these 4 tasks in parallel using subagents.
+- If **subagents** are NOT available, run these 4 tasks serially (one after another) in the main agent.
 
-**1. Specs Subagent:**
-Spawn a subagent with task: "Run all existing RSpec tests in the engine and report any failures"
+### Validation Tasks:
+
+**1. Specs:**
+Run all existing RSpec tests in the engine and report any failures.
 ```bash
 cd engines/{context} && bundle exec rspec
 ```
 
-**2. Packwerk Subagent:**
-Spawn a subagent with task: "Run packwerk check for the engine and report any layer boundary violations"
+**2. Packwerk:**
+Run packwerk check for the engine and report any layer boundary violations.
 ```bash
 ./scripts/check-packwerk.sh {context}
 ```
 
-**3. Rampart Reviewer Subagent:**
-Spawn the `rampart-reviewer` agent with task: "Review code changes for hexagonal architecture adherence. Scope: all commits in current branch divergent from origin/main. Use `git diff origin/main...HEAD` to identify changed files."
+**3. Rampart Review:**
+Spawn the `rampart-reviewer` agent with task: "Review code changes for hexagonal architecture adherence. Scope: all commits in current branch divergent from origin/main. Use `git diff origin/main...HEAD` to identify changed files." If you are not able to directly invoke this agent, run the instructions in Refer directly to `.claude/agents/rampart-reviewer/AGENT.md`.
 
-**4. Code Reviewer Subagent:**
-Spawn the `code-reviewer` agent with task: "Review code changes for bugs and quality issues. Scope: all commits in current branch divergent from origin/main. Use `git diff origin/main...HEAD` to identify changed files."
+**4. Code Review:**
+Spawn the `code-reviewer` agent with task: "Review code changes for bugs and quality issues. Scope: all commits in current branch divergent from origin/main. Use `git diff origin/main...HEAD` to identify changed files." If you are not able to directly invoke this agent, run the instructions in Refer directly to `.claude/agents/code-reviewer/AGENT.md`.
 
-**Output:** Collect all failures, violations, and review findings from all 4 subagents.
+**Output:** Collect all failures, violations, and review findings from all tasks.
 
 ---
 
@@ -203,7 +223,7 @@ Address all issues identified by Phase 5 subagents.
 1. Review all feedback from specs, packwerk, and reviewers
 2. Fix identified issues (code changes, architecture fixes, bug fixes)
 3. **Commit changes** after all issues are fixed
-4. **Re-run Phase 5** (spawn all validation subagents again)
+4. **Re-run Phase 5** (run all validation tasks again, using subagents if available)
 5. If any failures remain, repeat from step 1
 6. Exit loop when all checks pass
 
