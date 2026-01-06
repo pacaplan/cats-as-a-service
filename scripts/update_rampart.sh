@@ -46,12 +46,6 @@ grep RAMPART_VERSION "$VERSION_FILE"
 log "Clearing Bundler cache for fresh gem index..."
 rm -rf "$ROOT_DIR/vendor/bundle" "$ROOT_DIR/.bundle" 2>/dev/null || true
 
-# Bundle root
-log "Bundling root..."
-cd "$ROOT_DIR"
-bundle install
-success "Root bundled"
-
 # Bundle apps/api
 log "Bundling apps/api..."
 cd "$ROOT_DIR/apps/api"
@@ -72,7 +66,7 @@ done
 # Show installed version
 echo ""
 log "Installed rampart-core version:"
-cd "$ROOT_DIR"
+cd "$ROOT_DIR/apps/api"
 bundle info rampart-core | grep -E "rampart-core|Path"
 
 echo ""
