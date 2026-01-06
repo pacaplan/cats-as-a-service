@@ -11,30 +11,12 @@ module Identity
       g.fixture_replacement :factory_bot
     end
 
+    # Set up hexagonal architecture loading (autoload paths, Zeitwerk collapse, load order)
+    Rampart::EngineLoader.setup(self)
+
     # Ensure Devise is loaded early
     initializer "identity.devise", before: :load_config_initializers do
       require "devise"
-    end
-
-    # Add hexagonal layer directories to autoload paths
-    initializer "identity.autoload_paths", before: :set_autoload_paths do |app|
-      app.config.autoload_paths << root.join("app/domain")
-      app.config.autoload_paths << root.join("app/application")
-      app.config.autoload_paths << root.join("app/infrastructure")
-
-      app.config.eager_load_paths << root.join("app/domain")
-      app.config.eager_load_paths << root.join("app/application")
-      app.config.eager_load_paths << root.join("app/infrastructure")
-    end
-
-    # Load all hexagonal architecture components using Rampart's generic loader
-    # The directory structure (app/{layer}/identity/) doesn't match
-    # Ruby namespace conventions, so we use Rampart::EngineLoader which auto-discovers files
-    config.to_prepare do
-      Rampart::EngineLoader.load_all(
-        engine_root: Identity::Engine.root,
-        context_name: "identity"
-      )
     end
   end
 end

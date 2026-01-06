@@ -13,7 +13,6 @@ module CatContent
   #
   # Lifecycle: draft (private) -> published -> archived
   class CatListing < Rampart::Domain::AggregateRoot
-    attribute :id, Rampart::Types::String
     attribute :name, CatContent::CatName
     attribute :slug, Rampart::Types::String
     attribute :description, CatContent::CatDescription
