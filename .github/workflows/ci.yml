@@ -108,6 +108,7 @@ jobs:
 
       - name: Apply Supabase migrations
         run: |
+          set -e
           for migration in supabase/migrations/*.sql; do
             echo "Applying migration: $migration"
             PGPASSWORD=postgres psql -h 127.0.0.1 -U postgres -d postgres -f "$migration"
@@ -126,17 +127,17 @@ jobs:
             exit 0
           fi
 
-          cat > "$DB_CONFIG_PATH" << EOF
-          test:
-            adapter: postgresql
-            encoding: unicode
-            host: 127.0.0.1
-            port: 5432
-            username: postgres
-            password: postgres
-            database: postgres
-            schema_search_path: ${{ matrix.engine }}
-          EOF
+          cat > "$DB_CONFIG_PATH" << 'EOF'
+test:
+  adapter: postgresql
+  encoding: unicode
+  host: 127.0.0.1
+  port: 5432
+  username: postgres
+  password: postgres
+  database: postgres
+  schema_search_path: ${{ matrix.engine }}
+EOF
           echo "Configured $DB_CONFIG_PATH for ${{ matrix.engine }} schema"
 
       - name: Run specs
