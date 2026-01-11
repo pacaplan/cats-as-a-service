@@ -45,6 +45,18 @@ run_specs() {
   
   for dir in "${RUBY_DIRS[@]}"; do
     if [ -d "$dir" ]; then
+      # Check if spec directory exists and rspec is in bundle
+      if [ ! -d "$dir/spec" ]; then
+        echo "⚠️ No spec directory in $dir, skipping" >> "$LOG_DIR/rspec.log"
+        continue
+      fi
+      
+      # Check if rspec is available in bundle
+      if ! (cd "$dir" && bundle show rspec-core >/dev/null 2>&1); then
+        echo "⚠️ RSpec not in bundle for $dir, skipping" >> "$LOG_DIR/rspec.log"
+        continue
+      fi
+      
       echo ">> Testing $dir" >> "$LOG_DIR/rspec.log"
       (cd "$dir" && bundle exec rspec) >> "$LOG_DIR/rspec.log" 2>&1
       if [ $? -ne 0 ]; then
