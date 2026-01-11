@@ -118,29 +118,55 @@ Implement the hexagonal architecture layers in the appropriate engine under `eng
 
 **Layer Order:**
 
-### 2.1 Domain Layer (`app/domain/{context}/`)
+### 2.1 TDD: Write Request Specs First
+
+Before implementing any code, write request specs covering all acceptance criteria and error cases from the capability spec.
+
+**Focus on behavior-driven request specs:**
+- Write specs for each acceptance criterion in the spec file
+- Cover all error handling scenarios (404, 503, validation errors, etc.)
+- Test the end-to-end API response flow
+- Only add domain/application/infrastructure layer specs when specifically needed for complex logic
+
+**Run specs to confirm they fail (red phase):**
+```bash
+cd engines/{context} && bundle exec rspec spec/requests/
+```
+
+All specs should fail at this point since no implementation exists yet.
+
+### 2.2 Domain Layer (`app/domain/{context}/`)
 - Aggregates and entities with business invariants
 - Value objects for immutable concepts
 - Domain events (past tense naming)
 - Repository ports (interfaces only)
 - Domain services for cross-aggregate logic
 
-### 2.2 Application Layer (`app/application/{context}/`)
+### 2.3 Application Layer (`app/application/{context}/`)
 - Application services (use cases) that orchestrate domain logic
 - Commands and queries as DTOs
 - Return `Rampart::Support::Result` from services
 - Publish domain events after successful operations
 
-### 2.3 Infrastructure Layer (`app/infrastructure/{context}/`)
+### 2.4 Infrastructure Layer (`app/infrastructure/{context}/`)
 - Repository implementations in `persistence/`
 - Mappers to translate between domain and ActiveRecord
 - Container wiring in `wiring/container.rb`
 - Any external adapters needed
 
-### 2.4 Controllers (`app/controllers/`)
+### 2.5 Controllers (`app/controllers/`)
 - Thin controllers that only call application services
 - Never call repositories or domain objects directly
 - Handle HTTP concerns (params, responses, status codes)
+
+### 2.6 Run Specs (Green Phase)
+
+Run the request specs written in Phase 2.1 to verify the implementation:
+```bash
+cd engines/{context} && bundle exec rspec spec/requests/
+```
+
+All specs should now pass. If any fail, fix the implementation and re-run until green.
 
 **Key Rules:**
 - Domain and Application layers must be pure Ruby (no Rails)
@@ -183,80 +209,33 @@ Manually test the feature in the browser using Playwright MCP tools. This is han
 
 ---
 
-## Phase 5: Validate
+## Phase 5: Supplementary Specs
 
-Execute validation checks to gather comprehensive feedback.
+After implementation, add specs for other layers where valuable.
 
-**Check Agent Capabilities:**
-- If **subagents** are available (e.g., Claude Code), run these 4 tasks in parallel using subagents.
-- If **subagents** are NOT available, run these 4 tasks serially (one after another) in the main agent.
+**Purpose:** Fill in coverage for domain, application, and infrastructure layers where unit/integration tests provide value beyond the request specs written in Phase 2.1.
 
-### Validation Tasks:
+**Guidance:**
+- Full spec coverage is NOT required—focus on maintainable, non-brittle specs
+- Prioritize specs for complex business logic in domain/application layers
+- Avoid over-testing simple pass-through code or trivial mappers
+- Infrastructure specs should focus on edge cases not covered by request specs
 
-**1. Specs:**
-Run all existing RSpec tests in the engine and report any failures.
+**Layer-specific specs (add as needed):**
+- `spec/domain/` - Pure Ruby tests for complex invariants or domain logic
+- `spec/application/` - Service tests for orchestration logic with stubbed ports
+- `spec/infrastructure/` - Integration tests for repository edge cases
+
+**Run all specs:**
 ```bash
 cd engines/{context} && bundle exec rspec
 ```
 
-**2. Packwerk:**
-Run packwerk check for the engine and report any layer boundary violations.
-```bash
-./scripts/check-packwerk.sh {context}
-```
-
-**3. Rampart Review:**
-Spawn the `rampart-reviewer` agent with task: "Review code changes for hexagonal architecture adherence. Scope: all commits in current branch divergent from origin/main. Use `git diff origin/main...HEAD` to identify changed files." If you are not able to directly invoke this agent, run the instructions in Refer directly to `.claude/agents/rampart-reviewer/AGENT.md`.
-
-**4. Code Review:**
-Spawn the `code-reviewer` agent with task: "Review code changes for bugs and quality issues. Scope: all commits in current branch divergent from origin/main. Use `git diff origin/main...HEAD` to identify changed files." If you are not able to directly invoke this agent, run the instructions in Refer directly to `.claude/agents/code-reviewer/AGENT.md`.
-
-**Output:** Collect all failures, violations, and review findings from all tasks.
+**Commit changes** after phase 5 is complete.
 
 ---
 
-## Phase 6: Fix Loop
-
-Address all issues identified by Phase 5 subagents.
-
-**Loop:**
-1. Review all feedback from specs, packwerk, and reviewers
-2. Fix identified issues (code changes, architecture fixes, bug fixes)
-3. **Commit changes** after all issues are fixed
-4. **Re-run Phase 5** (run all validation tasks again, using subagents if available)
-5. If any failures remain, repeat from step 1
-6. Exit loop when all checks pass
-
-**Max iterations:** 5 (to prevent infinite loops). If still failing after 5 iterations, stop and report remaining issues for manual intervention.
-
----
-
-## Phase 7: New Specs
-
-After all existing checks pass, add new specs for the implemented feature.
-
-**Write specs following the layer structure:**
-- `spec/domain/` - Pure Ruby tests, no Rails
-- `spec/application/` - Service tests with stubbed ports
-- `spec/infrastructure/` - Integration tests with database
-- `spec/requests/` - Full API integration tests
-
-**Test isolation from seeded data:**
-The test database contains seeded data. To avoid conflicts:
-- Use unique identifiers in factories (e.g., `slug: "test-#{SecureRandom.hex(4)}"`)
-- Don't assert exact counts when seeded data may exist
-- Use `let!` with dynamic values rather than hardcoded slugs/names
-
-**Run new specs to verify they pass:**
-```bash
-cd engines/{context} && bundle exec rspec
-```
-
-**Commit changes** after phase 7 is complete.
-
----
-
-## Phase 8: Lint (StandardRB)
+## Phase 6: Lint (StandardRB)
 
 Lint all Ruby code in the engine with StandardRB.
 
@@ -286,7 +265,44 @@ cd engines/{context} && bundle exec rspec
 
 **Max iterations:** 3. If still failing, stop and report remaining issues.
 
-**Commit changes** after phase 8 is complete.
+**Commit changes** after phase 6 is complete.
+
+---
+
+## Phase 7: Validate (The Gauntlet)
+
+Execute the autonomous verification suite to gather comprehensive feedback and ensure quality.
+
+**Command:**
+```bash
+./scripts/gauntlet.sh
+```
+(Or use the `/gauntlet` command)
+
+**This script automatically runs:**
+1. **Linting:** StandardRB across all engines
+2. **Specs:** RSpec across all engines
+3. **Packwerk:** Architecture boundary checks
+4. **Gemini Review:** Rampart Hexagonal Architecture adherence
+5. **Codex Review:** Code quality, bugs, and security check
+
+**Output:** Logs are written to `.gauntlet_logs/`.
+
+---
+
+## Phase 8: Fix Loop
+
+Address all issues identified by the Gauntlet.
+
+**Loop:**
+1. Read failure logs in `.gauntlet_logs/` (e.g., `gemini.log`, `rspec.log`)
+2. Fix identified issues (code changes, architecture fixes, bug fixes)
+3. **Commit changes** after all issues are fixed
+4. **Re-run Phase 7** (`./scripts/gauntlet.sh`)
+5. If any failures remain, repeat from step 1
+6. Exit loop when `./scripts/gauntlet.sh` passes (Exit code 0)
+
+**Max iterations:** 5. If still failing, stop and report.
 
 ---
 
@@ -297,10 +313,6 @@ Before marking complete, verify:
 - [ ] All three hexagonal layers implemented
 - [ ] Frontend components working
 - [ ] Manual UI testing passed (Phase 4)
-- [ ] All existing specs passing
-- [ ] Packwerk check passing
-- [ ] Both reviewers provided feedback with no remaining issues
-- [ ] New specs written and passing
-- [ ] StandardRB linting passing
+- [ ] Verification Gauntlet passed (`./scripts/gauntlet.sh`)
 - [ ] All changes committed
 - [ ] Opened a pull request to `main` using GitHub CLI (`gh pr create --base main`)
