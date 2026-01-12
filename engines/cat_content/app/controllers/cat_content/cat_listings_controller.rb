@@ -14,7 +14,7 @@ module CatContent
       result = cat_listing_service.list_published
 
       if result.success?
-        render json: serialize_collection(result.value!)
+        render json: CatListingSerializer.serialize_collection(result.value!)
       else
         handle_failure(result.failure)
       end
@@ -27,7 +27,7 @@ module CatContent
       result = cat_listing_service.find_by_slug(params[:slug])
 
       if result.success?
-        render json: serialize(result.value!)
+        render json: CatListingSerializer.serialize(result.value!)
       elsif not_found?(result.failure)
         render json: {
           error: "not_found",
@@ -44,27 +44,8 @@ module CatContent
       @cat_listing_service ||= CatContent::Container[:cat_listing_service]
     end
 
-    def serialize(listing)
-      {
-        id: listing.id,
-        name: listing.name.to_s,
-        slug: listing.slug,
-        description: listing.description.to_s,
-        price: listing.price.to_h,
-        image: listing.image.to_h,
-        tags: listing.tags.to_a
-      }
-    end
-
-    def serialize_collection(listings)
-      {
-        listings: listings.map { |listing| serialize(listing) },
-        count: listings.size
-      }
-    end
-
     def not_found?(failure)
-      # Check by class name string to avoid importing domain layer
+      # String comparison avoids importing domain layer constant
       failure.class.name == "CatContent::ResourceNotFound"
     end
 
