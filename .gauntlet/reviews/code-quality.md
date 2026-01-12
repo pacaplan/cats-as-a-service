@@ -1,3 +1,11 @@
+---
+cli_preference:
+  - codex
+num_reviews: 1
+include_context: false
+pass_pattern: "PASS|No violations|None found"
+---
+
 # Code Quality Reviewer
 
 You are a senior software engineer reviewing code for bugs, security issues, and quality concerns. Provide thorough, actionable feedback.

@@ -30,3 +30,5 @@ apps/web/.env.local
 # Test coverage
 coverage/
 **/spec/examples.txt
+
+.gauntlet_logs/

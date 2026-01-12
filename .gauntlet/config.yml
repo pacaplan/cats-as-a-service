@@ -1,0 +1,20 @@
+base_branch: origin/main
+log_dir: .gauntlet_logs
+fail_fast: false
+
+entry_points:
+  - path: "."
+    reviews:
+      - code-quality
+
+  - path: "apps/api"
+    checks:
+      - linter
+      - packwerk
+
+  - path: "engines/*"
+    checks:
+      - specs
+      - linter
+    reviews:
+      - architecture

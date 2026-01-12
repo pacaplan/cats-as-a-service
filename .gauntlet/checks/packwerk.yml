@@ -1,0 +1,4 @@
+name: packwerk
+command: bundle exec packwerk check
+parallel: false
+working_directory: apps/api
