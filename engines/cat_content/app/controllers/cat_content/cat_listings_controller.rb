@@ -45,8 +45,7 @@ module CatContent
     end
 
     def not_found?(failure)
-      # String comparison avoids importing domain layer constant
-      failure.class.name == "CatContent::ResourceNotFound"
+      failure == :not_found
     end
 
     def handle_failure(error)
