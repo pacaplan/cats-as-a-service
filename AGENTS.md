@@ -138,12 +138,14 @@ Before starting a non-trivial task, create a plan document in `docs/plans/`:
 
 ---
 
-## Review Agents
+## Review Prompts
 
-After implementation, spawn these agents for code review:
+Code review prompts are located in `prompts/`:
 
-- **rampart-reviewer** - Checks hexagonal architecture adherence, layer boundaries, Rampart patterns
-- **code-reviewer** - Checks for bugs, security issues, error handling, performance
+- **`prompts/rampart-review.md`** - Hexagonal architecture adherence, layer boundaries, Rampart patterns
+- **`prompts/code-review.md`** - Bugs, security issues, error handling, performance
+
+These prompts are used by the verification gauntlet (`scripts/gauntlet.sh`) for automated code review.
 
 ---
 
