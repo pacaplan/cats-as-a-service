@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
-#!/usr/bin/env bash
-set -e
+# Change to project root (parent of scripts directory)
+cd "$(dirname "$0")/.."
 
 # Colors for output
 GREEN='\033[0;32m'

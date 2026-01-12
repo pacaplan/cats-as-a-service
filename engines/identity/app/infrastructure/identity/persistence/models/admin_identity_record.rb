@@ -13,7 +13,7 @@ module Identity
     devise :database_authenticatable, :lockable, :timeoutable
 
     # Use username instead of email for authentication
-    self.devise_modules.delete(:validatable) # Don't validate email
+    devise_modules.delete(:validatable) # Don't validate email
     def self.authentication_keys
       [:username]
     end

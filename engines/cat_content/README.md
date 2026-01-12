@@ -2,6 +2,8 @@
 
 Rails engine implementing the Cat & Content bounded context using Rampart patterns with schema isolation.
 
+test
+
 ## Overview
 
 This engine manages:

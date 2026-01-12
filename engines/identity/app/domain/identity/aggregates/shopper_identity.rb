@@ -15,7 +15,6 @@ module Identity
     # Lock duration in seconds (1 hour)
     LOCK_DURATION = 3600
 
-    attribute :id, Rampart::Types::String
     attribute :email, Rampart::Types::String
     attribute :encrypted_password, Rampart::Types::String
     attribute :name, Rampart::Types::String

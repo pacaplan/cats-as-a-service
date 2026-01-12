@@ -11,10 +11,12 @@ entry_points:
     checks:
       - linter
       - packwerk
+      - specs
 
   - path: "engines/*"
     checks:
-      - specs
       - linter
+      - packwerk
+      - specs
     reviews:
       - architecture
