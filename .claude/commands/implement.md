@@ -168,6 +168,18 @@ cd engines/{context} && bundle exec rspec spec/requests/
 
 All specs should now pass. If any fail, fix the implementation and re-run until green.
 
+### 2.7 Refactor (Optional)
+
+With passing specs as a safety net, consider if any refactoring would improve the code.
+
+**When to refactor:**
+- Duplicated logic that could be extracted
+- Long methods that should be split
+- Unclear naming that could be improved
+- Missed opportunities to use existing abstractions
+
+**Keep it light:** Only refactor if there's clear value. Re-run specs after any changes to ensure nothing broke.
+
 **Key Rules:**
 - Domain and Application layers must be pure Ruby (no Rails)
 - All classes use flat namespace: `{Context}::ClassName`
@@ -271,22 +283,8 @@ cd engines/{context} && bundle exec rspec
 
 ## Phase 7: Validate (The Gauntlet)
 
-Execute the autonomous verification suite to gather comprehensive feedback and ensure quality.
+Execute the autonomous verification suite to gather comprehensive feedback and ensure quality: `@cats-as-a-service/.gauntlet/run_gauntlet.md`.
 
-**Command:**
-```bash
-./scripts/gauntlet.sh
-```
-(Or use the `/gauntlet` command)
-
-**This script automatically runs:**
-1. **Linting:** StandardRB across all engines
-2. **Specs:** RSpec across all engines
-3. **Packwerk:** Architecture boundary checks
-4. **Gemini Review:** Rampart Hexagonal Architecture adherence
-5. **Codex Review:** Code quality, bugs, and security check
-
-**Output:** Logs are written to `.gauntlet_logs/`.
 
 ---
 
@@ -300,7 +298,7 @@ Address all issues identified by the Gauntlet.
 3. **Commit changes** after all issues are fixed
 4. **Re-run Phase 7** (`./scripts/gauntlet.sh`)
 5. If any failures remain, repeat from step 1
-6. Exit loop when `./scripts/gauntlet.sh` passes (Exit code 0)
+6. Exit loop when Verification Gauntlet passes
 
 **Max iterations:** 5. If still failing, stop and report.
 
@@ -313,6 +311,6 @@ Before marking complete, verify:
 - [ ] All three hexagonal layers implemented
 - [ ] Frontend components working
 - [ ] Manual UI testing passed (Phase 4)
-- [ ] Verification Gauntlet passed (`./scripts/gauntlet.sh`)
+- [ ] Verification Gauntlet passed
 - [ ] All changes committed
 - [ ] Opened a pull request to `main` using GitHub CLI (`gh pr create --base main`)

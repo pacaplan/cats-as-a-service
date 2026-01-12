@@ -117,8 +117,20 @@ cats-as-a-service/
 │   ├── cat_app/                 # Feature specs and guides
 │   └── plans/                   # Implementation plans
 │
-└── scripts/                     # Development scripts
-    └── start_dev.sh
+├── scripts/                     # Development scripts
+│   └── start_dev.sh
+│
+├── .gauntlet/                   # Agent Gauntlet configuration
+│   ├── config.yml               # Entry points and settings
+│   ├── run_gauntlet.md          # Canonical gauntlet command (see @cats-as-a-service/.gauntlet/run_gauntlet.md)
+│   ├── checks/                  # Check gates (lint, specs, etc.)
+│   └── reviews/                 # AI review prompts
+│
+├── .claude/commands/            # Claude CLI commands
+│   └── gauntlet.md → .gauntlet/run_gauntlet.md
+│
+└── .gemini/commands/            # Gemini CLI commands
+    └── gauntlet.toml
 ```
 
 ## Architecture
@@ -207,6 +219,19 @@ bundle exec rubocop
 cd apps/web
 npm run lint
 ```
+
+### Agent Gauntlet
+
+This project uses [Agent Gauntlet](../agent-gauntlet) for automated quality gates. Run the full verification suite:
+
+```bash
+# Via CLI
+~/paul/agent-gauntlet/bin/agent-gauntlet run
+
+# Or use @cats-as-a-service/.gauntlet/run_gauntlet.md in Claude or Gemini CLI
+```
+
+The gauntlet runs linting, specs, architecture checks, and AI code reviews for changed files.
 
 ## Framework Dependency
 
