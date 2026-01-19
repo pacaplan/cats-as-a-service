@@ -1,6 +1,6 @@
 ---
 cli_preference:
-  - gemini
+  - codex
 num_reviews: 1
 include_context: true
 ---

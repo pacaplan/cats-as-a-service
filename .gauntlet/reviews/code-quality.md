@@ -1,9 +1,8 @@
 ---
 cli_preference:
-  - codex
+  - claude
 num_reviews: 1
 include_context: false
-pass_pattern: "PASS|No violations|None found"
 ---
 
 # Code Quality Reviewer
