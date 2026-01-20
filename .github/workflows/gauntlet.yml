@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  discover:  
+  discover:
     name: Discover Jobs
     runs-on: ubuntu-latest
     outputs:
@@ -38,7 +38,7 @@ jobs:
       matrix:
         job: ${{ fromJson(needs.discover.outputs.matrix) }}
 
-        services:
+    services:
       postgres:
         image: postgres:16
         ports:
