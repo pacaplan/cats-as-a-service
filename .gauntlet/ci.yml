@@ -33,6 +33,7 @@ checks:
     requires_services: [postgres]
     setup:
        - name: DB Setup
+         working_directory: .
          run: |
            export PGHOST=127.0.0.1
            export PGPORT=5432
