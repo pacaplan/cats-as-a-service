@@ -39,6 +39,8 @@ checks:
            export PGUSER=postgres
            export PGPASSWORD=postgres
 
-           # Create schemas for each engine
-           psql -d postgres -c "CREATE SCHEMA IF NOT EXISTS identity;"
-           psql -d postgres -c "CREATE SCHEMA IF NOT EXISTS cat_content;"
+           # Run Supabase migrations in order (engines rely on these for DB schema)
+           for migration in supabase/migrations/*.sql; do
+             echo "Running migration: $migration"
+             psql -d postgres -f "$migration"
+           done
