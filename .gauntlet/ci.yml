@@ -40,7 +40,9 @@ checks:
            export PGPASSWORD=postgres
 
            # Run Supabase migrations in order (engines rely on these for DB schema)
-           for migration in supabase/migrations/*.sql; do
+           cd supabase/migrations
+           for migration in *.sql; do
              echo "Running migration: $migration"
              psql -d postgres -f "$migration"
            done
+           cd ../..
