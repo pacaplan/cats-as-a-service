@@ -42,8 +42,3 @@ checks:
            # Create schemas for each engine
            psql -d postgres -c "CREATE SCHEMA IF NOT EXISTS identity;"
            psql -d postgres -c "CREATE SCHEMA IF NOT EXISTS cat_content;"
-
-           # Run migrations for the engine (if in an engine directory)
-           if [ -f "spec/dummy/config/application.rb" ]; then
-             RAILS_ENV=test bundle exec rake db:migrate
-           fi

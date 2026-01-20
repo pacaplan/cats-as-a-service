@@ -6,10 +6,10 @@ default: &default
 # Test database - use postgres database with cat_content schema
 test:
   <<: *default
-  host: <%= ENV["PGHOST"] || "127.0.0.1" %>
-  port: <%= ENV["PGPORT"] || 54322 %>
-  username: <%= ENV["PGUSER"] || "postgres" %>
-  password: <%= ENV["PGPASSWORD"] || "postgres" %>
+  host: <%= ENV.fetch("PGHOST") { "127.0.0.1" } %>
+  port: <%= ENV.fetch("PGPORT") { 54322 } %>
+  username: <%= ENV.fetch("PGUSER") { "postgres" } %>
+  password: <%= ENV.fetch("PGPASSWORD") { "postgres" } %>
   database: postgres
   schema_search_path: cat_content
 

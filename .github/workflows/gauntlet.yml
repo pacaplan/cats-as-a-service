@@ -40,6 +40,12 @@ jobs:
       matrix:
         job: ${{ fromJson(needs.discover.outputs.matrix) }}
 
+    env:
+      PGHOST: 127.0.0.1
+      PGPORT: 5432
+      PGUSER: postgres
+      PGPASSWORD: postgres
+
     services:
       postgres:
         image: postgres:16
