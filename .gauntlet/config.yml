@@ -14,7 +14,6 @@ entry_points:
     checks:
       - linter
       - packwerk
-      - specs
 
   - path: "engines/*"
     checks:

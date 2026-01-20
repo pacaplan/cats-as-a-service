@@ -33,4 +33,17 @@ checks:
     requires_services: [postgres]
     setup:
        - name: DB Setup
-         run: echo "DB setup"
+         run: |
+           export PGHOST=127.0.0.1
+           export PGPORT=5432
+           export PGUSER=postgres
+           export PGPASSWORD=postgres
+
+           # Create schemas for each engine
+           psql -d postgres -c "CREATE SCHEMA IF NOT EXISTS identity;"
+           psql -d postgres -c "CREATE SCHEMA IF NOT EXISTS cat_content;"
+
+           # Run migrations for the engine (if in an engine directory)
+           if [ -f "spec/dummy/config/application.rb" ]; then
+             RAILS_ENV=test bundle exec rake db:migrate
+           fi
