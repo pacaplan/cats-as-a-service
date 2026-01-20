@@ -1,0 +1,27 @@
+runtimes:
+  ruby:
+    version: "3.2"
+    bundler_cache: true
+
+services:
+  postgres:
+    image: postgres:16
+    ports: ["5432:5432"]
+
+setup:
+  - name: Global Setup
+    run: echo "Global setup"
+
+checks:
+  - name: linter
+    requires_runtimes: [ruby]
+
+  - name: packwerk
+    requires_runtimes: [ruby]
+  
+  - name: specs
+    requires_runtimes: [ruby]
+    requires_services: [postgres]
+    setup:
+       - name: DB Setup
+         run: echo "DB setup"
