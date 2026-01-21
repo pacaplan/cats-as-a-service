@@ -28,7 +28,7 @@ module CatContent
 
       if result.success?
         render json: CatListingSerializer.serialize(result.value!)
-      elsif result.failure.is_a?(ResourceNotFound)
+      elsif not_found?(result.failure)
         render json: {
           error: "not_found",
           message: "Cat listing not found"
@@ -41,7 +41,11 @@ module CatContent
     private
 
     def cat_listing_service
-      @cat_listing_service ||= Container.resolve(:cat_listing_service)
+      @cat_listing_service ||= CatContent::Container[:cat_listing_service]
+    end
+
+    def not_found?(failure)
+      failure == :not_found
     end
 
     def handle_failure(error)

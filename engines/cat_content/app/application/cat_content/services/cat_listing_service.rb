@@ -27,9 +27,9 @@ module CatContent
       listing = @cat_listing_repo.find_by_slug(slug)
 
       if listing.nil?
-        Failure(ResourceNotFound.new(resource_type: "CatListing", identifier: slug))
+        Failure(:not_found)
       elsif !listing.published?
-        Failure(ResourceNotFound.new(resource_type: "CatListing", identifier: slug))
+        Failure(:not_found)
       else
         Success(listing)
       end

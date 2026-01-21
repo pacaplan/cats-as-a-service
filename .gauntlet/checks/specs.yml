@@ -1,0 +1,4 @@
+name: specs
+command: bundle exec rspec
+parallel: false
+timeout: 300

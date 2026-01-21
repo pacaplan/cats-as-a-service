@@ -1,0 +1,50 @@
+runtimes:
+  ruby:
+    version: "3.3.6"
+    bundler_cache: true
+
+services:
+  postgres:
+    image: postgres:16
+    env:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports: ["5432:5432"]
+    options: >-
+      --health-cmd pg_isready
+      --health-interval 10s
+      --health-timeout 5s
+      --health-retries 5
+
+setup:
+  - name: Global Setup
+    run: echo "Global setup"
+
+checks:
+  - name: linter
+    requires_runtimes: [ruby]
+
+  - name: packwerk
+    requires_runtimes: [ruby]
+  
+  - name: specs
+    requires_runtimes: [ruby]
+    requires_services: [postgres]
+    setup:
+       - name: DB Setup
+         run: |
+           export PGHOST=127.0.0.1
+           export PGPORT=5432
+           export PGUSER=postgres
+           export PGPASSWORD=postgres
+
+           # Find repo root (account for different entry point depths)
+           REPO_ROOT=$(git rev-parse --show-toplevel)
+
+           # Run Supabase migrations in order (engines rely on these for DB schema)
+           cd "$REPO_ROOT/supabase/migrations"
+           for migration in *.sql; do
+             echo "Running migration: $migration"
+             psql -d postgres -f "$migration"
+           done

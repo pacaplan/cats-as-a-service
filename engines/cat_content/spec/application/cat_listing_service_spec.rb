@@ -76,10 +76,10 @@ RSpec.describe CatContent::CatListingService do
         allow(repository).to receive(:find_by_slug).with("non-existent").and_return(nil)
       end
 
-      it "returns Failure with ResourceNotFound" do
+      it "returns Failure with :not_found symbol" do
         result = service.find_by_slug("non-existent")
         expect(result).to be_failure
-        expect(result.failure).to be_a(CatContent::ResourceNotFound)
+        expect(result.failure).to eq(:not_found)
       end
     end
 
@@ -103,10 +103,10 @@ RSpec.describe CatContent::CatListingService do
         allow(repository).to receive(:find_by_slug).with("draft-cat").and_return(draft_listing)
       end
 
-      it "returns Failure with ResourceNotFound" do
+      it "returns Failure with :not_found symbol" do
         result = service.find_by_slug("draft-cat")
         expect(result).to be_failure
-        expect(result.failure).to be_a(CatContent::ResourceNotFound)
+        expect(result.failure).to eq(:not_found)
       end
     end
 

@@ -138,14 +138,19 @@ Before starting a non-trivial task, create a plan document in `docs/plans/`:
 
 ---
 
-## Review Prompts
+## Review Gauntlet
 
 Code review prompts are located in `prompts/`:
 
 - **`prompts/rampart-review.md`** - Hexagonal architecture adherence, layer boundaries, Rampart patterns
 - **`prompts/code-review.md`** - Bugs, security issues, error handling, performance
 
-These prompts are used by the verification gauntlet (`scripts/gauntlet.sh`) for automated code review.
+These prompts are used by the verification gauntlet (`@cats-as-a-service/.gauntlet/run_gauntlet.md`) for automated code review.
+
+**When to run the gauntlet:**
+- Run the gauntlet at your discretion after completing an entire task (not after every individual change)
+- Run the gauntlet when explicitly requested by the user
+- Do not run the gauntlet after every small change or incremental update
 
 ---
 

@@ -4,11 +4,11 @@
 You are not finished with any task until you have fulfilled the following "Gauntlet" protocol:
 1. **Implementation**: Complete all requested code changes.
 2. **Testing**: Ensure new or modified logic has corresponding RSpec tests.
-3. **Verification**: Invoke the `/gauntlet` command.
+3. **Verification**: Invoke `@cats-as-a-service/.gauntlet/run_gauntlet.md`.
 4. **Autonomous Repair**: If the gauntlet fails (exit code 1), you must:
    - Read the relevant log in `.gauntlet_logs/`.
    - Apply the fix immediately.
-   - Repeat the `/gauntlet` until it passes.
+   - Repeat `@cats-as-a-service/.gauntlet/run_gauntlet.md` until it passes.
 
 ## Reviewer Roles
 - **Gemini**: Acts as your architectural senior dev. Look for N+1 queries or Rails-specific anti-patterns.
